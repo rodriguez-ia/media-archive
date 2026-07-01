@@ -1,5 +1,6 @@
 package com.isaiah.mediaarchive.service;
 
+import com.isaiah.mediaarchive.exception.DuplicateUserException;
 import com.isaiah.mediaarchive.mapper.UserMapper;
 import com.isaiah.mediaarchive.model.dto.RegisterRequestDTO;
 import com.isaiah.mediaarchive.model.dto.RegisterResponseDTO;
@@ -28,18 +29,12 @@ public class AuthService {
         String email = requestDTO.getEmail();
         String password = requestDTO.getPassword();
 
-        if (username == null || username.isBlank() ||
-            email == null || email.isBlank() ||
-            password == null || password.isBlank()) {
-            throw new IllegalArgumentException("Valid username, email, and password are required for registration.");
-        }
-
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Provided username not available.");
+            throw new DuplicateUserException("username", "Username already exists.");
         }
 
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Provided email not available.");
+            throw new DuplicateUserException("email", "Email already exists.");
         }
 
         String passwordHash = passwordEncoder.encode(password);
