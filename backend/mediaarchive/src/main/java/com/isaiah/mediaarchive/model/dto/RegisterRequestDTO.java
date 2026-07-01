@@ -20,6 +20,6 @@ public class RegisterRequestDTO {
     private String email;
 
     @NotBlank
-    @Size(min=8, max=16)
+    @Size(min=8)
     private String password;
 }
