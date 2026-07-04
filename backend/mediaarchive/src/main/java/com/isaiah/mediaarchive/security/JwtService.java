@@ -1,6 +1,7 @@
 package com.isaiah.mediaarchive.security;
 
 import com.isaiah.mediaarchive.model.entity.UserEntity;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -40,5 +41,37 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
 
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String extractUsername(String token) {
+
+        log.debug("Extracting username from token.");
+
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    }
+
+    public boolean isTokenValid(String token) {
+
+        log.debug("Validating token: token='{}'", token);
+
+        try {
+            Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token);
+
+            log.debug("Token validation succeeded.");
+
+            return true;
+        } catch (JwtException ex) {
+            log.debug("Token validation failed: message='{}'", ex.getMessage());
+
+            return false;
+        }
     }
 }

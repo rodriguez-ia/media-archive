@@ -30,4 +30,9 @@ public class AuthController {
 
         return ResponseEntity.status(200).body(ApiResponseFactory.success(responseDTO, "AuthController.login", "User login successful"));
     }
+
+    @GetMapping("/test")
+    public String testJwtAuth() {
+        return "Authentication successful";
+    }
 }
