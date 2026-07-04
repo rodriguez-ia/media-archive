@@ -20,3 +20,24 @@ export async function registerUser(registerRequest) {
 
     return body;
 }
+
+export async function loginUser(loginRequest) {
+    const response = await fetch(
+        `${API_BASE_URL}/auth/login`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(loginRequest)
+        }
+    );
+
+    const body = await response.json();
+
+    if (!response.ok) {
+        throw body;
+    }
+
+    return body;
+}
