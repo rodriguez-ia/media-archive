@@ -1,12 +1,12 @@
 package com.isaiah.mediaarchive.exception;
 
-import com.isaiah.mediaarchive.model.dto.ApiErrorDTO;
 import com.isaiah.mediaarchive.model.dto.ApiResponse;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,15 +18,43 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ApiResponse<?>> handleDuplicateUser(DuplicateUserException ex) {
 
-        log.warn("Duplicate user error: field={}, message='{}'", ex.getField(), ex.getMessage());
-
-        ApiErrorDTO error = new ApiErrorDTO(ex.getField(), ex.getMessage());
+        log.warn("Duplicate user error: message='{}'", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
                 ApiResponseFactory.failure(
-                        error,
+                        null,
                         409,
                         "DuplicateUserException",
+                        ex.getMessage()
+                )
+        );
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleUsernameNotFound(UsernameNotFoundException ex) {
+
+        log.warn("Username not found error: message='{}'", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ApiResponseFactory.failure(
+                        null,
+                        404,
+                        "UsernameNotFoundException",
+                        ex.getMessage()
+                )
+        );
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiResponse<?>> handleInvalidCredentials(InvalidCredentialsException ex) {
+
+        log.warn("Invalid credentials error: message='{}'", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ApiResponseFactory.failure(
+                        null,
+                        404,
+                        "InvalidCredentialsException",
                         ex.getMessage()
                 )
         );

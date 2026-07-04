@@ -5,10 +5,7 @@ import lombok.Getter;
 @Getter
 public class DuplicateUserException extends RuntimeException{
 
-    private final String field;
-
-    public DuplicateUserException(String field, String message) {
+    public DuplicateUserException(String message) {
         super(message);
-        this.field = field;
     }
 }

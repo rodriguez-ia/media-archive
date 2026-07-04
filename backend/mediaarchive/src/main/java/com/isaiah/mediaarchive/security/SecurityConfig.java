@@ -1,4 +1,4 @@
-package com.isaiah.mediaarchive.config;
+package com.isaiah.mediaarchive.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

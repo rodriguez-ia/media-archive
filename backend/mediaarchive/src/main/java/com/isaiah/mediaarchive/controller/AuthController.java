@@ -1,8 +1,6 @@
 package com.isaiah.mediaarchive.controller;
 
-import com.isaiah.mediaarchive.model.dto.ApiResponse;
-import com.isaiah.mediaarchive.model.dto.RegisterRequestDTO;
-import com.isaiah.mediaarchive.model.dto.RegisterResponseDTO;
+import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.service.AuthService;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
 import jakarta.validation.Valid;
@@ -21,13 +19,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponseDTO>> register(@Valid @RequestBody RegisterRequestDTO requestDTO) {
-        RegisterResponseDTO user = authService.register(requestDTO);
+        RegisterResponseDTO responseDTO = authService.register(requestDTO);
 
-        return ResponseEntity.status(201).body(ApiResponseFactory.created(user, "AuthController.register", "User registered successfully"));
+        return ResponseEntity.status(201).body(ApiResponseFactory.created(responseDTO, "AuthController.register", "User registered successfully"));
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "Hello World!";
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponseDTO>> login(@Valid @RequestBody LoginRequestDTO requestDTO) {
+        LoginResponseDTO responseDTO = authService.login(requestDTO);
+
+        return ResponseEntity.status(200).body(ApiResponseFactory.success(responseDTO, "AuthController.login", "User login successful"));
     }
 }
