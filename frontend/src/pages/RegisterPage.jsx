@@ -62,9 +62,13 @@ function RegisterPage() {
 
             const response = await registerUser(request);
 
-            setMessage(`User registered successfully: ${response.username}`);
+            setMessage(`User registered successfully: ${response.data.username}`);
         } catch (error) {
-            setMessage("Registration failed");
+            if (error.message) {
+                setMessage(error.message.detail);
+            } else {
+                setMessage("Registration failed");
+            }
             console.log(error);
         } finally {
             setLoading(false);

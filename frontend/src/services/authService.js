@@ -8,14 +8,15 @@ export async function registerUser(registerRequest) {
             headers: {
                 "Content-Type": "application/json"
             },
-            // TODO: standardize request json?
             body: JSON.stringify(registerRequest)
         }
     );
 
+     const body = await response.json();
+
     if (!response.ok) {
-        throw new Error("Registration failed.");
+        throw body;
     }
 
-    return response.json();
+    return body;
 }
