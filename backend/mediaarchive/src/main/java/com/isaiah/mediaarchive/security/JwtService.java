@@ -24,11 +24,14 @@ public class JwtService {
     private long expiration;
 
     public String generateToken(UserEntity user) {
+
+        log.debug("Generating JWT for user: username='{}'", user.getUsername());
+
         return Jwts.builder()
                 .id(user.getId().toString())
                 .subject(user.getUsername())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expiration)                )
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
                 .compact();
     }
