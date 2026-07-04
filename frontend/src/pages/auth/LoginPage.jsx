@@ -121,7 +121,7 @@ function LoginPage() {
                 {message && (<Typography>{message}</Typography>)}
 
                 <Typography>
-                    <Link to="/register">Not a user yet? Sign up.</Link>
+                    <Link to="/register">Not a user? Sign up.</Link>
                 </Typography>
             </Paper>
         </Container>
