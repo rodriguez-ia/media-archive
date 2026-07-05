@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,9 +17,11 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
+    public JwtAuthenticationFilter(JwtService jwtService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtService = jwtService;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (!jwtService.isTokenValid(token)) {
 
-            filterChain.doFilter(request, response);
+            jwtAuthenticationEntryPoint.commence(request, response, new BadCredentialsException("Invalid or expired JWT"));
             return;
         }
 
@@ -49,5 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
         SecurityContextHolder.getContext()
                 .setAuthentication(auth);
+
+        filterChain.doFilter(request, response);
     }
 }
