@@ -1,0 +1,31 @@
+package com.isaiah.mediaarchive.model.enums;
+
+public enum GenreEnum {
+    ACTION,
+    ADVENTURE,
+    ANIMATION,
+    BIOGRAPHY,
+    COMEDY,
+    CRIME,
+    DOCUMENTARY,
+    DRAMA,
+    EDUCATIONAL,
+    FAMILY,
+    FANTASY,
+    HISTORICAL,
+    HORROR,
+    MYSTERY,
+    MUSICAL,
+    NOIR,
+    ROMANCE,
+    SCIENCE_FICTION,
+    SLICE_OF_LIFE,
+    SPORTS,
+    SUPERHERO,
+    SUSPENSE,
+    THRILLER,
+    WAR,
+    WESTERN,
+    YOUNG_ADULT,
+    OTHER
+}

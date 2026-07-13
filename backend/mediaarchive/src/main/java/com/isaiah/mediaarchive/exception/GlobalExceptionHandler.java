@@ -59,4 +59,19 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+
+    @ExceptionHandler(MediaNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleMediaNotFound(MediaNotFoundException ex) {
+
+        log.warn("Media not found error: message='{}'", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ApiResponseFactory.failure(
+                        null,
+                        404,
+                        "MediaNotFoundException",
+                        ex.getMessage()
+                )
+        );
+    }
 }

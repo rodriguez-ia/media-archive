@@ -1,5 +1,7 @@
 package com.isaiah.mediaarchive.security;
 
+import com.isaiah.mediaarchive.model.entity.UserEntity;
+import com.isaiah.mediaarchive.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +18,14 @@ import java.util.Collections;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final UserService userService;
     private final JwtService jwtService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public JwtAuthenticationFilter(JwtService jwtService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    public JwtAuthenticationFilter(UserService userService,
+                                   JwtService jwtService,
+                                   JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        this.userService = userService;
         this.jwtService = jwtService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
@@ -48,8 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String username = jwtService.extractUsername(token);
+        UserEntity user = userService.getUserByUsername(username);
 
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
         SecurityContextHolder.getContext()
                 .setAuthentication(auth);
 
