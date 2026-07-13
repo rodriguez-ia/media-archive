@@ -1,6 +1,7 @@
 package com.isaiah.mediaarchive.mapper;
 
-import com.isaiah.mediaarchive.model.dto.MediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
 import org.springframework.stereotype.Component;
@@ -8,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MediaMapper {
 
-    public MediaResponseDTO toMediaResponse(UserMediaEntity userMedia) {
-        return new MediaResponseDTO(
+    public UserMediaResponseDTO toUserMediaResponse(UserMediaEntity userMedia) {
+        return new UserMediaResponseDTO(
                 userMedia.getMediaItem().getId(),
                 userMedia.getId(),
                 userMedia.getMediaItem().getExternalId(),
@@ -28,6 +29,21 @@ public class MediaMapper {
                 userMedia.getPurchasePrice(),
                 userMedia.getFormat(),
                 userMedia.getCondition()
+        );
+    }
+
+    public BaseMediaResponseDTO toBaseMediaResponse(BaseMediaEntity baseMedia) {
+        return new BaseMediaResponseDTO(
+                baseMedia.getId(),
+                baseMedia.getExternalId(),
+                baseMedia.getTitle(),
+                baseMedia.getDescription(),
+                baseMedia.getMediaType(),
+                baseMedia.getGenres(),
+                baseMedia.getReleaseDate(),
+                baseMedia.getCommunityRating(),
+                baseMedia.getCoverImgUrl(),
+                baseMedia.getSortOrder()
         );
     }
 }

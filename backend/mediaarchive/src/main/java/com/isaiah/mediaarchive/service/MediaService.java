@@ -2,9 +2,12 @@ package com.isaiah.mediaarchive.service;
 
 import com.isaiah.mediaarchive.exception.MediaNotFoundException;
 import com.isaiah.mediaarchive.mapper.MediaMapper;
-import com.isaiah.mediaarchive.model.dto.MediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
+import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
+import com.isaiah.mediaarchive.repository.BaseMediaRepository;
 import com.isaiah.mediaarchive.repository.UserMediaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,20 +20,24 @@ import java.util.List;
 public class MediaService {
 
     private final UserMediaRepository userMediaRepository;
+    private final BaseMediaRepository baseMediaRepository;
     private final MediaMapper mediaMapper;
 
     private static final Logger log = LoggerFactory.getLogger(MediaService.class);
 
-    public MediaService(UserMediaRepository userMediaRepository, MediaMapper mediaMapper) {
+    public MediaService(UserMediaRepository userMediaRepository,
+                        BaseMediaRepository baseMediaRepository,
+                        MediaMapper mediaMapper) {
         this.userMediaRepository = userMediaRepository;
+        this.baseMediaRepository = baseMediaRepository;
         this.mediaMapper = mediaMapper;
     }
 
-    public List<MediaResponseDTO> getAllUserMedia(UserEntity user) {
+    public List<UserMediaResponseDTO> getAllUserMedia(UserEntity user) {
 
-        log.info("Retrieving all media items for user: username='{}'", user.getUsername());
+        log.info("Retrieving all USER media items for user: username='{}'", user.getUsername());
 
-        List<UserMediaEntity> userMediaList = userMediaRepository.findAllUserMediaByUserId(user.getId());
+        List<UserMediaEntity> userMediaList = userMediaRepository.findAllByUserId(user.getId());
 
         if (userMediaList == null || userMediaList.isEmpty()) {
             throw new MediaNotFoundException("Unable to get user media items.");
@@ -38,7 +45,7 @@ public class MediaService {
 
         log.debug("User media found.");
 
-        List<MediaResponseDTO> mediaResponseList = new ArrayList<>();
+        List<UserMediaResponseDTO> userMediaResponseList = new ArrayList<>();
 
         for (UserMediaEntity userMediaItem : userMediaList) {
             if (userMediaItem == null) {
@@ -46,9 +53,35 @@ public class MediaService {
                 continue;
             }
 
-            mediaResponseList.add(mediaMapper.toMediaResponse(userMediaItem));
+            userMediaResponseList.add(mediaMapper.toUserMediaResponse(userMediaItem));
         }
 
-        return mediaResponseList;
+        return userMediaResponseList;
+    }
+
+    public List<BaseMediaResponseDTO> getAllBaseMediaForUser(UserEntity user) {
+
+        log.info("Retrieving all BASE media items for user: username='{}'", user.getUsername());
+
+        List<BaseMediaEntity> baseMediaList = baseMediaRepository.findAllByUserId(user.getId());
+
+        if (baseMediaList == null) {
+            throw new MediaNotFoundException("Unable to get base media items for user.");
+        }
+
+        log.debug("Base media found for user.");
+
+        List<BaseMediaResponseDTO> baseMediaResponseList = new ArrayList<>();
+
+        for (BaseMediaEntity baseMediaItem : baseMediaList) {
+            if (baseMediaItem == null) {
+                log.warn("Null base media item found for user.");
+                continue;
+            }
+
+            baseMediaResponseList.add(mediaMapper.toBaseMediaResponse(baseMediaItem));
+        }
+
+        return baseMediaResponseList;
     }
 }

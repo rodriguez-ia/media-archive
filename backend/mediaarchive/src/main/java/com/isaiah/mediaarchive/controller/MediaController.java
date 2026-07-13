@@ -1,7 +1,8 @@
 package com.isaiah.mediaarchive.controller;
 
 import com.isaiah.mediaarchive.model.dto.ApiResponse;
-import com.isaiah.mediaarchive.model.dto.MediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.service.MediaService;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
@@ -24,14 +25,27 @@ public class MediaController {
     }
 
     @GetMapping("/user-media")
-    public ResponseEntity<ApiResponse<List<MediaResponseDTO>>> getAllUserMedia(@AuthenticationPrincipal UserEntity user) {
-        List<MediaResponseDTO> mediaResponseDTOList = mediaService.getAllUserMedia(user);
+    public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getAllUserMedia(@AuthenticationPrincipal UserEntity user) {
+        List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.getAllUserMedia(user);
 
         return ResponseEntity.status(200).body(
                 ApiResponseFactory.success(
-                        mediaResponseDTOList,
+                        userMediaResponseDTOList,
                         "MediaController.getAllUserMedia",
                         "Retrieved all user media successfully"
+                )
+        );
+    }
+
+    @GetMapping("/base-media")
+    public ResponseEntity<ApiResponse<List<BaseMediaResponseDTO>>> getAllBaseMediaForUser(@AuthenticationPrincipal UserEntity user) {
+        List<BaseMediaResponseDTO> baseMediaResponseDTOList = mediaService.getAllBaseMediaForUser(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        baseMediaResponseDTOList,
+                        "MediaController.getAllBaseMediaForUser",
+                        "Retrieved all base media for user successfully"
                 )
         );
     }

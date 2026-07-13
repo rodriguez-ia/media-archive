@@ -1,23 +1,19 @@
 package com.isaiah.mediaarchive.model.dto;
 
-import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
-import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.enums.CollectionStatusEnum;
 import com.isaiah.mediaarchive.model.enums.GenreEnum;
 import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
-public class MediaResponseDTO {
+public class UserMediaResponseDTO {
 
     // IDs
     private UUID baseMediaId;
