@@ -2,6 +2,7 @@ package com.isaiah.mediaarchive.controller;
 
 import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.service.AuthService;
+import com.isaiah.mediaarchive.util.ApiResponse;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

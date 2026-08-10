@@ -5,6 +5,7 @@ import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
 import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.service.MediaService;
+import com.isaiah.mediaarchive.util.ApiResponse;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

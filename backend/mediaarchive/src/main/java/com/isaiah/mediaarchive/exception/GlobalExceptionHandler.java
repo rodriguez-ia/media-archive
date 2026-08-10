@@ -1,6 +1,6 @@
 package com.isaiah.mediaarchive.exception;
 
-import com.isaiah.mediaarchive.model.dto.ApiResponse;
+import com.isaiah.mediaarchive.util.ApiResponse;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
