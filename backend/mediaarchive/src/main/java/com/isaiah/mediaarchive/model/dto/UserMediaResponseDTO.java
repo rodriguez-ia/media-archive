@@ -15,14 +15,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserMediaResponseDTO {
 
-    // IDs
-    private UUID baseMediaId;
-
-    private UUID userMediaId;
-
+    // Base Media fields
     private String externalId;
 
-    // Base Media fields
     private String title;
 
     private String description;
