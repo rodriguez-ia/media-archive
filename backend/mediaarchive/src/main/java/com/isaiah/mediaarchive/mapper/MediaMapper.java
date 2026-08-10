@@ -1,15 +1,17 @@
 package com.isaiah.mediaarchive.mapper;
 
+import com.isaiah.mediaarchive.model.dto.AddMediaToLibraryRequestDTO;
 import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
 import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
+import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MediaMapper {
 
-    public UserMediaResponseDTO toUserMediaResponse(UserMediaEntity userMedia) {
+    public UserMediaResponseDTO userMediaEntityToUserMediaResponse(UserMediaEntity userMedia) {
         return new UserMediaResponseDTO(
                 userMedia.getMediaItem().getExternalId(),
                 userMedia.getMediaItem().getTitle(),
@@ -30,7 +32,14 @@ public class MediaMapper {
         );
     }
 
-    public BaseMediaResponseDTO toBaseMediaResponse(BaseMediaEntity baseMedia) {
+    public UserMediaEntity baseMediaEntityAndUserEntityToUserMediaEntity(BaseMediaEntity baseMedia, UserEntity user) {
+        return new UserMediaEntity(
+                baseMedia,
+                user
+        );
+    }
+
+    public BaseMediaResponseDTO baseMediaEntityToBaseMediaResponse(BaseMediaEntity baseMedia) {
         return new BaseMediaResponseDTO(
                 baseMedia.getExternalId(),
                 baseMedia.getTitle(),
@@ -41,6 +50,20 @@ public class MediaMapper {
                 baseMedia.getCommunityRating(),
                 baseMedia.getCoverImgUrl(),
                 baseMedia.getSortOrder()
+        );
+    }
+
+    public BaseMediaEntity addMediaDTOToBaseMediaEntity(AddMediaToLibraryRequestDTO requestDTO) {
+        return new BaseMediaEntity(
+                requestDTO.getExternalId(),
+                requestDTO.getTitle(),
+                requestDTO.getDescription(),
+                requestDTO.getMediaType(),
+                requestDTO.getGenres(),
+                requestDTO.getReleaseDate(),
+                requestDTO.getCommunityRating(),
+                requestDTO.getCoverImgUrl(),
+                requestDTO.getSortOrder()
         );
     }
 }

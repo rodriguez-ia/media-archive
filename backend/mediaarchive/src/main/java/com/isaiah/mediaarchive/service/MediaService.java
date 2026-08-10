@@ -2,6 +2,7 @@ package com.isaiah.mediaarchive.service;
 
 import com.isaiah.mediaarchive.exception.MediaNotFoundException;
 import com.isaiah.mediaarchive.mapper.MediaMapper;
+import com.isaiah.mediaarchive.model.dto.AddMediaToLibraryRequestDTO;
 import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
 import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
@@ -9,12 +10,16 @@ import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
 import com.isaiah.mediaarchive.repository.BaseMediaRepository;
 import com.isaiah.mediaarchive.repository.UserMediaRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class MediaService {
@@ -33,7 +38,7 @@ public class MediaService {
         this.mediaMapper = mediaMapper;
     }
 
-    public List<UserMediaResponseDTO> getAllUserMedia(UserEntity user) {
+    public List<UserMediaResponseDTO> getAllFromUserLibrary(UserEntity user) {
 
         log.info("Retrieving all USER media items for user: username='{}'", user.getUsername());
 
@@ -53,13 +58,88 @@ public class MediaService {
                 continue;
             }
 
-            userMediaResponseList.add(mediaMapper.toUserMediaResponse(userMediaItem));
+            userMediaResponseList.add(mediaMapper.userMediaEntityToUserMediaResponse(userMediaItem));
         }
 
         return userMediaResponseList;
     }
 
-    public List<BaseMediaResponseDTO> getAllBaseMediaForUser(UserEntity user) {
+    @Transactional
+    public List<UserMediaResponseDTO> addToUserLibrary(UserEntity user, List<AddMediaToLibraryRequestDTO> mediaList) {
+
+        log.info("Adding media items to user library: username='{}'", user.getUsername());
+
+        List<String> externalIds = mediaList.stream()
+                .map(AddMediaToLibraryRequestDTO::getExternalId)
+                .toList();
+
+        log.debug("Checking if BaseMediaItem exists for each item in media list.");
+
+        List<BaseMediaEntity> existingBaseMediaList = baseMediaRepository.findAllByExternalIdIn(externalIds);
+        Map<String, BaseMediaEntity> baseMediaByExternalId =
+                existingBaseMediaList.stream()
+                        .collect(Collectors.toMap(
+                                BaseMediaEntity::getExternalId,
+                                Function.identity()
+                        ));
+
+        List<BaseMediaEntity> newBaseMediaList = new ArrayList<>();
+
+        for (AddMediaToLibraryRequestDTO mediaItem : mediaList) {
+            if (baseMediaByExternalId.containsKey(mediaItem.getExternalId())) {
+                continue;
+            }
+
+            log.debug("BaseMediaEntity not found for '{}'. Adding new item with externalId='{}'", mediaItem.getTitle(), mediaItem.getExternalId());
+
+            BaseMediaEntity newBaseMediaItem = mediaMapper.addMediaDTOToBaseMediaEntity(mediaItem);
+            newBaseMediaList.add(newBaseMediaItem);
+
+            // Add to baseMediaByExternalId for future reference and duplicate protection
+            baseMediaByExternalId.put(mediaItem.getExternalId(), newBaseMediaItem);
+        }
+
+        // Save new base media items
+        baseMediaRepository.saveAll(newBaseMediaList);
+
+        log.debug("Checking if UserMediaItem exists for each item in media list.");
+
+        List<UserMediaEntity> existingUserMediaList = userMediaRepository.findAllByUserIdAndMediaItemExternalIdIn(user.getId(), externalIds);
+        Map<String, UserMediaEntity> userMediaByExternalId =
+                existingUserMediaList.stream()
+                        .collect(Collectors.toMap(
+                                userMedia -> userMedia.getMediaItem().getExternalId(),
+                                Function.identity()
+                        ));
+
+        List<UserMediaEntity> newUserMediaList = new ArrayList<>();
+        List<UserMediaResponseDTO> newUserMediaResponseList = new ArrayList<>();
+
+        for (AddMediaToLibraryRequestDTO mediaItem : mediaList) {
+            if (userMediaByExternalId.containsKey(mediaItem.getExternalId())) {
+                continue;
+            }
+
+            log.debug("UserMediaEntity not found for '{}'. Adding new item with externalId='{}' to username='{}'", mediaItem.getTitle(), mediaItem.getExternalId(), user.getUsername());
+
+            BaseMediaEntity relatedBaseMediaItem = baseMediaByExternalId.get(mediaItem.getExternalId());
+            UserMediaEntity newUserMediaItem = mediaMapper.baseMediaEntityAndUserEntityToUserMediaEntity(relatedBaseMediaItem, user);
+            newUserMediaList.add(newUserMediaItem);
+
+            // Add to userMediaByExternalId for duplicate protection
+            userMediaByExternalId.put(mediaItem.getExternalId(), newUserMediaItem);
+
+            // Add to newUserMediaResponseList for return
+            newUserMediaResponseList.add(mediaMapper.userMediaEntityToUserMediaResponse(newUserMediaItem));
+        }
+
+        // Save new user media items
+        userMediaRepository.saveAll(newUserMediaList);
+
+        return newUserMediaResponseList;
+    }
+
+    public List<BaseMediaResponseDTO> getFromCatalog(UserEntity user) {
 
         log.info("Retrieving all BASE media items for user: username='{}'", user.getUsername());
 
@@ -79,7 +159,7 @@ public class MediaService {
                 continue;
             }
 
-            baseMediaResponseList.add(mediaMapper.toBaseMediaResponse(baseMediaItem));
+            baseMediaResponseList.add(mediaMapper.baseMediaEntityToBaseMediaResponse(baseMediaItem));
         }
 
         return baseMediaResponseList;

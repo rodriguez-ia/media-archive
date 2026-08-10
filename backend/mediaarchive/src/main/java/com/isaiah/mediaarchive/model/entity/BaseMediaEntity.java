@@ -59,4 +59,25 @@ public class BaseMediaEntity {
     private String coverImgUrl;
 
     private Integer sortOrder;
+
+    public BaseMediaEntity(
+            String externalId,
+            String title,
+            String description,
+            MediaTypeEnum mediaType,
+            Set<GenreEnum> genres,
+            LocalDate releaseDate,
+            BigDecimal communityRating,
+            String coverImgUrl,
+            Integer sortOrder) {
+        this.externalId = externalId;
+        this.title = title;
+        this.description = description;
+        this.mediaType = mediaType;
+        this.genres = genres;
+        this.releaseDate = releaseDate;
+        this.communityRating = communityRating;
+        this.coverImgUrl = coverImgUrl;
+        this.sortOrder = sortOrder;
+    }
 }

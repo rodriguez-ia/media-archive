@@ -15,4 +15,6 @@ public interface BaseMediaRepository extends JpaRepository<BaseMediaEntity, UUID
         WHERE um.user.id = :userId
     """)
     List<BaseMediaEntity> findAllByUserId(UUID userId);
+
+    List<BaseMediaEntity> findAllByExternalIdIn(List<String> externalIds);
 }

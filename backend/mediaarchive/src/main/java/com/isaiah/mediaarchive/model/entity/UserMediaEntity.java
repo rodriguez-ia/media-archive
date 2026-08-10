@@ -13,7 +13,11 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "user_media")
+@Table(name = "user_media",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"base_media_id", "user_id"}
+        )
+)
 public class UserMediaEntity {
 
     @Id
@@ -47,4 +51,9 @@ public class UserMediaEntity {
 
     @Column(length = 50)
     private String condition;
+
+    public UserMediaEntity(BaseMediaEntity mediaItem, UserEntity user) {
+        this.mediaItem = mediaItem;
+        this.user = user;
+    }
 }

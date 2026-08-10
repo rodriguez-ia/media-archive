@@ -1,17 +1,16 @@
 package com.isaiah.mediaarchive.controller;
 
-import com.isaiah.mediaarchive.model.dto.ApiResponse;
 import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.AddMediaToLibraryRequestDTO;
 import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.service.MediaService;
 import com.isaiah.mediaarchive.util.ApiResponse;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,27 +24,41 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
-    @GetMapping("/user-media")
-    public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getAllUserMedia(@AuthenticationPrincipal UserEntity user) {
-        List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.getAllUserMedia(user);
+    @GetMapping("/library")
+    public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getAllFromUserLibrary(@AuthenticationPrincipal UserEntity user) {
+        List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.getAllFromUserLibrary(user);
 
         return ResponseEntity.status(200).body(
                 ApiResponseFactory.success(
                         userMediaResponseDTOList,
-                        "MediaController.getAllUserMedia",
+                        "MediaController.getAllFromUserLibrary",
                         "Retrieved all user media successfully"
                 )
         );
     }
 
-    @GetMapping("/base-media")
-    public ResponseEntity<ApiResponse<List<BaseMediaResponseDTO>>> getAllBaseMediaForUser(@AuthenticationPrincipal UserEntity user) {
-        List<BaseMediaResponseDTO> baseMediaResponseDTOList = mediaService.getAllBaseMediaForUser(user);
+    @PostMapping("/library")
+    public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> addToUserLibrary(@AuthenticationPrincipal UserEntity user,
+                                                                                    @Valid @RequestBody List<AddMediaToLibraryRequestDTO> mediaList) {
+        List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.addToUserLibrary(user, mediaList);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTOList,
+                        "MediaController.addToUserLibrary",
+                        "Retrieved all user media successfully"
+                )
+        );
+    }
+
+    @GetMapping("/catalog")
+    public ResponseEntity<ApiResponse<List<BaseMediaResponseDTO>>> getFromCatalog(@AuthenticationPrincipal UserEntity user) {
+        List<BaseMediaResponseDTO> baseMediaResponseDTOList = mediaService.getFromCatalog(user);
 
         return ResponseEntity.status(200).body(
                 ApiResponseFactory.success(
                         baseMediaResponseDTOList,
-                        "MediaController.getAllBaseMediaForUser",
+                        "MediaController.getFromCatalog",
                         "Retrieved all base media for user successfully"
                 )
         );

@@ -19,4 +19,6 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
         ORDER BY um.mediaItem.title
     """)
     List<UserMediaEntity> findAllByUserId(UUID userId);
+
+    List<UserMediaEntity> findAllByUserIdAndMediaItemExternalIdIn(UUID userId, List<String> externalIds);
 }
