@@ -7,7 +7,6 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
