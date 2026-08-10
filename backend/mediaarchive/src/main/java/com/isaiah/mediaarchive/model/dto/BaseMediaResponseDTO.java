@@ -5,6 +5,7 @@ import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class BaseMediaResponseDTO {
 
     private LocalDate releaseDate;
 
-    private Integer communityRating;
+    private BigDecimal communityRating;
 
     private String coverImgUrl;
 
