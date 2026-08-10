@@ -30,18 +30,21 @@ public class UserMediaEntity {
     private UserEntity user;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private CollectionStatusEnum status;
 
     private BigDecimal personalRating;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String notes;
 
     private LocalDate purchaseDate;
 
     private BigDecimal purchasePrice;
 
+    @Column(length = 50)
     private String format;
 
+    @Column(length = 50)
     private String condition;
 }
