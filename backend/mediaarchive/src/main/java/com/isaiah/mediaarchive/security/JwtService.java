@@ -37,12 +37,6 @@ public class JwtService {
                 .compact();
     }
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
     public String extractUsername(String token) {
 
         log.debug("Extracting username from token.");
@@ -73,5 +67,11 @@ public class JwtService {
 
             return false;
         }
+    }
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
