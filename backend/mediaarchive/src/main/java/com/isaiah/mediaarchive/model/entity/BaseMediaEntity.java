@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class BaseMediaEntity {
 
     private LocalDate releaseDate;
 
-    private Integer communityRating;
+    private BigDecimal communityRating;
 
     private String coverImgUrl;
 
