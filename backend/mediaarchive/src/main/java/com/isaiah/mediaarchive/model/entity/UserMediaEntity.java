@@ -32,7 +32,7 @@ public class UserMediaEntity {
     @Enumerated(EnumType.STRING)
     private CollectionStatusEnum status;
 
-    private Integer personalRating;
+    private BigDecimal personalRating;
 
     @Column(length = 2000)
     private String notes;
