@@ -11,8 +11,6 @@ public class MediaMapper {
 
     public UserMediaResponseDTO toUserMediaResponse(UserMediaEntity userMedia) {
         return new UserMediaResponseDTO(
-                userMedia.getMediaItem().getId(),
-                userMedia.getId(),
                 userMedia.getMediaItem().getExternalId(),
                 userMedia.getMediaItem().getTitle(),
                 userMedia.getMediaItem().getDescription(),
@@ -34,7 +32,6 @@ public class MediaMapper {
 
     public BaseMediaResponseDTO toBaseMediaResponse(BaseMediaEntity baseMedia) {
         return new BaseMediaResponseDTO(
-                baseMedia.getId(),
                 baseMedia.getExternalId(),
                 baseMedia.getTitle(),
                 baseMedia.getDescription(),
