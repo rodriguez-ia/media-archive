@@ -9,7 +9,6 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
