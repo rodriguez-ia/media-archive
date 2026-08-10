@@ -13,8 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BaseMediaResponseDTO {
 
-    private UUID baseMediaId;
-
     private String externalId;
 
     private String title;
