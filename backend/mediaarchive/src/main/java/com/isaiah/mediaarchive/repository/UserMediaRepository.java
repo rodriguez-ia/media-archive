@@ -15,7 +15,7 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
         SELECT um
         FROM UserMediaEntity um
         JOIN FETCH um.mediaItem
-        WHERE um.user_id = :userId
+        WHERE um.user.id = :userId
         ORDER BY um.mediaItem.title
     """)
     List<UserMediaEntity> findAllByUserId(UUID userId);
