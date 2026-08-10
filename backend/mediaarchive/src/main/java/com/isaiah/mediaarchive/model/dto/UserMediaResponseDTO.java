@@ -27,7 +27,7 @@ public class UserMediaResponseDTO {
 
     private LocalDate releaseDate;
 
-    private Integer communityRating;
+    private BigDecimal communityRating;
 
     private String coverImgUrl;
 
@@ -36,7 +36,7 @@ public class UserMediaResponseDTO {
     // User Media fields
     private CollectionStatusEnum status;
 
-    private Integer personalRating;
+    private BigDecimal personalRating;
 
     private String notes;
 
