@@ -29,6 +29,8 @@ public class UserService {
             throw new UsernameNotFoundException("User not found.");
         }
 
+        log.debug("User found: username='{}', createdAt='{}'", user.getUsername(), user.getCreatedAt());
+
         return user;
     }
 }
