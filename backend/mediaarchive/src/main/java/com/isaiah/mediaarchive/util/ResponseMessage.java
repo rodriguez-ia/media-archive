@@ -1,4 +1,4 @@
-package com.isaiah.mediaarchive.model.dto;
+package com.isaiah.mediaarchive.util;
 
 import lombok.Getter;
 import lombok.AllArgsConstructor;

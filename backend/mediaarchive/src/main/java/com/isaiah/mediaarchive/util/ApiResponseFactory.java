@@ -1,6 +1,5 @@
 package com.isaiah.mediaarchive.util;
 
-import com.isaiah.mediaarchive.model.dto.ResponseMessage;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
