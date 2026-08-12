@@ -42,11 +42,11 @@ public class MediaController {
                                                                                     @Valid @RequestBody List<AddMediaToLibraryRequestDTO> mediaList) {
         List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.addToUserLibrary(user, mediaList);
 
-        return ResponseEntity.status(200).body(
-                ApiResponseFactory.success(
+        return ResponseEntity.status(201).body(
+                ApiResponseFactory.created(
                         userMediaResponseDTOList,
                         "MediaController.addToUserLibrary",
-                        "Retrieved all user media successfully"
+                        "Added media to user library successfully"
                 )
         );
     }
