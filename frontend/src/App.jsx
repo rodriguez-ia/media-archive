@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import AppLayout from './components/AppLayout.jsx';
+import AppLayout from './components/App/AppLayout.jsx';
 import RegisterPage from './pages/auth/RegisterPage.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
 import LibraryPage from './pages/home/LibraryPage.jsx';
