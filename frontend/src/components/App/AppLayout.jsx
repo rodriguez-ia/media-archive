@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import SideNavBar from "./SideNavBar.jsx";
-import AppHeader from "./AppHeader.jsx";
+import Header from "./Header.jsx";
 
 function AppLayout() {
     return (
@@ -10,7 +10,7 @@ function AppLayout() {
             <SideNavBar />
 
             <Box component="main" sx={{ flexGrow: 1 }}>
-                <AppHeader />
+                <Header />
                 <Outlet />
             </Box>
         </Box>
