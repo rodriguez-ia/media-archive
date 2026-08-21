@@ -42,7 +42,13 @@ function SideNavBar() {
       </List>
       <Divider />
       <List>
-        <ListItem disablePadding>
+        <ListItem component={Link}
+                  to="/profile"
+                  disablePadding
+                  sx={{
+                    color: 'inherit',
+                    textDecoration: 'none'
+                  }}>
           <ListItemButton>
             <ListItemIcon>
               <PersonIcon />

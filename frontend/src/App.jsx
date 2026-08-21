@@ -7,6 +7,7 @@ import LoginPage from './pages/auth/LoginPage.jsx';
 import DashboardPage from './pages/media/DashboardPage.jsx';
 import LibraryPage from './pages/media/LibraryPage.jsx';
 import DiscoverPage from './pages/media/DiscoverPage.jsx';
+import ProfilePage from './pages/profile/ProfilePage.jsx';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/discover" element={<DiscoverPage />} />
         </Route>
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
   );
