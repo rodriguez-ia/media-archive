@@ -69,7 +69,9 @@ function SideNavBar() {
 
               "& .MuiDrawer-paper": {
                 width: drawerWidth,
-                boxSizing: "border-box"
+                boxSizing: "border-box",
+                position: "static",
+                height: "100%"
               }
             }}>
       {DrawerList}

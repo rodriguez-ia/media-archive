@@ -1,10 +1,49 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button, Container, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Box, Button, Typography } from "@mui/material";
 
 function Header() {
   return (
-    <div></div>
+    <AppBar
+      position="static"
+      elevation={0}
+      sx={{
+        backgroundColor: "#111",
+        borderBottom: "1px solid #333",
+      }}
+    >
+      <Toolbar
+        sx={{
+          minHeight: "62px",
+          px: 3,
+        }}
+      >
+        <Typography
+          component={Link}
+          to="/dashboard"
+          variant="h6"
+          sx={{
+            color: "white",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          Media Archive
+        </Typography>
+
+        {/* Spacer */}
+        <Box sx={{ flexGrow: 1 }} />
+
+        <Button
+          component={Link}
+          to="/profile"
+          sx={{
+            color: "white",
+          }}
+        >
+          Profile
+        </Button>
+      </Toolbar>
+    </AppBar>
   );
 }
 
