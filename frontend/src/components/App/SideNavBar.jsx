@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Drawer, Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CollectionsIcon from '@mui/icons-material/Collections';
@@ -18,9 +19,17 @@ function SideNavBar() {
       <List>
         {['Dashboard', 'Library', 'Discover'].map((text) => {
           const Icon = pageIconMap[text];
+          const pagePath = "/" + text.toLowerCase();
 
           return (
-            <ListItem key={text} disablePadding>
+            <ListItem key={text}
+                      component={Link}
+                      to={pagePath}
+                      disablePadding
+                      sx={{
+                        color: 'inherit',
+                        textDecoration: 'none'
+                      }}>
               <ListItemButton>
                 <ListItemIcon>
                   <Icon />

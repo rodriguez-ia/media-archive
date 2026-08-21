@@ -4,7 +4,9 @@ import './App.css';
 import AppLayout from './components/App/AppLayout.jsx';
 import RegisterPage from './pages/auth/RegisterPage.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
+import DashboardPage from './pages/media/DashboardPage.jsx';
 import LibraryPage from './pages/media/LibraryPage.jsx';
+import DiscoverPage from './pages/media/DiscoverPage.jsx';
 
 function App() {
   return (
@@ -14,7 +16,9 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/library" element={<LibraryPage />} />
+          <Route path="/discover" element={<DiscoverPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
