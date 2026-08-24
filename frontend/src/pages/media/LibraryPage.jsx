@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getUserLibrary, addToUserLibrary } from "../../services/mediaService.js";
-import MediaGrid from "../../components/Media/MediaGrid.jsx";
+import MediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import MediaToolbar from "../../components/App/MediaToolbar.jsx";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";

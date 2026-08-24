@@ -1,5 +1,5 @@
 import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
-import MediaCard from "../../components/Media/MediaCard.jsx";
+import MediaCard from "../../components/Library/LibraryMediaCard.jsx";
 
 
 function MediaGrid({ mediaItemArray }) {
