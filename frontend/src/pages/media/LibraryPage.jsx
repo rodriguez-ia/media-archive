@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getUserLibrary, addToUserLibrary } from "../../services/mediaService.js";
-import MediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
+import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import LibraryToolbar from "../../components/Library/LibraryToolbar.jsx";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
@@ -85,7 +85,7 @@ function LibraryPage() {
     return (
         <>
             <LibraryToolbar label="Media Library" />
-            { loading ? <CircularProgress /> : <MediaGrid mediaItemArray={mediaItems}/> }
+            { loading ? <CircularProgress /> : <LibraryMediaGrid mediaItemArray={mediaItems}/> }
             <Typography>
                 DEBUG: <br/>{responseMessage.status}, <br/>{responseMessage.success ? "SUCCESS" : "FAILURE"}, <br/>{responseMessage.source}, <br/>{responseMessage.detail}
             </Typography>

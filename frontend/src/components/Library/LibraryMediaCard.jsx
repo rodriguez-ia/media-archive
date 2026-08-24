@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { Card, CardMedia, CardContent, Typography } from "@mui/material";
 
-function MediaCard({ mediaItem }) {
+function LibraryMediaCard({ mediaItem }) {
 
     return (
         <Card>
@@ -25,4 +25,4 @@ function MediaCard({ mediaItem }) {
     );
 }
 
-export default MediaCard;
+export default LibraryMediaCard;

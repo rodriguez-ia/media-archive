@@ -1,8 +1,8 @@
 import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
-import MediaCard from "../../components/Library/LibraryMediaCard.jsx";
+import LibraryMediaCard from "../../components/Library/LibraryMediaCard.jsx";
 
 
-function MediaGrid({ mediaItemArray }) {
+function LibraryMediaGrid({ mediaItemArray }) {
     
     return (
         <Box
@@ -19,10 +19,10 @@ function MediaGrid({ mediaItemArray }) {
             }}
         >
             {mediaItemArray.map((item, index) => (
-                <MediaCard key={index} mediaItem={item} />
+                <LibraryMediaCard key={index} mediaItem={item} />
             ))}
         </Box>
     );
 }
 
-export default MediaGrid;
+export default LibraryMediaGrid;
