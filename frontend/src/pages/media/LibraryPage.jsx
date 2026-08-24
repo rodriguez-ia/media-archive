@@ -28,7 +28,7 @@ function LibraryPage() {
                         status: 500,
                         success: false,
                         source: "Unknown",
-                        detail: "There was an error loading your library.s"
+                        detail: "There was an error loading your library."
                     });
                 }
             } finally {
@@ -55,25 +55,27 @@ function LibraryPage() {
         simulatedIndex: 2,
         title:"Dungeon Crawler Carl",
         mediaType:"BOOK",
-        coverImgUrl:"http://books.google.com/books/content?id=506EEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        coverImgUrl:"https://books.google.com/books/content?id=506EEQAAQBAJ&printsec=frontcover&img=1&zoom=10&edge=curl&source=gbs_api"
+        // had to append 's' to 'http' and change 'zoom' value to 10 for higher res google books images
     },
     {
         simulatedIndex: 3,
         title:"Ride the Lightning",
         mediaType:"MUSIC_ALBUM",
-        coverImgUrl:"https://api.deezer.com/album/14590610/image"
+        coverImgUrl:"https://cdn-images.dzcdn.net/images/cover/a0bd8b90e4b7fac3fd99f46497e803a7/500x500-000000-80-0-0.jpg"
+        // had to use "cover_big" for image link instead of "cover"
     },
     {
         simulatedIndex: 4,
         title:"Bare-Metal Embedded C Programming",
         mediaType:"BOOK",
-        coverImgUrl:"http://books.google.com/books/content?id=UiYqEQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        coverImgUrl:"https://books.google.com/books/content?id=UiYqEQAAQBAJ&printsec=frontcover&img=1&zoom=10&edge=curl&source=gbs_api"
     },
     {
         simulatedIndex: 5,
         title:"DOOM (Original Game Soundtrack)",
         mediaType:"MUSIC_ALBUM",
-        coverImgUrl:"https://api.deezer.com/album/941543521/image"
+        coverImgUrl:"https://cdn-images.dzcdn.net/images/cover/e4b9313746d5d6e1336cefc4f60cce0d/500x500-000000-80-0-0.jpg"
     },
     {
         simulatedIndex: 6,

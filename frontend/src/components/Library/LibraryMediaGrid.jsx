@@ -7,6 +7,7 @@ function LibraryMediaGrid({ mediaItemArray }) {
     return (
         <Box
             sx={{
+                margin: 2,
                 display: 'grid',
                 gridTemplateColumns: {
                 xs: 'repeat(2, 1fr)',

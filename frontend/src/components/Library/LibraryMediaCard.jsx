@@ -5,20 +5,29 @@ import { Card, CardMedia, CardContent, Typography } from "@mui/material";
 function LibraryMediaCard({ mediaItem }) {
 
     return (
-        <Card>
+        <Card sx={{
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+        }}>
             <CardMedia
                 component="img"
                 image={mediaItem.coverImgUrl}
                 alt={mediaItem.title}
+                sx={{
+                    width: '100%',
+                    aspectRatio: '2 / 3',
+                    objectFit: 'contain',
+                    backgroundColor: '#181818',
+                    display: 'block'
+                }}
             />
 
             <CardContent>
                 <Typography noWrap>
-                {mediaItem.title}
+                    {mediaItem.title}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
-                {mediaItem.mediaType}
+                    {mediaItem.mediaType}
                 </Typography>
             </CardContent>
         </Card>
