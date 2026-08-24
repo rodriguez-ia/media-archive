@@ -6,6 +6,8 @@ import { registerUser } from "../../services/authService.js";
 
 function RegisterPage() {
 
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -64,6 +66,8 @@ function RegisterPage() {
             const response = await registerUser(request);
 
             setMessage(`User registered successfully: ${response.data.username}`);
+
+            navigate("/login");
         } catch (error) {
             if (error.message) {
                 setMessage(error.message.detail);

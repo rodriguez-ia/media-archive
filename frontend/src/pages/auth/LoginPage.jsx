@@ -6,6 +6,8 @@ import { loginUser } from "../../services/authService.js";
 
 function LoginPage() {
 
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -55,7 +57,8 @@ function LoginPage() {
             setMessage(`Login successful`);
 
             localStorage.setItem("token", response.data.token);
-            console.log("JWT:\n" + JSON.stringify(response.data.token));
+
+            navigate("/dashboard", { replace: true });
         } catch (error) {
             if (error.message) {
                 setMessage(error.message.detail);
