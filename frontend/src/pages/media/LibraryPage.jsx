@@ -1,10 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getUserLibrary, addToUserLibrary } from "../../services/mediaService.js";
 import MediaGrid from "../../components/Media/MediaGrid.jsx";
 import MediaToolbar from "../../components/App/MediaToolbar.jsx";
+import CircularProgress from "@mui/material/CircularProgress";
+import { Typography } from "@mui/material";
 
 function LibraryPage() {
-    const mediaItems = [{
+
+    const [loading, setLoading] = useState(false);
+    const [responseMessage, setResponseMessage] = useState({});
+    const [mediaItems, setMediaItems] = useState([]);
+
+    useEffect(() => {
+        async function loadLibrary() {
+            try {
+                setLoading(true);
+
+                const response = await getUserLibrary();
+
+                setResponseMessage(response.message);
+                setMediaItems(response.data);
+            } catch (error) {
+                if (error.message) {
+                    setResponseMessage(error.message);
+                } else {
+                    setResponseMessage({
+                        status: 500,
+                        success: false,
+                        source: "Unknown",
+                        detail: "There was an error loading your library.s"
+                    });
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadLibrary();
+    }, []);
+
+    const mediaItemsTest = [{
         simulatedIndex: 0,
         title:"Starship Troopers",
         mediaType:"MOVIE",
@@ -50,7 +85,10 @@ function LibraryPage() {
     return (
         <>
             <MediaToolbar label="Media Library" />
-            <MediaGrid mediaItemArray={mediaItems}/>
+            { loading ? <CircularProgress /> : <MediaGrid mediaItemArray={mediaItems}/> }
+            <Typography>
+                DEBUG: <br/>{responseMessage.status}, <br/>{responseMessage.success ? "SUCCESS" : "FAILURE"}, <br/>{responseMessage.source}, <br/>{responseMessage.detail}
+            </Typography>
         </>
     );
 }
