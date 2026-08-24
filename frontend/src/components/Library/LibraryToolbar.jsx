@@ -11,7 +11,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
 
-function MediaToolbar({ label }) {
+function LibraryToolbar({ label }) {
 
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
@@ -102,4 +102,4 @@ function MediaToolbar({ label }) {
     );
 }
 
-export default MediaToolbar;
+export default LibraryToolbar;
