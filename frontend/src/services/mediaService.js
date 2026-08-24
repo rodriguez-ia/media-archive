@@ -1,6 +1,6 @@
 const API_BASE_URL = "http://localhost:8080/api";
 
-export async function getUserLibrary(request) {
+export async function getUserLibrary() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
