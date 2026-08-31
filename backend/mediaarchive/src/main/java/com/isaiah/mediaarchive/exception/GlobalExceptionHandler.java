@@ -74,4 +74,19 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+
+    @ExceptionHandler(MissingKeywordException.class)
+    public ResponseEntity<ApiResponse<?>> handleMissingKeyword(MissingKeywordException ex) {
+
+        log.warn("Missing keyword error: message='{}'", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ApiResponseFactory.failure(
+                        null,
+                        400,
+                        "MissingKeywordException",
+                        ex.getMessage()
+                )
+        );
+    }
 }
