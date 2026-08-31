@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Drawer, Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import CollectionsIcon from '@mui/icons-material/Collections';
+import BookIcon from '@mui/icons-material/Book';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import PersonIcon from '@mui/icons-material/Person';
 
@@ -10,7 +10,7 @@ function SideNavBar() {
 
   const pageIconMap = {
     Dashboard: DashboardIcon,
-    Library: CollectionsIcon,
+    Library: BookIcon,
     Discover: ImageSearchIcon
   };
 
