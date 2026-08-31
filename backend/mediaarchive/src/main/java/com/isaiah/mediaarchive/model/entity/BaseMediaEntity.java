@@ -58,8 +58,6 @@ public class BaseMediaEntity {
     @Column(length = 2048)
     private String coverImgUrl;
 
-    private Integer sortOrder;
-
     public BaseMediaEntity(
             String externalId,
             String title,
@@ -68,8 +66,7 @@ public class BaseMediaEntity {
             Set<GenreEnum> genres,
             LocalDate releaseDate,
             BigDecimal communityRating,
-            String coverImgUrl,
-            Integer sortOrder) {
+            String coverImgUrl) {
         this.externalId = externalId;
         this.title = title;
         this.description = description;
@@ -78,6 +75,5 @@ public class BaseMediaEntity {
         this.releaseDate = releaseDate;
         this.communityRating = communityRating;
         this.coverImgUrl = coverImgUrl;
-        this.sortOrder = sortOrder;
     }
 }

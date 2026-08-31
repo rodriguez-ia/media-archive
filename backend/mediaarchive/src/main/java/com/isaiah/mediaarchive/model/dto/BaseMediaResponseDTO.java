@@ -28,6 +28,4 @@ public class BaseMediaResponseDTO {
     private BigDecimal communityRating;
 
     private String coverImgUrl;
-
-    private Integer sortOrder;
 }

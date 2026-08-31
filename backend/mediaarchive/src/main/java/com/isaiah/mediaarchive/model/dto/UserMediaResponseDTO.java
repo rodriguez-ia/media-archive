@@ -31,8 +31,6 @@ public class UserMediaResponseDTO {
 
     private String coverImgUrl;
 
-    private Integer sortOrder;
-
     // User Media fields
     private CollectionStatusEnum status;
 

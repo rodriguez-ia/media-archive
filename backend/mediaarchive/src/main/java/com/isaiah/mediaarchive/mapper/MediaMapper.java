@@ -21,7 +21,6 @@ public class MediaMapper {
                 userMedia.getMediaItem().getReleaseDate(),
                 userMedia.getMediaItem().getCommunityRating(),
                 userMedia.getMediaItem().getCoverImgUrl(),
-                userMedia.getMediaItem().getSortOrder(),
                 userMedia.getStatus(),
                 userMedia.getPersonalRating(),
                 userMedia.getNotes(),
@@ -48,8 +47,7 @@ public class MediaMapper {
                 baseMedia.getGenres(),
                 baseMedia.getReleaseDate(),
                 baseMedia.getCommunityRating(),
-                baseMedia.getCoverImgUrl(),
-                baseMedia.getSortOrder()
+                baseMedia.getCoverImgUrl()
         );
     }
 
@@ -62,8 +60,7 @@ public class MediaMapper {
                 requestDTO.getGenres(),
                 requestDTO.getReleaseDate(),
                 requestDTO.getCommunityRating(),
-                requestDTO.getCoverImgUrl(),
-                requestDTO.getSortOrder()
+                requestDTO.getCoverImgUrl()
         );
     }
 }

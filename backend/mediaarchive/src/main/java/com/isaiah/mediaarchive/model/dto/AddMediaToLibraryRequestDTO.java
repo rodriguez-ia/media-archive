@@ -35,6 +35,4 @@ public class AddMediaToLibraryRequestDTO {
     private BigDecimal communityRating;
 
     private String coverImgUrl;
-
-    private Integer sortOrder;
 }
