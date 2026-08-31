@@ -1,9 +1,13 @@
 package com.isaiah.mediaarchive.service;
 
+import com.isaiah.mediaarchive.client.TMDBClient;
 import com.isaiah.mediaarchive.exception.MediaNotFoundException;
+import com.isaiah.mediaarchive.exception.MissingKeywordException;
 import com.isaiah.mediaarchive.mapper.MediaMapper;
+import com.isaiah.mediaarchive.mapper.TMDBMapper;
 import com.isaiah.mediaarchive.model.dto.AddMediaToLibraryRequestDTO;
 import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.TMDBSearchResponseDTO;
 import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
@@ -28,14 +32,21 @@ public class MediaService {
     private final BaseMediaRepository baseMediaRepository;
     private final MediaMapper mediaMapper;
 
+    private final TMDBClient tmdbClient;
+    private final TMDBMapper tmdbMapper;
+
     private static final Logger log = LoggerFactory.getLogger(MediaService.class);
 
     public MediaService(UserMediaRepository userMediaRepository,
                         BaseMediaRepository baseMediaRepository,
-                        MediaMapper mediaMapper) {
+                        MediaMapper mediaMapper,
+                        TMDBClient tmdbClient,
+                        TMDBMapper tmdbMapper) {
         this.userMediaRepository = userMediaRepository;
         this.baseMediaRepository = baseMediaRepository;
         this.mediaMapper = mediaMapper;
+        this.tmdbClient = tmdbClient;
+        this.tmdbMapper = tmdbMapper;
     }
 
     public List<UserMediaResponseDTO> getAllFromUserLibrary(UserEntity user) {
@@ -163,5 +174,37 @@ public class MediaService {
         }
 
         return baseMediaResponseList;
+    }
+
+    public List<BaseMediaResponseDTO> searchExternalMediaByKeyword(String keyword,
+                                                                   int page,
+                                                                   boolean shouldSearchMoviesAndTV,
+                                                                   boolean shouldSearchMusic,
+                                                                   boolean shouldSearchBooks) {
+        if (keyword == null || keyword.isEmpty()) {
+            throw new MissingKeywordException("The provided search keyword is null or empty.");
+        }
+
+        log.info("Initiating search for external media.");
+
+        List<BaseMediaResponseDTO> searchResultsList = new ArrayList<>();
+
+        if (shouldSearchMoviesAndTV) {
+            log.debug("Searching TMDB database for movies and TV shows...");
+
+            TMDBSearchResponseDTO tmdbResponse = tmdbClient.searchMultiByKeyword(keyword, page);
+            List<BaseMediaResponseDTO> formattedResponseList = tmdbMapper.tmdbResponseToBaseMediaResponseDTOList(tmdbResponse);
+            searchResultsList.addAll(formattedResponseList);
+        }
+
+        if (shouldSearchMusic) {
+
+        }
+
+        if (shouldSearchBooks) {
+
+        }
+
+        return searchResultsList;
     }
 }

@@ -63,4 +63,28 @@ public class MediaController {
                 )
         );
     }
+
+    @GetMapping("/externalMedia")
+    public ResponseEntity<ApiResponse<List<BaseMediaResponseDTO>>> searchExternalMediaByKeyword(@RequestParam String keyword,
+                                                                                                @RequestParam(defaultValue = "1") int page,
+                                                                                                @RequestParam boolean shouldSearchMoviesAndTV,
+                                                                                                @RequestParam boolean shouldSearchMusic,
+                                                                                                @RequestParam boolean shouldSearchBooks) {
+        List<BaseMediaResponseDTO> baseMediaResponseDTOList =
+                mediaService.searchExternalMediaByKeyword(
+                        keyword,
+                        page,
+                        shouldSearchMoviesAndTV,
+                        shouldSearchMusic,
+                        shouldSearchBooks
+                );
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        baseMediaResponseDTOList,
+                        "MediaController.searchExternalMedia",
+                        "Search for external media was successful"
+                )
+        );
+    }
 }
