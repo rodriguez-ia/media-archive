@@ -1,14 +1,13 @@
 package com.isaiah.mediaarchive.service;
 
+import com.isaiah.mediaarchive.client.GoogleBooksClient;
 import com.isaiah.mediaarchive.client.TMDBClient;
 import com.isaiah.mediaarchive.exception.MediaNotFoundException;
 import com.isaiah.mediaarchive.exception.MissingKeywordException;
+import com.isaiah.mediaarchive.mapper.GoogleBooksMapper;
 import com.isaiah.mediaarchive.mapper.MediaMapper;
 import com.isaiah.mediaarchive.mapper.TMDBMapper;
-import com.isaiah.mediaarchive.model.dto.AddMediaToLibraryRequestDTO;
-import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
-import com.isaiah.mediaarchive.model.dto.TMDBSearchResponseDTO;
-import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
@@ -35,18 +34,25 @@ public class MediaService {
     private final TMDBClient tmdbClient;
     private final TMDBMapper tmdbMapper;
 
+    private final GoogleBooksClient googleBooksClient;
+    private final GoogleBooksMapper googleBooksMapper;
+
     private static final Logger log = LoggerFactory.getLogger(MediaService.class);
 
     public MediaService(UserMediaRepository userMediaRepository,
                         BaseMediaRepository baseMediaRepository,
                         MediaMapper mediaMapper,
                         TMDBClient tmdbClient,
-                        TMDBMapper tmdbMapper) {
+                        TMDBMapper tmdbMapper,
+                        GoogleBooksClient googleBooksClient,
+                        GoogleBooksMapper googleBooksMapper) {
         this.userMediaRepository = userMediaRepository;
         this.baseMediaRepository = baseMediaRepository;
         this.mediaMapper = mediaMapper;
         this.tmdbClient = tmdbClient;
         this.tmdbMapper = tmdbMapper;
+        this.googleBooksClient = googleBooksClient;
+        this.googleBooksMapper = googleBooksMapper;
     }
 
     public List<UserMediaResponseDTO> getAllFromUserLibrary(UserEntity user) {
@@ -202,7 +208,11 @@ public class MediaService {
         }
 
         if (shouldSearchBooks) {
+            log.debug("Searching Google Books database for books...");
 
+            GoogleBooksSearchResponseDTO googleBooksResponse = googleBooksClient.searchVolumeByKeyword(keyword);
+            List<BaseMediaResponseDTO> formattedResponseList = googleBooksMapper.googleBooksResponseToBaseMediaResponseDTOList(googleBooksResponse);
+            searchResultsList.addAll(formattedResponseList);
         }
 
         return searchResultsList;
