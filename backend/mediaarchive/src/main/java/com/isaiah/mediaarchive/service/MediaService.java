@@ -210,7 +210,7 @@ public class MediaService {
         if (shouldSearchBooks) {
             log.debug("Searching Google Books database for books...");
 
-            GoogleBooksSearchResponseDTO googleBooksResponse = googleBooksClient.searchVolumeByKeyword(keyword);
+            GoogleBooksSearchResponseDTO googleBooksResponse = googleBooksClient.searchVolumeByKeyword(keyword, page);
             List<BaseMediaResponseDTO> formattedResponseList = googleBooksMapper.googleBooksResponseToBaseMediaResponseDTOList(googleBooksResponse);
             searchResultsList.addAll(formattedResponseList);
         }
