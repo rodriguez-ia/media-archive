@@ -1,9 +1,11 @@
 package com.isaiah.mediaarchive.service;
 
+import com.isaiah.mediaarchive.client.DeezerClient;
 import com.isaiah.mediaarchive.client.GoogleBooksClient;
 import com.isaiah.mediaarchive.client.TMDBClient;
 import com.isaiah.mediaarchive.exception.MediaNotFoundException;
 import com.isaiah.mediaarchive.exception.MissingKeywordException;
+import com.isaiah.mediaarchive.mapper.DeezerMapper;
 import com.isaiah.mediaarchive.mapper.GoogleBooksMapper;
 import com.isaiah.mediaarchive.mapper.MediaMapper;
 import com.isaiah.mediaarchive.mapper.TMDBMapper;
@@ -34,6 +36,9 @@ public class MediaService {
     private final TMDBClient tmdbClient;
     private final TMDBMapper tmdbMapper;
 
+    private final DeezerClient deezerClient;
+    private final DeezerMapper deezerMapper;
+
     private final GoogleBooksClient googleBooksClient;
     private final GoogleBooksMapper googleBooksMapper;
 
@@ -44,6 +49,8 @@ public class MediaService {
                         MediaMapper mediaMapper,
                         TMDBClient tmdbClient,
                         TMDBMapper tmdbMapper,
+                        DeezerClient deezerClient,
+                        DeezerMapper deezerMapper,
                         GoogleBooksClient googleBooksClient,
                         GoogleBooksMapper googleBooksMapper) {
         this.userMediaRepository = userMediaRepository;
@@ -51,6 +58,8 @@ public class MediaService {
         this.mediaMapper = mediaMapper;
         this.tmdbClient = tmdbClient;
         this.tmdbMapper = tmdbMapper;
+        this.deezerClient = deezerClient;
+        this.deezerMapper = deezerMapper;
         this.googleBooksClient = googleBooksClient;
         this.googleBooksMapper = googleBooksMapper;
     }
@@ -204,7 +213,11 @@ public class MediaService {
         }
 
         if (shouldSearchMusic) {
+            log.debug("Searching Deezer database for music...");
 
+            DeezerSearchResponseDTO deezerResponse = deezerClient.searchAlbumByKeyword(keyword, page);
+            List<BaseMediaResponseDTO> formattedResponseList = deezerMapper.deezerResponseToBaseMediaResponseDTOList(deezerResponse);
+            searchResultsList.addAll(formattedResponseList);
         }
 
         if (shouldSearchBooks) {
