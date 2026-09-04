@@ -6,10 +6,6 @@ import DiscoverMediaGrid from "../../components/Discover/DiscoverMediaGrid";
 
 function DiscoverPage() {
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchMediaTypes, setSearchMediaTypes] = useState(["MOVIE"]);
-
-    const [searchResults, setSearchResults] = useState([]);
     const [stagedMedia, setStagedMedia] = useState([]);
 
     const [resultModalContent, setResultModalContent] = useState({
@@ -77,13 +73,29 @@ function DiscoverPage() {
         coverImgUrl:"https://image.tmdb.org/t/p/w500/onTSipZ8R3bliBdKfPtsDuHTdlL.jpg"
     }];
 
+    const handleOnSelect = (selectedMediaItem) => {
+        setStagedMedia(current => {
+            const existing = current.some(
+                element => element.externalId === selectedMediaItem.externalId
+            );
+
+            if (existing) {
+                return current.filter(
+                    element => element.externalId !== selectedMediaItem.externalId
+                )
+            }
+            
+            return [...current, selectedMediaItem];
+        })
+    }
+
     return (
         <Container maxWidth="xl">
             <DiscoverHeader />
 
-            <DiscoverSearchbar />
+            <DiscoverSearchbar onSelect={handleOnSelect}/>
 
-            <DiscoverMediaGrid mediaItemArray={mediaItemsTest}/>
+            <DiscoverMediaGrid mediaItemArray={stagedMedia}/>
         </Container>
     );
 }
