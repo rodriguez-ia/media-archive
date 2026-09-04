@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, Container } from "@mui/material";
 import DiscoverHeader from "../../components/Discover/DiscoverHeader";
+import DiscoverSearchbar from "../../components/Discover/DiscoverSearchbar";
 import DiscoverMediaGrid from "../../components/Discover/DiscoverMediaGrid";
 
 function DiscoverPage() {
@@ -22,7 +23,7 @@ function DiscoverPage() {
         title:"Starship Troopers",
         mediaType:"MOVIE",
         releaseDate: "1997-11-07",
-        communityRating: 7.35,
+        communityRating: 7.1,
         coverImgUrl:"https://image.tmdb.org/t/p/w500/cxCmv23O7p3hyHwqoktHYkZcGsY.jpg"
     },
     {
@@ -30,7 +31,7 @@ function DiscoverPage() {
         title:"Good Will Hunting",
         mediaType:"MOVIE",
         releaseDate: "1997-12-05",
-        communityRating: 9.15,
+        communityRating: 8.2,
         coverImgUrl:"https://image.tmdb.org/t/p/w500/z2FnLKpFi1HPO7BEJxdkv6hpJSU.jpg"
     },
     {
@@ -72,13 +73,15 @@ function DiscoverPage() {
         title:"Home Alone",
         mediaType:"MOVIE",
         releaseDate: "1990-11-16",
-        communityRating: 9.22,
+        communityRating: 7.5,
         coverImgUrl:"https://image.tmdb.org/t/p/w500/onTSipZ8R3bliBdKfPtsDuHTdlL.jpg"
     }];
 
     return (
         <Container maxWidth="xl">
             <DiscoverHeader />
+
+            <DiscoverSearchbar />
 
             <DiscoverMediaGrid mediaItemArray={mediaItemsTest}/>
         </Container>
