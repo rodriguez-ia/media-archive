@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 
-function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval }) {
+function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatusChange }) {
 
     const mediaTypeLabels = {
         MOVIE: "Movie",
@@ -192,7 +192,9 @@ function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval }) {
                     <FormControl size="small">
                         <Select
                             value={mediaItem.status || "OWNED"}
-                            onChange={(event) => {CALLBACK_FUNC}}
+                            onChange={(event) => {
+                                handleMediaStatusChange(mediaItem.externalId, event.target.value)
+                            }}
                             sx={{
                                 minWidth: 100,
                                 fontSize: "0.875rem",

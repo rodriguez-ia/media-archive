@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import DiscoverMediaCard from "../../components/Discover/DiscoverMediaCard.jsx";
 
 
-function DiscoverMediaGrid({ mediaItemArray, handleMediaCardRemoval }) {
+function DiscoverMediaGrid({ mediaItemArray, handleMediaCardRemoval, handleMediaStatusChange }) {
     
     return (
         <Box
@@ -18,8 +18,13 @@ function DiscoverMediaGrid({ mediaItemArray, handleMediaCardRemoval }) {
                 gap: 2,
             }}
         >
-            {mediaItemArray.map((item, index) => (
-                <DiscoverMediaCard key={item.externalId} mediaItem={item} handleMediaCardRemoval={handleMediaCardRemoval} />
+            {mediaItemArray.map(item => (
+                <DiscoverMediaCard
+                    key={item.externalId}
+                    mediaItem={item}
+                    handleMediaCardRemoval={handleMediaCardRemoval}
+                    handleMediaStatusChange={handleMediaStatusChange}
+                />
             ))}
         </Box>
     );

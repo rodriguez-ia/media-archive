@@ -86,7 +86,7 @@ function DiscoverPage() {
             }
             
             return [...current, selectedMediaItem];
-        })
+        });
     };
 
     const handleMediaCardRemoval = (externalId) => {
@@ -95,13 +95,21 @@ function DiscoverPage() {
         });
     };
 
+    const handleMediaStatusChange = (externalId, status) => {
+        setStagedMedia(current => 
+            current.map(element => 
+                element.externalId === externalId ? {...element, status} : element
+            )
+        );
+    };
+
     return (
         <Container maxWidth="xl">
             <DiscoverHeader />
 
             <DiscoverSearchbar stagedMedia={stagedMedia} onToggleMedia={handleToggleMedia} />
 
-            <DiscoverMediaGrid mediaItemArray={stagedMedia} handleMediaCardRemoval={handleMediaCardRemoval} />
+            <DiscoverMediaGrid mediaItemArray={stagedMedia} handleMediaCardRemoval={handleMediaCardRemoval} handleMediaStatusChange={handleMediaStatusChange} />
         </Container>
     );
 }
