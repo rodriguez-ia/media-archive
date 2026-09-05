@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public class UserMediaEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
     private CollectionStatusEnum status;

@@ -1,5 +1,6 @@
 package com.isaiah.mediaarchive.model.dto;
 
+import com.isaiah.mediaarchive.model.enums.CollectionStatusEnum;
 import com.isaiah.mediaarchive.model.enums.GenreEnum;
 import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import jakarta.validation.constraints.NotBlank;
@@ -35,4 +36,6 @@ public class AddMediaToLibraryRequestDTO {
     private BigDecimal communityRating;
 
     private String coverImgUrl;
+
+    private CollectionStatusEnum status;
 }
