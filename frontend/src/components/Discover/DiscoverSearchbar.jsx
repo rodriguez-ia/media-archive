@@ -56,7 +56,7 @@ const mockResults = [
   },
 ];
 
-export default function DiscoverSearchBar({ onSelect, selectedItems = [] }) {
+export default function DiscoverSearchBar({ stagedMedia, onToggleMedia }) {
   const containerRef = useRef(null);
 
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -65,13 +65,6 @@ export default function DiscoverSearchBar({ onSelect, selectedItems = [] }) {
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [focused, setFocused] = useState(false);
-
-  /*
-   * IDs of items that have already been selected from the
-   * current search. This lets us keep the dropdown open
-   * while making selected results visually distinct.
-   */
-  const [selectedFromSearch, setSelectedFromSearch] = useState(new Set());
 
   /*
    * Debounced API search.
@@ -142,35 +135,18 @@ export default function DiscoverSearchBar({ onSelect, selectedItems = [] }) {
     }));
   };
 
-  const handleSelect = (result) => {
+  const handleToggleMedia = (result) => {
     /*
      * Tell DiscoverPage about the selected item.
      *
      * This does NOT change searchKeyword/results.
      */
-    onSelect?.(result);
-
-    /*
-     * Mark it as selected locally so the user can still
-     * see the result and select other results.
-     */
-    setSelectedFromSearch((current) => {
-      const next = new Set(current);
-
-      if (next.has(result.externalId)) {
-        next.delete(result.externalId);
-      } else {
-        next.add(result.externalId);
-      }
-
-      return next;
-    });
+    onToggleMedia(result);
   };
 
   const isSelected = (result) => {
-    return (
-      selectedFromSearch.has(result.externalId) ||
-      selectedItems.some((item) => item.id === result.id)
+    return stagedMedia.some(
+      item => item.externalId === result.externalId
     );
   };
 
@@ -334,7 +310,7 @@ export default function DiscoverSearchBar({ onSelect, selectedItems = [] }) {
                     <SearchResult
                       result={result}
                       selected={isSelected(result)}
-                      onClick={() => handleSelect(result)}
+                      onClick={() => handleToggleMedia(result)}
                     />
                   </React.Fragment>
                 ))}

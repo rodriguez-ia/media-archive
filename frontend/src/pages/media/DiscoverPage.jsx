@@ -73,7 +73,7 @@ function DiscoverPage() {
         coverImgUrl:"https://image.tmdb.org/t/p/w500/onTSipZ8R3bliBdKfPtsDuHTdlL.jpg"
     }];
 
-    const handleOnSelect = (selectedMediaItem) => {
+    const handleToggleMedia = (selectedMediaItem) => {
         setStagedMedia(current => {
             const existing = current.some(
                 element => element.externalId === selectedMediaItem.externalId
@@ -82,20 +82,26 @@ function DiscoverPage() {
             if (existing) {
                 return current.filter(
                     element => element.externalId !== selectedMediaItem.externalId
-                )
+                );
             }
             
             return [...current, selectedMediaItem];
         })
-    }
+    };
+
+    const handleMediaCardRemoval = (externalId) => {
+        setStagedMedia(current => {
+            return current.filter(element => element.externalId !== externalId);
+        });
+    };
 
     return (
         <Container maxWidth="xl">
             <DiscoverHeader />
 
-            <DiscoverSearchbar onSelect={handleOnSelect}/>
+            <DiscoverSearchbar stagedMedia={stagedMedia} onToggleMedia={handleToggleMedia} />
 
-            <DiscoverMediaGrid mediaItemArray={stagedMedia}/>
+            <DiscoverMediaGrid mediaItemArray={stagedMedia} handleMediaCardRemoval={handleMediaCardRemoval} />
         </Container>
     );
 }

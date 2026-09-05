@@ -2,12 +2,12 @@ import { Box } from "@mui/material";
 import DiscoverMediaCard from "../../components/Discover/DiscoverMediaCard.jsx";
 
 
-function DiscoverMediaGrid({ mediaItemArray }) {
+function DiscoverMediaGrid({ mediaItemArray, handleMediaCardRemoval }) {
     
     return (
         <Box
             sx={{
-                margin: 2,
+                my: 4,
                 display: 'grid',
                 gridTemplateColumns: {
                     xs: 'repeat(2, 1fr)',
@@ -19,7 +19,7 @@ function DiscoverMediaGrid({ mediaItemArray }) {
             }}
         >
             {mediaItemArray.map((item, index) => (
-                <DiscoverMediaCard key={item.externalId} mediaItem={item} />
+                <DiscoverMediaCard key={item.externalId} mediaItem={item} handleMediaCardRemoval={handleMediaCardRemoval} />
             ))}
         </Box>
     );

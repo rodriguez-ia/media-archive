@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 
-function DiscoverMediaCard({ mediaItem }) {
+function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval }) {
 
     const mediaTypeLabels = {
         MOVIE: "Movie",
@@ -68,7 +68,7 @@ function DiscoverMediaCard({ mediaItem }) {
                             backgroundColor: "rgba(0, 0, 0, 0.5)"
                         }
                     }}
-                    onClick={() => CALLBACK_FUNC}
+                    onClick={() => { handleMediaCardRemoval(mediaItem.externalId) }}
                 >
                     <CloseIcon fontSize="small" />
                 </IconButton>
