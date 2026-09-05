@@ -156,7 +156,13 @@ export default function DiscoverSearchBar({ onSelect, selectedItems = [] }) {
      */
     setSelectedFromSearch((current) => {
       const next = new Set(current);
-      next.add(result.externalId);
+
+      if (next.has(result.externalId)) {
+        next.delete(result.externalId);
+      } else {
+        next.add(result.externalId);
+      }
+
       return next;
     });
   };
