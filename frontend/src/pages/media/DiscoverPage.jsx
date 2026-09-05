@@ -194,7 +194,7 @@ function DiscoverPage() {
             errorMessage: ""
         }));
 
-        useNavigate("/library");
+        navigate("/library");
     };
 
     return (
