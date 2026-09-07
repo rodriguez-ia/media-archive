@@ -85,7 +85,7 @@ public class TMDBMapper {
 
     private Set<GenreEnum> mapTMDBGenres(List<Integer> genreIds) {
         if (genreIds == null) {
-            return Collections.emptySet();
+            return Set.of(GenreEnum.OTHER);
         }
 
         return genreIds.stream()
