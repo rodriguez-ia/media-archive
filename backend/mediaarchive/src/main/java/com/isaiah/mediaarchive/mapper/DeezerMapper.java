@@ -56,11 +56,12 @@ public class DeezerMapper {
         List<BaseMediaResponseDTO> resultList = new ArrayList<>();
 
         for (DeezerResponseItemDTO deezerResponseItem : deezerResponse.getData()) {
-            log.debug("Including media item '{}' in results list.", deezerResponseItem.getTitle());
 
             if (deezerResponseItem.getId() == null) {
                 continue;
             }
+
+            log.debug("Including media item '{}' in results list.", deezerResponseItem.getTitle());
 
             resultList.add(new BaseMediaResponseDTO(
                     deezerResponseItem.getId().toString(),

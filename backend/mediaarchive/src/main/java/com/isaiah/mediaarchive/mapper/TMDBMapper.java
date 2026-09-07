@@ -57,7 +57,6 @@ public class TMDBMapper {
         List<BaseMediaResponseDTO> resultList = new ArrayList<>();
 
         for (TMDBResponseItemDTO tmdbResponseItem : tmdbResponse.getResults()) {
-            log.debug("Including media item '{}' in results list.", tmdbResponseItem.getDisplayTitle());
 
             if (!MOVIE.equals(tmdbResponseItem.getMedia_type()) && !TV.equals(tmdbResponseItem.getMedia_type())) {
                 continue;
@@ -66,6 +65,8 @@ public class TMDBMapper {
             if (tmdbResponseItem.getId() == null || tmdbResponseItem.getDisplayTitle() == null || tmdbResponseItem.getDisplayTitle().isBlank()) {
                 continue;
             }
+
+            log.debug("Including media item '{}' in results list.", tmdbResponseItem.getDisplayTitle());
 
             resultList.add(new BaseMediaResponseDTO(
                     tmdbResponseItem.getId().toString(),

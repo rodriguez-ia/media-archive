@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,11 +27,12 @@ public class GoogleBooksMapper {
         List<BaseMediaResponseDTO> resultList = new ArrayList<>();
 
         for (GoogleBooksResponseItemDTO googleBooksResponseItem : googleBooksResponse.getItems()) {
-            log.debug("Including media item '{}' in results list.", googleBooksResponseItem.getVolumeInfo().getTitle());
 
             if (googleBooksResponseItem.getId() == null || googleBooksResponseItem.getId().isBlank() || googleBooksResponseItem.getVolumeInfo() == null) {
                 continue;
             }
+
+            log.debug("Including media item '{}' in results list.", googleBooksResponseItem.getVolumeInfo().getTitle());
 
             String ImgLink = null;
 
