@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class DeezerMapper {
 
-    private static final Logger log = LoggerFactory.getLogger(GoogleBooksMapper.class);
+    private static final Logger log = LoggerFactory.getLogger(DeezerMapper.class);
 
     public List<BaseMediaResponseDTO> deezerResponseToBaseMediaResponseDTOList(DeezerSearchResponseDTO deezerResponse) {
 
@@ -24,6 +24,10 @@ public class DeezerMapper {
 
         for (DeezerResponseItemDTO deezerResponseItem : deezerResponse.getData()) {
             log.debug("Including media item '{}' in results list.", deezerResponseItem.getTitle());
+
+            if (deezerResponseItem.getId() == null) {
+                continue;
+            }
 
             resultList.add(new BaseMediaResponseDTO(
                     deezerResponseItem.getId().toString(),
