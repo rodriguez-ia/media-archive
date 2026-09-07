@@ -26,6 +26,10 @@ public class GoogleBooksMapper {
         for (GoogleBooksResponseItemDTO googleBooksResponseItem : googleBooksResponse.getItems()) {
             log.debug("Including media item '{}' in results list.", googleBooksResponseItem.getVolumeInfo().getTitle());
 
+            if (googleBooksResponseItem.getId() == null || googleBooksResponseItem.getId().isBlank() || googleBooksResponseItem.getVolumeInfo() == null) {
+                continue;
+            }
+
             String ImgLink = null;
 
             if (googleBooksResponseItem.getVolumeInfo().getImageLinks() != null) {
