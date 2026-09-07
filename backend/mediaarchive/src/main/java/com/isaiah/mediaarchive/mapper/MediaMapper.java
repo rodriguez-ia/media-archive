@@ -27,7 +27,8 @@ public class MediaMapper {
                 userMedia.getPurchaseDate(),
                 userMedia.getPurchasePrice(),
                 userMedia.getFormat(),
-                userMedia.getCondition()
+                userMedia.getCondition(),
+                userMedia.getConsumptionCount()
         );
     }
 

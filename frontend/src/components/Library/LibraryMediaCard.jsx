@@ -29,6 +29,10 @@ function LibraryMediaCard({ mediaItem }) {
                 <Typography variant="body2" color="text.secondary">
                     {mediaItem.mediaType}
                 </Typography>
+
+                <Typography>
+                    View count: {mediaItem.consumptionCount}
+                </Typography>
             </CardContent>
         </Card>
     );

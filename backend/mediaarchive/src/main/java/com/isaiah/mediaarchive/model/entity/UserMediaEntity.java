@@ -54,6 +54,9 @@ public class UserMediaEntity {
     @Column(length = 50)
     private String condition;
 
+    @Column(nullable = false)
+    private int consumptionCount;
+
     public UserMediaEntity(BaseMediaEntity mediaItem, UserEntity user) {
         this.mediaItem = mediaItem;
         this.user = user;

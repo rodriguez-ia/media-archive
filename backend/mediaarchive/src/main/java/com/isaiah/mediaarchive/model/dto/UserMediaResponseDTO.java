@@ -45,4 +45,6 @@ public class UserMediaResponseDTO {
     private String format;
 
     private String condition;
+
+    private int consumptionCount;
 }
