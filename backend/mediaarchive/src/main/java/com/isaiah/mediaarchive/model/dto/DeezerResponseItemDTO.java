@@ -11,5 +11,7 @@ public class DeezerResponseItemDTO {
 
     private String title;
 
+    private Integer genre_id;
+
     private String cover_big;
 }
