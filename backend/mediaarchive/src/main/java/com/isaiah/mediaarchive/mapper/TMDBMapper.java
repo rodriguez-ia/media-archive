@@ -8,9 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -59,25 +57,47 @@ public class TMDBMapper {
         List<BaseMediaResponseDTO> resultList = new ArrayList<>();
 
         for (TMDBResponseItemDTO tmdbResponseItem : tmdbResponse.getResults()) {
-            if ( MOVIE.equals(tmdbResponseItem.getMedia_type()) || TV.equals(tmdbResponseItem.getMedia_type()) ) {
-                log.debug("Including media item '{}' in results list.", tmdbResponseItem.getDisplayTitle());
+            log.debug("Including media item '{}' in results list.", tmdbResponseItem.getDisplayTitle());
 
-                resultList.add(new BaseMediaResponseDTO(
-                        tmdbResponseItem.getId().toString(),
-                        tmdbResponseItem.getDisplayTitle(),
-                        tmdbResponseItem.getOverview(),
-                        tmdbResponseItem.getDisplayMediaType(),
-                        tmdbResponseItem.getGenre_ids()
-                                .stream()
-                                .map(id -> GENRE_BY_TMDB_ID.getOrDefault(id, GenreEnum.OTHER))
-                                .collect(Collectors.toSet()),
-                        tmdbResponseItem.getDisplayReleaseDate(),
-                        tmdbResponseItem.getVote_average(),
-                        COVER_IMG_BASE_URL + tmdbResponseItem.getPoster_path()
-                ));
+            if (!MOVIE.equals(tmdbResponseItem.getMedia_type()) && !TV.equals(tmdbResponseItem.getMedia_type())) {
+                continue;
             }
+
+            if (tmdbResponseItem.getId() == null || tmdbResponseItem.getDisplayTitle() == null || tmdbResponseItem.getDisplayTitle().isBlank()) {
+                continue;
+            }
+
+            resultList.add(new BaseMediaResponseDTO(
+                    tmdbResponseItem.getId().toString(),
+                    tmdbResponseItem.getDisplayTitle(),
+                    tmdbResponseItem.getOverview(),
+                    tmdbResponseItem.getDisplayMediaType(),
+                    mapTMDBGenres(tmdbResponseItem.getGenre_ids()),
+                    tmdbResponseItem.getDisplayReleaseDate(),
+                    tmdbResponseItem.getVote_average(),
+                    buildCoverImgUrl(tmdbResponseItem.getPoster_path())
+            ));
         }
 
         return resultList;
     }
+
+    private Set<GenreEnum> mapTMDBGenres(List<Integer> genreIds) {
+        if (genreIds == null) {
+            return Collections.emptySet();
+        }
+
+        return genreIds.stream()
+                .map(id -> GENRE_BY_TMDB_ID.getOrDefault(id, GenreEnum.OTHER))
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private String buildCoverImgUrl(String posterPath) {
+        if (posterPath == null || posterPath.isBlank()) {
+            return null;
+        }
+
+        return COVER_IMG_BASE_URL + posterPath;
+    }
+
 }
