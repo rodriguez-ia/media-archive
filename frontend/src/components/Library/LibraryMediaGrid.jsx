@@ -2,7 +2,7 @@ import { Box, Card, CardMedia, CardContent, Typography } from "@mui/material";
 import LibraryMediaCard from "../../components/Library/LibraryMediaCard.jsx";
 
 
-function LibraryMediaGrid({ mediaItemArray }) {
+function LibraryMediaGrid({ mediaItemArray, onMediaSelect }) {
     
     return (
         <Box
@@ -19,7 +19,7 @@ function LibraryMediaGrid({ mediaItemArray }) {
             }}
         >
             {mediaItemArray.map((item, index) => (
-                <LibraryMediaCard key={index} mediaItem={item} />
+                <LibraryMediaCard key={index} mediaItem={item} onSelect={onMediaSelect} />
             ))}
         </Box>
     );

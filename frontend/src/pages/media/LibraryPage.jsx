@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { getUserLibrary, addToUserLibrary } from "../../services/mediaService.js";
+import { getUserLibrary } from "../../services/mediaService.js";
 import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import LibraryToolbar from "../../components/Library/LibraryToolbar.jsx";
+import LibraryMediaModal from "../../components/Library/LibraryMediaModal.jsx";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography } from "@mui/material";
 
@@ -10,6 +11,7 @@ function LibraryPage() {
     const [loading, setLoading] = useState(false);
     const [responseMessage, setResponseMessage] = useState({});
     const [mediaItems, setMediaItems] = useState([]);
+    const [selectedMediaItem, setSelectedMediaItem] = useState(null);
 
     useEffect(() => {
         async function loadLibrary() {
@@ -38,6 +40,14 @@ function LibraryPage() {
 
         loadLibrary();
     }, []);
+
+    const handleMediaSelect = (mediaItem) => {
+        setSelectedMediaItem(mediaItem);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedMediaItem(null);
+    };
 
     const mediaItemsTest = [{
         simulatedIndex: 0,
@@ -87,10 +97,10 @@ function LibraryPage() {
     return (
         <>
             <LibraryToolbar label="Media Library" />
-            { loading ? <CircularProgress /> : <LibraryMediaGrid mediaItemArray={mediaItems}/> }
-            <Typography>
-                DEBUG: <br/>{responseMessage.status}, <br/>{responseMessage.success ? "SUCCESS" : "FAILURE"}, <br/>{responseMessage.source}, <br/>{responseMessage.detail}
-            </Typography>
+            
+            { loading ? <CircularProgress /> : <LibraryMediaGrid mediaItemArray={mediaItems} onMediaSelect={handleMediaSelect} /> }
+            
+            <LibraryMediaModal open={selectedMediaItem !== null} onClose={handleCloseModal} mediaItem={selectedMediaItem} />
         </>
     );
 }
