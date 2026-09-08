@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star"
+import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
 import {
     Card,
     CardMedia,
@@ -23,6 +24,15 @@ function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatu
         MUSIC_ALBUM: "Music Album",
         BOOK: "Book",
     };
+
+    const MAX_VISIBLE_GENRES = 3;
+
+    const genres = mediaItem.genres || [];
+    const visibleGenres = genres.slice(0, MAX_VISIBLE_GENRES);
+    const remainingGenreCount = Math.max(
+        0,
+        genres.length - MAX_VISIBLE_GENRES
+    );
     
     const hasRating = mediaItem.communityRating != null;
     
@@ -40,6 +50,9 @@ function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatu
     return (
         <Card sx={{
             border: '1px solid rgba(255, 255, 255, 0.08)',
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
         }}>
             <Box sx={{ position: "relative" }}>
                 <CardMedia
@@ -150,6 +163,9 @@ function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatu
                     "&:last-child": {
                         paddingBottom: 2,
                     },
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 1,
                 }}
             >
                 <Typography
@@ -174,12 +190,61 @@ function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatu
                     {mediaItem.releaseDate && ` • ${mediaItem.releaseDate}`}
                 </Typography>
 
+                {genres.length > 0 && (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 0.5,
+                            mt: 1,
+                        }}
+                    >
+                        {visibleGenres.map((genre) => (
+                            <Box
+                                key={genre}
+                                sx={{
+                                    px: 0.9,
+                                    py: 0.3,
+                                    borderRadius: "12px",
+                                    fontSize: "0.7rem",
+                                    fontWeight: 600,
+                                    lineHeight: 1.2,
+                                    whiteSpace: "nowrap",
+                                    ...getGenreSx(genre),
+                                }}
+                            >
+                                {formatGenre(genre)}
+                            </Box>
+                        ))}
+
+                        {remainingGenreCount > 0 && (
+                            <Box
+                                sx={{
+                                    px: 0.9,
+                                    py: 0.3,
+                                    borderRadius: "12px",
+                                    fontSize: "0.7rem",
+                                    fontWeight: 600,
+                                    lineHeight: 1.2,
+                                    color: "rgba(255, 255, 255, 0.6)",
+                                    backgroundColor:
+                                        "rgba(255, 255, 255, 0.05)",
+                                    whiteSpace: "nowrap",
+                                }}
+                            >
+                                +{remainingGenreCount}
+                            </Box>
+                        )}
+                    </Box>
+                )}
+
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        mt: 2,
+                        mt: "auto",
+                        pt: 2
                     }}
                 >
                     <Typography
