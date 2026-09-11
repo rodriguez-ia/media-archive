@@ -95,7 +95,7 @@ function LibraryMediaModal({
     let ratingColor = "rgba(255, 255, 255, 0.35)";
 
     if (hasRating) {
-        if (mediaItem.communityRating >= 8) {
+        if (mediaItem.communityRating >= 7) {
             ratingColor = "#66bb6a";
         } else if (mediaItem.communityRating >= 6) {
             ratingColor = "#ffca28";
