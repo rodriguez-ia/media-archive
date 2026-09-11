@@ -49,6 +49,14 @@ function LibraryPage() {
         setSelectedMediaItem(null);
     };
 
+    const handleUpdateMediaItem = (externalId, updatedMediaItem) => {
+        // TODO: API call here.
+        setSelectedMediaItem((current) => ({
+            ...current,
+            ...updatedMediaItem
+        }));
+    }
+
     const mediaItemsTest = [{
         simulatedIndex: 0,
         title:"Starship Troopers",
@@ -100,7 +108,7 @@ function LibraryPage() {
             
             { loading ? <CircularProgress /> : <LibraryMediaGrid mediaItemArray={mediaItems} onMediaSelect={handleMediaSelect} /> }
             
-            <LibraryMediaModal open={selectedMediaItem !== null} onClose={handleCloseModal} mediaItem={selectedMediaItem} />
+            <LibraryMediaModal open={selectedMediaItem !== null} onClose={handleCloseModal} mediaItem={selectedMediaItem} onUpdate={handleUpdateMediaItem} />
         </>
     );
 }
