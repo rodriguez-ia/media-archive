@@ -48,7 +48,7 @@ public class GoogleBooksMapper {
                     mapGoogleBooksCategories(googleBooksResponseItem.getVolumeInfo().getCategories()),
                     parsePublishedDate(googleBooksResponseItem.getVolumeInfo().getPublishedDate()),
                     null,
-                    editCoverImgUrl(ImgLink)
+                    editCoverImgUrl(ImgLink, googleBooksResponseItem.getId())
             ));
         }
 
@@ -152,18 +152,20 @@ public class GoogleBooksMapper {
         return result;
     }
 
-    private String editCoverImgUrl(String url) {
+    private String editCoverImgUrl(String url, String id) {
 
         if (url == null || url.isBlank()) {
             return "";
         }
 
-        if (url.startsWith("http://")) {
-            url = "https://" + url.substring(7);
-        }
+//        if (url.startsWith("http://")) {
+//            url = "https://" + url.substring(7);
+//        }
+//
+//        // Set the 'zoom' query param to 10 for a higher res image.
+//        url = url.replaceFirst("zoom=\\d+", "zoom=10");
 
-        // Set the 'zoom' query param to 10 for a higher res image.
-        url = url.replaceFirst("zoom=\\d+", "zoom=10");
+        url = "https://books.google.com/books/publisher/content/images/frontcover/" + id + "?fife=w400-h600&source=gbs_api";
 
         return url;
     }
