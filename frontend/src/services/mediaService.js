@@ -24,7 +24,7 @@ export async function getUserLibrary() {
     return body;
 }
 
-export async function addToUserLibrary(request) {
+export async function addToUserLibrary(mediaItems) {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
@@ -35,7 +35,7 @@ export async function addToUserLibrary(request) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(request)
+            body: JSON.stringify(mediaItems)
         }
     );
 
