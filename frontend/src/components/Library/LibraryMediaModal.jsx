@@ -237,24 +237,19 @@ function LibraryMediaModal({
                         width: {
                             xs: "92%",
                             sm: 700,
-                            md: 750,
+                            md: 850,
                         },
 
-                        /*
-                         * Fixed modal height.
-                         *
-                         * The modal itself never scrolls.
-                         * Any required scrolling happens inside
-                         * the collection section or notes.
-                         */
                         height: {
                             xs: "88vh",
                             sm: 760,
+                            md: 900,
                         },
 
-                        maxHeight: "88vh",
+                        maxHeight: "95vh",
 
-                        overflow: "hidden",
+                        overflowY: "auto",
+                        overflowX: "hidden",
 
                         display: "flex",
                         flexDirection: "column",
@@ -301,21 +296,13 @@ function LibraryMediaModal({
                     <Box
                         sx={{
                             display: "flex",
-
                             flexDirection: {
                                 xs: "column",
                                 sm: "row",
                             },
-
                             gap: 3,
-
                             p: 3,
-
                             flex: 1,
-
-                            minHeight: 0,
-
-                            overflow: "hidden",
                         }}
                     >
                         {/* ================================================== */}
@@ -373,14 +360,9 @@ function LibraryMediaModal({
                         <Box
                             sx={{
                                 flexGrow: 1,
-
                                 minWidth: 0,
-                                minHeight: 0,
-
                                 display: "flex",
                                 flexDirection: "column",
-
-                                overflow: "hidden",
                             }}
                         >
                             {/* ================================================== */}
@@ -504,36 +486,15 @@ function LibraryMediaModal({
                                 <Box
                                     sx={{
                                         flexShrink: 0,
-
-                                        maxHeight: {
-                                            xs: 110,
-                                            sm: 155,
-                                        },
-
-                                        overflow: "hidden",
-
                                         mb: 1,
                                     }}
                                 >
                                     <Typography
                                         sx={{
-                                            lineHeight: 1.65,
-
+                                            lineHeight: 1.40,
+                                            fontSize: 17,
                                             color:
                                                 "rgba(255,255,255,0.72)",
-
-                                            display:
-                                                "-webkit-box",
-
-                                            WebkitBoxOrient:
-                                                "vertical",
-
-                                            WebkitLineClamp: {
-                                                xs: 5,
-                                                sm: 6,
-                                            },
-
-                                            overflow: "hidden",
                                         }}
                                     >
                                         {mediaItem.description}
@@ -667,48 +628,9 @@ function LibraryMediaModal({
                                 {/* ================================================== */}
                                 <Box
                                     sx={{
-                                        flex: 1,
-
-                                        minHeight: 0,
-
-                                        overflowY: "auto",
-
-                                        overflowX: "hidden",
-
-                                        /*
-                                         * Important:
-                                         * Floating MUI labels need some
-                                         * space above them. Without this,
-                                         * the first row's labels can be
-                                         * clipped by the scroll container.
-                                         */
                                         pt: 1,
-
                                         pr: 0.5,
-
                                         pb: 1,
-
-                                        "&::-webkit-scrollbar": {
-                                            width: 6,
-                                        },
-
-                                        "&::-webkit-scrollbar-track": {
-                                            background:
-                                                "transparent",
-                                        },
-
-                                        "&::-webkit-scrollbar-thumb": {
-                                            backgroundColor:
-                                                "rgba(255,255,255,0.18)",
-
-                                            borderRadius: 3,
-                                        },
-
-                                        "&::-webkit-scrollbar-thumb:hover":
-                                            {
-                                                backgroundColor:
-                                                    "rgba(255,255,255,0.3)",
-                                            },
                                     }}
                                 >
                                     {isEditing ? (
@@ -877,10 +799,7 @@ function LibraryMediaModal({
                                                 maxRows={5}
                                                 fullWidth
                                                 sx={{
-                                                    gridColumn: {
-                                                        xs: "auto",
-                                                        sm: "1 / -1",
-                                                    },
+                                                    gridColumn: "1 / -1"
                                                 }}
                                             />
                                         </Box>
@@ -1045,14 +964,9 @@ function LibraryMediaModal({
                                             {/* ========================================== */}
                                             <Box
                                                 sx={{
-                                                    gridColumn: {
-                                                        xs: "auto",
-                                                        sm: "1 / -1",
-                                                    },
-
+                                                    gridColumn: "1 / -1",
                                                     minWidth: 0,
-
-                                                    mt: 0.5,
+                                                    mt: 0.5
                                                 }}
                                             >
                                                 <Typography
@@ -1065,62 +979,20 @@ function LibraryMediaModal({
                                                 <Box
                                                     sx={{
                                                         mt: 0.5,
-
-                                                        maxHeight: {
-                                                            xs: 70,
-                                                            sm: 90,
-                                                        },
-
-                                                        overflowY:
-                                                            "auto",
-
                                                         pr: 0.5,
-
-                                                        "&::-webkit-scrollbar":
-                                                            {
-                                                                width: 5,
-                                                            },
-
-                                                        "&::-webkit-scrollbar-track":
-                                                            {
-                                                                background:
-                                                                    "transparent",
-                                                            },
-
-                                                        "&::-webkit-scrollbar-thumb":
-                                                            {
-                                                                backgroundColor:
-                                                                    "rgba(255,255,255,0.18)",
-
-                                                                borderRadius: 3,
-                                                            },
-
-                                                        "&::-webkit-scrollbar-thumb:hover":
-                                                            {
-                                                                backgroundColor:
-                                                                    "rgba(255,255,255,0.3)",
-                                                            },
                                                     }}
                                                 >
                                                     <Typography
                                                         sx={{
-                                                            lineHeight:
-                                                                1.6,
-
-                                                            color:
-                                                                mediaItem.notes
+                                                            lineHeight: 1.6,
+                                                            color: mediaItem.notes
                                                                     ? "rgba(255,255,255,0.72)"
                                                                     : "text.secondary",
-
-                                                            whiteSpace:
-                                                                "pre-line",
-
-                                                            overflowWrap:
-                                                                "anywhere",
+                                                            whiteSpace: "pre-line",
+                                                            overflowWrap: "anywhere",
                                                         }}
                                                     >
-                                                        {mediaItem.notes ||
-                                                            "—"}
+                                                        {mediaItem.notes || "—"}
                                                     </Typography>
                                                 </Box>
                                             </Box>
