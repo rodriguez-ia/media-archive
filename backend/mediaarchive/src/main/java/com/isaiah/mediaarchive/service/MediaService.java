@@ -166,6 +166,7 @@ public class MediaService {
         return newUserMediaResponseList;
     }
 
+    @Transactional
     public UserMediaResponseDTO updateUserMediaItem(UserEntity user,
                                                     String externalId,
                                                     UpdateUserMediaItemRequestDTO userMediaUpdates) {
