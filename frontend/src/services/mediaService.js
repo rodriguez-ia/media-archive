@@ -52,7 +52,6 @@ export async function addToUserLibrary(mediaItems) {
 
 export async function updateUserMediaItem(externalId, mediaItemDetails) {
     const token = localStorage.getItem("token");
-    console.log(token);
 
     const response = await fetch(
         `${API_BASE_URL}/media/library/${encodeURIComponent(externalId)}`,
