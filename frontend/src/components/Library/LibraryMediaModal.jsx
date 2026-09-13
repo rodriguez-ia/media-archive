@@ -91,7 +91,16 @@ function LibraryMediaModal({
         BOOK: "Book",
     };
 
+    const formatOptions = {
+        MOVIE: ["VHS", "DVD", "Blu-ray", "Digital"],
+        TV_SHOW: ["VHS", "DVD", "Blu-ray", "Digital"],
+        MUSIC_ALBUM: ["Vinyl", "CD", "Cassette", "Digital"],
+        BOOK: ["Hardcover", "Paperback", "Mass Market Paperback", "Digital"],
+    };
+
     const genres = mediaItem.genres || [];
+
+    const availableFormats = formatOptions[mediaItem.mediaType] || [];
 
     const hasRating = mediaItem.communityRating != null;
 
@@ -753,18 +762,18 @@ function LibraryMediaModal({
                                             {/* FORMAT                                    */}
                                             {/* ========================================== */}
                                             <TextField
+                                                select
                                                 label="Format"
-                                                value={
-                                                    editValues.format
-                                                }
-                                                onChange={handleEditChange(
-                                                    "format"
-                                                )}
-                                                inputProps={{
-                                                    maxLength: 50,
-                                                }}
+                                                value={editValues.format}
+                                                onChange={handleEditChange("format")}
                                                 fullWidth
-                                            />
+                                            >
+                                                {availableFormats.map((format) => (
+                                                    <MenuItem key={format} value={format}>
+                                                        {format}
+                                                    </MenuItem>
+                                                ))}
+                                            </TextField>
 
                                             {/* ========================================== */}
                                             {/* CONDITION                                 */}
