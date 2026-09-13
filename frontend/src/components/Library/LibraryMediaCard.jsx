@@ -1,5 +1,8 @@
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StarIcon from "@mui/icons-material/Star";
+import TheatersIcon from "@mui/icons-material/Theaters";
+import AlbumIcon from "@mui/icons-material/Album";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
 import {
     Card,
@@ -41,7 +44,9 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
         }
     }
 
-    const shouldShowViewCount = mediaItem.mediaType === "MOVIE" || mediaItem.mediaType === "TV_SHOW";
+    const isMovieOrTV = mediaItem.mediaType === "MOVIE" || mediaItem.mediaType === "TV_SHOW";
+    const isMusic = mediaItem.mediaType === "MUSIC_ALBUM";
+    const isBook = mediaItem.mediaItem === "BOOK";
 
     const truncateDescription = (description) => {
         if (!description) {
@@ -403,40 +408,94 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
                     )}
 
 
-                    {/* View Count */}
-                    {shouldShowViewCount && (
-                        <Box
-                            sx={{
-                                display: "flex",
+                    <Box
+                        sx={{
+                            display: "flex",
 
-                                alignItems: "center",
+                            alignItems: "center",
 
-                                gap: 0.75,
+                            justifyContent: "space-between",
 
-                                mt: "auto",
+                            gap: 0.75,
 
-                                pt: 2,
+                            mt: "auto",
 
-                                color: "text.secondary",
-                            }}
-                        >
-                            <VisibilityIcon
+                            pt: 2,
+
+                            color: "text.secondary",
+                        }}
+                    >
+                        {/* View Count */}
+                        {isMovieOrTV && (
+                            <Box
                                 sx={{
-                                    fontSize: 18,
-                                    opacity: 0.7,
-                                }}
-                            />
-
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    fontWeight: 500,
+                                    display: "flex",
+                                    gap: 0.75
                                 }}
                             >
-                                {mediaItem.consumptionCount || 0}
-                            </Typography>
-                        </Box>
-                    )}
+                                <VisibilityIcon
+                                    sx={{
+                                        fontSize: 18,
+                                        opacity: 0.7,
+                                    }}
+                                />
+
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    {mediaItem.consumptionCount || 0}
+                                </Typography>
+                            </Box>
+                        )}
+
+                        {/* Format */}
+                        {mediaItem.format && (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    gap: 0.75
+                                }}
+                            >
+                                {isMovieOrTV && (
+                                    <TheatersIcon
+                                        sx={{
+                                            fontSize: 18,
+                                            opacity: 0.7,
+                                        }}
+                                    />
+                                )}
+                                {isMusic && (
+                                    <AlbumIcon
+                                        sx={{
+                                            fontSize: 18,
+                                            opacity: 0.7,
+                                        }}
+                                    />
+                                )}
+                                {isBook && (
+                                    <AutoStoriesIcon
+                                        sx={{
+                                            fontSize: 18,
+                                            opacity: 0.7,
+                                        }}
+                                    />
+                                )}
+
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    {mediaItem.format}
+                                </Typography>
+                            </Box>
+                        )}
+                        
+                    </Box>
                 </CardContent>
             </Card>
         </>
