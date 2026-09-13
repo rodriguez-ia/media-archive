@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getUserLibrary } from "../../services/mediaService.js";
+import { getUserLibrary, updateUserMediaItem } from "../../services/mediaService.js";
 import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import LibraryToolbar from "../../components/Library/LibraryToolbar.jsx";
 import LibraryMediaModal from "../../components/Library/LibraryMediaModal.jsx";
@@ -49,12 +49,38 @@ function LibraryPage() {
         setSelectedMediaItem(null);
     };
 
-    const handleUpdateMediaItem = (externalId, updatedMediaItem) => {
-        // TODO: API call here.
-        setSelectedMediaItem((current) => ({
-            ...current,
-            ...updatedMediaItem
-        }));
+    const handleUpdateMediaItem = async (externalId, updatedMediaItem) => {
+
+        try {
+
+            await updateUserMediaItem(externalId, updatedMediaItem);
+
+            setSelectedMediaItem((current) => ({
+                ...current,
+                ...updatedMediaItem
+            }));
+
+            setMediaItems((current) => 
+                current.map((mediaItem) => 
+                    mediaItem.externalId === externalId
+                        ? {...mediaItem, ...updatedMediaItem}
+                        : mediaItem
+                )
+            );
+        } catch (error) {
+            if (error.message) {
+                setResponseMessage(error.message);
+            } else {
+                setResponseMessage({
+                    status: 500,
+                    success: false,
+                    source: "Unknown",
+                    detail: "There was an error loading your library."
+                });
+            }
+
+            throw error;
+        }
     }
 
     const mediaItemsTest = [{

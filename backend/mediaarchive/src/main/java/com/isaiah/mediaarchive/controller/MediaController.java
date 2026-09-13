@@ -2,6 +2,7 @@ package com.isaiah.mediaarchive.controller;
 
 import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
 import com.isaiah.mediaarchive.model.dto.AddMediaToLibraryRequestDTO;
+import com.isaiah.mediaarchive.model.dto.UpdateUserMediaItemRequestDTO;
 import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.service.MediaService;
@@ -47,6 +48,21 @@ public class MediaController {
                         userMediaResponseDTOList,
                         "MediaController.addToUserLibrary",
                         "Added media to user library successfully"
+                )
+        );
+    }
+
+    @PatchMapping("/library/{externalId}")
+    public ResponseEntity<ApiResponse<UserMediaResponseDTO>> updateUserMediaItem(@AuthenticationPrincipal UserEntity user,
+                                                                                 @PathVariable String externalId,
+                                                                                 @Valid @RequestBody UpdateUserMediaItemRequestDTO userMediaUpdates) {
+        UserMediaResponseDTO userMediaResponseDTO = mediaService.updateUserMediaItem(user, externalId, userMediaUpdates);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTO,
+                        "MediaController.updateUserMediaItem",
+                        "Updated user media item successfully"
                 )
         );
     }

@@ -50,6 +50,33 @@ export async function addToUserLibrary(mediaItems) {
     return body;
 }
 
+export async function updateUserMediaItem(externalId, mediaItemDetails) {
+    const token = localStorage.getItem("token");
+    console.log(token);
+
+    const response = await fetch(
+        `${API_BASE_URL}/media/library/${encodeURIComponent(externalId)}`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(mediaItemDetails)
+        }
+    );
+
+    const body = await response.json();
+
+    if (!response.ok) {
+        const error = new Error(body.message || "Request failed");
+        error.status = response.status;
+        throw error;
+    }
+
+    return body;
+}
+
 export async function searchExternalMedia(
     keyword,
     page,

@@ -166,6 +166,26 @@ public class MediaService {
         return newUserMediaResponseList;
     }
 
+    public UserMediaResponseDTO updateUserMediaItem(UserEntity user,
+                                                    String externalId,
+                                                    UpdateUserMediaItemRequestDTO userMediaUpdates) {
+
+        log.info("Updating the user media item with externalId '{}' for user '{}'", externalId, user.getUsername());
+
+        UserMediaEntity userMedia = userMediaRepository.findByUserIdAndMediaItemExternalId(user.getId(), externalId);
+
+        userMedia.setConsumptionCount(userMediaUpdates.getConsumptionCount());
+        userMedia.setPersonalRating(userMediaUpdates.getPersonalRating());
+        userMedia.setPurchaseDate(userMediaUpdates.getPurchaseDate());
+        userMedia.setPurchasePrice(userMediaUpdates.getPurchasePrice());
+        userMedia.setStatus(userMediaUpdates.getStatus());
+        userMedia.setFormat(userMediaUpdates.getFormat());
+        userMedia.setCondition(userMediaUpdates.getCondition());
+        userMedia.setNotes(userMediaUpdates.getNotes());
+
+        return mediaMapper.userMediaEntityToUserMediaResponse(userMedia);
+    }
+
     public List<BaseMediaResponseDTO> getFromCatalog(UserEntity user) {
 
         log.info("Retrieving all BASE media items for user: username='{}'", user.getUsername());

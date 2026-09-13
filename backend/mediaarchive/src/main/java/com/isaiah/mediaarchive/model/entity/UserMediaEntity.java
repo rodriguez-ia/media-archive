@@ -39,21 +39,28 @@ public class UserMediaEntity {
     @Column(length = 50)
     private CollectionStatusEnum status;
 
+    @Setter
     private BigDecimal personalRating;
 
+    @Setter
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @Setter
     private LocalDate purchaseDate;
 
+    @Setter
     private BigDecimal purchasePrice;
 
+    @Setter
     @Column(length = 50)
     private String format;
 
+    @Setter
     @Column(length = 50)
     private String condition;
 
+    @Setter
     @Column(nullable = false)
     private int consumptionCount;
 

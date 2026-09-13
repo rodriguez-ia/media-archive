@@ -24,6 +24,7 @@ import {
     TextField,
     MenuItem,
     Button,
+    CircularProgress
 } from "@mui/material";
 
 function LibraryMediaModal({
@@ -32,7 +33,9 @@ function LibraryMediaModal({
     mediaItem,
     onUpdate,
 }) {
+
     const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     const [editValues, setEditValues] = useState({
         viewCount: 0,
@@ -153,7 +156,7 @@ function LibraryMediaModal({
         setIsEditing(false);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const updatedMediaItem = {
             consumptionCount:
                 editValues.viewCount === ""
@@ -188,11 +191,16 @@ function LibraryMediaModal({
                 editValues.notes.trim() || null,
         };
 
-        if (onUpdate) {
-            onUpdate(mediaItem.externalId, updatedMediaItem);
-        }
+        try {
 
-        setIsEditing(false);
+            setIsSaving(true);
+
+            await onUpdate(mediaItem.externalId, updatedMediaItem);
+
+            setIsEditing(false);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const formatPrice = (price) => {
@@ -616,6 +624,9 @@ function LibraryMediaModal({
                                                 onClick={
                                                     handleCancel
                                                 }
+                                                disabled={
+                                                    isSaving
+                                                }
                                                 sx={{
                                                     textTransform:
                                                         "none",
@@ -628,17 +639,24 @@ function LibraryMediaModal({
                                                 size="small"
                                                 variant="contained"
                                                 startIcon={
-                                                    <SaveIcon />
+                                                    isSaving ? (
+                                                        <CircularProgress size={16} color="inherit" />
+                                                    ) : (
+                                                        <SaveIcon />
+                                                    )
                                                 }
                                                 onClick={
                                                     handleSave
+                                                }
+                                                disabled={
+                                                    isSaving
                                                 }
                                                 sx={{
                                                     textTransform:
                                                         "none",
                                                 }}
                                             >
-                                                Save
+                                                {isSaving ? "Saving..." : "Save"}
                                             </Button>
                                         </Box>
                                     )}
