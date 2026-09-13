@@ -38,4 +38,6 @@ public class AddMediaToLibraryRequestDTO {
     private String coverImgUrl;
 
     private CollectionStatusEnum status;
+
+    private String format;
 }

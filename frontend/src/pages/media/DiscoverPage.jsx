@@ -106,12 +106,28 @@ function DiscoverPage() {
     };
 
     const handleMediaStatusChange = (externalId, status) => {
-        setStagedMedia(current => 
-            current.map(element => 
-                element.externalId === externalId ? {...element, status} : element
-            )
-        );
+        if (status === "WISHLISTED") {
+            setStagedMedia(current => 
+                current.map(element => 
+                    element.externalId === externalId ? {...element, status, format: null} : element
+                )
+            );
+        } else {
+            setStagedMedia(current => 
+                current.map(element => 
+                    element.externalId === externalId ? {...element, status} : element
+                )
+            );
+        }
     };
+
+    const handleMediaFormatChange = (externalId, format) => {
+        setStagedMedia(current => 
+            current.map(element =>
+                element.externalId === externalId ? {...element, format} : element
+            )
+        )
+    }
 
     const handleClearAll = () => {
         setActionModal({
@@ -203,7 +219,12 @@ function DiscoverPage() {
 
             <DiscoverSearchbar stagedMedia={stagedMedia} onToggleMedia={handleToggleMedia} />
 
-            <DiscoverMediaGrid mediaItemArray={stagedMedia} handleMediaCardRemoval={handleMediaCardRemoval} handleMediaStatusChange={handleMediaStatusChange} />
+            <DiscoverMediaGrid
+                mediaItemArray={stagedMedia}
+                handleMediaCardRemoval={handleMediaCardRemoval}
+                handleMediaStatusChange={handleMediaStatusChange}
+                handleMediaFormatChange={handleMediaFormatChange}
+            />
 
             <Box
                 sx={{

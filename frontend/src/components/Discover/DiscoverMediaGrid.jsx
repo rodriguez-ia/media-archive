@@ -2,7 +2,12 @@ import { Box } from "@mui/material";
 import DiscoverMediaCard from "../../components/Discover/DiscoverMediaCard.jsx";
 
 
-function DiscoverMediaGrid({ mediaItemArray, handleMediaCardRemoval, handleMediaStatusChange }) {
+function DiscoverMediaGrid({
+    mediaItemArray,
+    handleMediaCardRemoval,
+    handleMediaStatusChange,
+    handleMediaFormatChange
+}) {
     
     return (
         <Box
@@ -24,6 +29,7 @@ function DiscoverMediaGrid({ mediaItemArray, handleMediaCardRemoval, handleMedia
                     mediaItem={item}
                     handleMediaCardRemoval={handleMediaCardRemoval}
                     handleMediaStatusChange={handleMediaStatusChange}
+                    handleMediaFormatChange={handleMediaFormatChange}
                 />
             ))}
         </Box>

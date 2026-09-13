@@ -151,6 +151,7 @@ public class MediaService {
             BaseMediaEntity relatedBaseMediaItem = baseMediaByExternalId.get(mediaItem.getExternalId());
             UserMediaEntity newUserMediaItem = mediaMapper.baseMediaEntityAndUserEntityToUserMediaEntity(relatedBaseMediaItem, user);
             newUserMediaItem.setStatus(mediaItem.getStatus());
+            newUserMediaItem.setFormat(mediaItem.getFormat());
             newUserMediaList.add(newUserMediaItem);
 
             // Add to userMediaByExternalId for duplicate protection

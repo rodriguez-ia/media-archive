@@ -16,7 +16,12 @@ import {
 } from "@mui/material";
 
 
-function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatusChange }) {
+function DiscoverMediaCard({
+    mediaItem,
+    handleMediaCardRemoval,
+    handleMediaStatusChange,
+    handleMediaFormatChange
+}) {
 
     const mediaTypeLabels = {
         MOVIE: "Movie",
@@ -24,6 +29,15 @@ function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatu
         MUSIC_ALBUM: "Music Album",
         BOOK: "Book",
     };
+
+    const formatOptions = {
+        MOVIE: ["VHS", "DVD", "Blu-ray", "Digital"],
+        TV_SHOW: ["VHS", "DVD", "Blu-ray", "Digital"],
+        MUSIC_ALBUM: ["Vinyl", "CD", "Cassette", "Digital"],
+        BOOK: ["Hardcover", "Paperback", "Mass Market Paperback", "Digital"],
+    };
+
+    const availableFormats = formatOptions[mediaItem.mediaType] || [];
 
     const MAX_VISIBLE_GENRES = 3;
 
@@ -241,35 +255,104 @@ function DiscoverMediaCard({ mediaItem, handleMediaCardRemoval, handleMediaStatu
                 <Box
                     sx={{
                         display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
+                        flexDirection: "column",
+                        gap: 1.5,
                         mt: "auto",
-                        pt: 2
+                        pt: 2,
                     }}
                 >
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
+                    {/* Status */}
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
                     >
-                        Status:
-                    </Typography>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                        >
+                            Status:
+                        </Typography>
 
-                    <FormControl size="small">
-                        <Select
-                            value={mediaItem.status || "OWNED"}
-                            onChange={(event) => {
-                                handleMediaStatusChange(mediaItem.externalId, event.target.value)
-                            }}
+                        <FormControl size="small">
+                            <Select
+                                value={mediaItem.status || "OWNED"}
+                                onChange={(event) => {
+                                    handleMediaStatusChange(
+                                        mediaItem.externalId,
+                                        event.target.value
+                                    );
+                                }}
+                                sx={{
+                                    minWidth: 100,
+                                    fontSize: "0.875rem",
+                                    height: 32,
+                                }}
+                            >
+                                <MenuItem value="OWNED">
+                                    Owned
+                                </MenuItem>
+
+                                <MenuItem value="WISHLISTED">
+                                    Wishlisted
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    {/* Format — only shown when status is 'OWNED' */}
+                    {(mediaItem.status || "OWNED") === "OWNED" && (
+                        <Box
                             sx={{
-                                minWidth: 100,
-                                fontSize: "0.875rem",
-                                height: 32,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
                             }}
                         >
-                            <MenuItem value="OWNED">Owned</MenuItem>
-                            <MenuItem value="WISHLISTED">Wishlisted</MenuItem>
-                        </Select>
-                    </FormControl>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                            >
+                                Format:
+                            </Typography>
+
+                            <FormControl size="small">
+                                <Select
+                                    value={mediaItem.format || ""}
+                                    displayEmpty
+                                    onChange={(event) => {
+                                        handleMediaFormatChange(
+                                            mediaItem.externalId,
+                                            event.target.value
+                                        );
+                                    }}
+                                    sx={{
+                                        minWidth: 100,
+                                        fontSize: "0.875rem",
+                                        height: 32,
+                                    }}
+                                    renderValue={(selected) =>
+                                        selected || "Select"
+                                    }
+                                >
+                                    <MenuItem value="" disabled>
+                                        Select format
+                                    </MenuItem>
+
+                                    {availableFormats.map((format) => (
+                                        <MenuItem
+                                            key={format}
+                                            value={format}
+                                        >
+                                            {format}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    )}
                 </Box>
             </CardContent>
         </Card>
