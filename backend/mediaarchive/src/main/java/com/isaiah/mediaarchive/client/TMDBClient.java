@@ -1,6 +1,8 @@
 package com.isaiah.mediaarchive.client;
 
 import com.isaiah.mediaarchive.model.dto.TMDBSearchResponseDTO;
+import com.isaiah.mediaarchive.model.dto.TMDBTVSeasonDetailsSearchResponseDTO;
+import com.isaiah.mediaarchive.model.dto.TMDBTVShowDetailsSearchResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -35,5 +37,27 @@ public class TMDBClient {
                 .header("Authorization", "Bearer " + apiReadAccessToken)
                 .retrieve()
                 .body(TMDBSearchResponseDTO.class);
+    }
+
+    public TMDBTVShowDetailsSearchResponseDTO searchTVShowDetailsByExternalId(String tvShowExternalId) {
+        return restClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/" + tvShowExternalId)
+                        .build())
+                .header("Authorization", "Bearer " + apiReadAccessToken)
+                .retrieve()
+                .body(TMDBTVShowDetailsSearchResponseDTO.class);
+    }
+
+    public TMDBTVSeasonDetailsSearchResponseDTO searchTVSeasonDetailsByExternalId(String tvShowExternalId, Integer seasonNumber) {
+        return restClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/tv/" + tvShowExternalId + "/" + seasonNumber.toString())
+                        .build())
+                .header("Authorization", "Bearer " + apiReadAccessToken)
+                .retrieve()
+                .body(TMDBTVSeasonDetailsSearchResponseDTO.class);
     }
 }

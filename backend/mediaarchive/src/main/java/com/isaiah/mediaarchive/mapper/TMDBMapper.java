@@ -1,9 +1,9 @@
 package com.isaiah.mediaarchive.mapper;
 
-import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
-import com.isaiah.mediaarchive.model.dto.TMDBResponseItemDTO;
-import com.isaiah.mediaarchive.model.dto.TMDBSearchResponseDTO;
+import com.isaiah.mediaarchive.model.dto.*;
+import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.enums.GenreEnum;
+import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -50,9 +50,71 @@ public class TMDBMapper {
             Map.entry(37, GenreEnum.WESTERN)
     );
 
+    public List<BaseMediaEntity> tmdbTVShowDetailsResponseToBaseMediaEntityList(TMDBTVShowDetailsSearchResponseDTO tmdbResponse, UUID parentId) {
+
+        log.debug("Mapping TMDB API TV show details response data to List<BaseMediaEntity>...");
+
+        List<BaseMediaEntity> resultList = new ArrayList<>();
+
+        for (TMDBTVShowSeasonDTO season : tmdbResponse.getSeasons()) {
+
+            if (season.getId() == 0 || season.getSeason_number() == 0 || season.getName() == null || season.getName().isBlank()) {
+                continue;
+            }
+
+            log.debug("Including media item '{}' in TV_SEASON results list.", season.getName());
+
+            resultList.add(new BaseMediaEntity(
+                    Integer.toString(season.getId()),
+                    parentId,
+                    season.getName(),
+                    season.getOverview(),
+                    MediaTypeEnum.TV_SEASON,
+                    null,
+                    season.getAir_date(),
+                    season.getVote_average(),
+                    season.getPoster_path(),
+                    season.getSeason_number()
+            ));
+        }
+
+        return resultList;
+    }
+
+    public List<BaseMediaEntity> tmdbTVSeasonDetailsResponseToBaseMediaEntityList(TMDBTVSeasonDetailsSearchResponseDTO tmdbResponse, UUID parentId) {
+
+        log.debug("Mapping TMDB API TV season details response data to List<BaseMediaEntity>...");
+
+        List<BaseMediaEntity> resultList = new ArrayList<>();
+
+        for (TMDBTVSeasonEpisodeDTO episode : tmdbResponse.getEpisodes()) {
+
+            if (episode.getId() == 0 || episode.getEpisode_number() == 0 || episode.getName() == null || episode.getName().isBlank()) {
+                continue;
+            }
+
+            log.debug("Including media item '{}' in TV_EPISODE results list.", episode.getName());
+
+            resultList.add(new BaseMediaEntity(
+                    Integer.toString(episode.getId()),
+                    parentId,
+                    episode.getName(),
+                    episode.getOverview(),
+                    MediaTypeEnum.TV_EPISODE,
+                    null,
+                    episode.getAir_date(),
+                    episode.getVote_average(),
+                    episode.getStill_path(),
+                    episode.getEpisode_number()
+            ));
+        }
+
+        return resultList;
+    }
+
     public List<BaseMediaResponseDTO> tmdbResponseToBaseMediaResponseDTOList(TMDBSearchResponseDTO tmdbResponse) {
 
-        log.debug("Mapping TMDB API response data to BaseMediaResponseDTO...");
+        log.debug("Mapping TMDB API response data to List<BaseMediaResponseDTO>...");
 
         List<BaseMediaResponseDTO> resultList = new ArrayList<>();
 

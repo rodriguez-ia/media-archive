@@ -1,5 +1,6 @@
 package com.isaiah.mediaarchive.client;
 
+import com.isaiah.mediaarchive.model.dto.DeezerAlbumDetailsSearchResponseDTO;
 import com.isaiah.mediaarchive.model.dto.DeezerSearchResponseDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -31,5 +32,15 @@ public class DeezerClient {
                         .build())
                 .retrieve()
                 .body(DeezerSearchResponseDTO.class);
+    }
+
+    public DeezerAlbumDetailsSearchResponseDTO searchAlbumDetailsByExternalId(String albumExternalId) {
+        return restClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/album/" + albumExternalId + "/tracks")
+                        .build())
+                .retrieve()
+                .body(DeezerAlbumDetailsSearchResponseDTO.class);
     }
 }

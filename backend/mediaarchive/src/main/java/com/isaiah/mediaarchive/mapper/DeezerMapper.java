@@ -1,18 +1,14 @@
 package com.isaiah.mediaarchive.mapper;
 
-import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
-import com.isaiah.mediaarchive.model.dto.DeezerResponseItemDTO;
-import com.isaiah.mediaarchive.model.dto.DeezerSearchResponseDTO;
+import com.isaiah.mediaarchive.model.dto.*;
+import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.enums.GenreEnum;
 import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class DeezerMapper {
@@ -49,9 +45,40 @@ public class DeezerMapper {
             Map.entry(197, GenreEnum.LATIN_MUSIC)
     );
 
+    public List<BaseMediaEntity> deezerAlbumDetailsResponseToBaseMediaEntityList(DeezerAlbumDetailsSearchResponseDTO deezerResponse, UUID parentId) {
+
+        log.debug("Mapping Deezer API album details response data to List<BaseMediaEntity>...");
+
+        List<BaseMediaEntity> resultList = new ArrayList<>();
+
+        for (DeezerAlbumTrackDTO track : deezerResponse.getData()) {
+
+            if (track.getId() == 0 || track.getTrack_position() == 0 || track.getTitle() == null || track.getTitle().isBlank()) {
+                continue;
+            }
+
+            log.debug("Including media item '{}' in MUSIC_TRACK results list.", track.getTitle());
+
+            resultList.add(new BaseMediaEntity(
+                    Integer.toString(track.getId()),
+                    parentId,
+                    track.getTitle(),
+                    null,
+                    MediaTypeEnum.MUSIC_TRACK,
+                    null,
+                    null,
+                    null,
+                    track.getPreview(),
+                    track.getTrack_position()
+            ));
+        }
+
+        return resultList;
+    }
+
     public List<BaseMediaResponseDTO> deezerResponseToBaseMediaResponseDTOList(DeezerSearchResponseDTO deezerResponse) {
 
-        log.debug("Mapping Deezer API response data to BaseMediaResponseDTO...");
+        log.debug("Mapping Deezer API response data to List<BaseMediaResponseDTO>...");
 
         List<BaseMediaResponseDTO> resultList = new ArrayList<>();
 

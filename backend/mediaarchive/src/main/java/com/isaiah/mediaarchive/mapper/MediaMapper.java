@@ -21,6 +21,7 @@ public class MediaMapper {
                 userMedia.getMediaItem().getReleaseDate(),
                 userMedia.getMediaItem().getCommunityRating(),
                 userMedia.getMediaItem().getCoverImgUrl(),
+                userMedia.getMediaItem().getSortOrder(),
                 userMedia.getStatus(),
                 userMedia.getPersonalRating(),
                 userMedia.getNotes(),
@@ -55,13 +56,15 @@ public class MediaMapper {
     public BaseMediaEntity addMediaDTOToBaseMediaEntity(AddMediaToLibraryRequestDTO requestDTO) {
         return new BaseMediaEntity(
                 requestDTO.getExternalId(),
+                null,
                 requestDTO.getTitle(),
                 requestDTO.getDescription(),
                 requestDTO.getMediaType(),
                 requestDTO.getGenres(),
                 requestDTO.getReleaseDate(),
                 requestDTO.getCommunityRating(),
-                requestDTO.getCoverImgUrl()
+                requestDTO.getCoverImgUrl(),
+                0
         );
     }
 }

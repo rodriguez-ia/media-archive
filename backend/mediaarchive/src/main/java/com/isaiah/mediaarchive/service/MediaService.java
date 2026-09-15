@@ -13,6 +13,7 @@ import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
+import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import com.isaiah.mediaarchive.repository.BaseMediaRepository;
 import com.isaiah.mediaarchive.repository.UserMediaRepository;
 import jakarta.transaction.Transactional;
@@ -20,9 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -165,6 +164,99 @@ public class MediaService {
         userMediaRepository.saveAll(newUserMediaList);
 
         return newUserMediaResponseList;
+    }
+
+    public List<UserMediaResponseDTO> getUserMediaByParentExternalId(UserEntity user, String externalId) {
+
+        log.info("Retrieving media data for user: username='{}', externalId='{}'", user.getUsername(), externalId);
+
+        // Get the BaseMediaEntity for the current (parent) media item
+        BaseMediaEntity parentMediaItem = baseMediaRepository.findByExternalId(externalId);
+
+        if (parentMediaItem == null) {
+            throw new MediaNotFoundException("No BaseMediaItem found where externalId is '" + externalId + "'");
+        }
+
+        // Try querying for UserMediaEntity TV show seasons from database
+        List<UserMediaEntity> userMediaList = userMediaRepository.findAllByUserIdAndMediaItemParentId(user.getId(), parentMediaItem.getId());
+        List<UserMediaResponseDTO> userMediaResponseList = new ArrayList<>();
+
+        if (userMediaList == null || userMediaList.isEmpty()) {
+            log.debug("NO UserMediaEntity objects found for user: username='{}'", user.getUsername());
+            log.debug("Querying BaseMediaEntity objects where parentId = '{}'", parentMediaItem.getId());
+
+            List<BaseMediaEntity> baseMediaList = baseMediaRepository.findAllByParentId(parentMediaItem.getId());
+
+            if (baseMediaList == null || baseMediaList.isEmpty()) {
+                log.debug("NO BaseMediaEntity objects found: parentId='{}'", externalId);
+                log.debug("Calling external API to search for media");
+
+                baseMediaList = fetchAndMapChildMedia(parentMediaItem);
+
+                if (baseMediaList == null || baseMediaList.isEmpty()) {
+                    throw new MediaNotFoundException("Media item details not found via external API");
+                }
+
+                baseMediaRepository.saveAll(baseMediaList);
+            }
+
+            log.debug("Creating UserMediaEntity objects from existing BaseMediaEntity objects");
+
+            userMediaList = new ArrayList<>();
+
+            for (BaseMediaEntity baseMedia : baseMediaList) {
+                UserMediaEntity userMedia = mediaMapper.baseMediaEntityAndUserEntityToUserMediaEntity(baseMedia, user);
+
+                userMediaList.add(userMedia);
+                userMediaResponseList.add(mediaMapper.userMediaEntityToUserMediaResponse(userMedia));
+            }
+
+            userMediaRepository.saveAll(userMediaList);
+        } else {
+            log.debug("UserMediaEntity objects found for user");
+
+            for (UserMediaEntity userMedia : userMediaList) {
+                userMediaResponseList.add(mediaMapper.userMediaEntityToUserMediaResponse(userMedia));
+            }
+        }
+
+        return userMediaResponseList;
+    }
+
+    private List<BaseMediaEntity> fetchAndMapChildMedia(BaseMediaEntity parentMediaItem) {
+
+        List<BaseMediaEntity> resultList = new ArrayList<>();
+
+        if (parentMediaItem == null) {
+            return resultList;
+        }
+
+        switch (parentMediaItem.getMediaType()) {
+            case MediaTypeEnum.TV_SHOW:
+                TMDBTVShowDetailsSearchResponseDTO tvShowDetails = tmdbClient.searchTVShowDetailsByExternalId(parentMediaItem.getExternalId());
+                resultList = tmdbMapper.tmdbTVShowDetailsResponseToBaseMediaEntityList(tvShowDetails, parentMediaItem.getId());
+
+                break;
+            case MediaTypeEnum.TV_SEASON:
+                Optional<BaseMediaEntity> tvShowEntity = baseMediaRepository.findById(parentMediaItem.getParentId());
+
+                if (tvShowEntity.isEmpty()) {
+                    break;
+                }
+
+                TMDBTVSeasonDetailsSearchResponseDTO tvSeasonDetails = tmdbClient.searchTVSeasonDetailsByExternalId(tvShowEntity.get().getExternalId(), parentMediaItem.getSortOrder());
+                resultList = tmdbMapper.tmdbTVSeasonDetailsResponseToBaseMediaEntityList(tvSeasonDetails, parentMediaItem.getId());
+
+                break;
+            case MediaTypeEnum.MUSIC_ALBUM:
+
+                DeezerAlbumDetailsSearchResponseDTO albumDetails = deezerClient.searchAlbumDetailsByExternalId(parentMediaItem.getExternalId());
+                resultList = deezerMapper.deezerAlbumDetailsResponseToBaseMediaEntityList(albumDetails, parentMediaItem.getId());
+
+                break;
+        }
+
+        return resultList;
     }
 
     @Transactional

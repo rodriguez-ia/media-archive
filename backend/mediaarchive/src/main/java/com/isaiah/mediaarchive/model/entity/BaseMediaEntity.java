@@ -29,6 +29,8 @@ public class BaseMediaEntity {
     @Column(nullable = false, unique = true)
     private String externalId;
 
+    private UUID parentId;
+
     @Column(nullable = false, length = 500)
     private String title;
 
@@ -58,16 +60,21 @@ public class BaseMediaEntity {
     @Column(length = 2048)
     private String coverImgUrl;
 
+    private int sortOrder;
+
     public BaseMediaEntity(
             String externalId,
+            UUID parentId,
             String title,
             String description,
             MediaTypeEnum mediaType,
             Set<GenreEnum> genres,
             LocalDate releaseDate,
             BigDecimal communityRating,
-            String coverImgUrl) {
+            String coverImgUrl,
+            int sortOrder) {
         this.externalId = externalId;
+        this.parentId = parentId;
         this.title = title;
         this.description = description;
         this.mediaType = mediaType;
@@ -75,5 +82,6 @@ public class BaseMediaEntity {
         this.releaseDate = releaseDate;
         this.communityRating = communityRating;
         this.coverImgUrl = coverImgUrl;
+        this.sortOrder = sortOrder;
     }
 }

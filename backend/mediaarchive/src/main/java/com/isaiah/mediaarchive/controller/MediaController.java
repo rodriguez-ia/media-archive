@@ -52,6 +52,20 @@ public class MediaController {
         );
     }
 
+    @GetMapping("/library/{externalId}")
+    public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getMediaItemDetails(@AuthenticationPrincipal UserEntity user,
+                                                                                       @PathVariable String externalId) {
+        List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.getUserMediaByParentExternalId(user, externalId);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTOList,
+                        "MediaController.getMediaItemDetails",
+                        "Retrieved media item details successfully: user=" + user.getUsername() + ", externalId=" + externalId
+                )
+        );
+    }
+
     @PatchMapping("/library/{externalId}")
     public ResponseEntity<ApiResponse<UserMediaResponseDTO>> updateUserMediaItem(@AuthenticationPrincipal UserEntity user,
                                                                                  @PathVariable String externalId,

@@ -16,6 +16,9 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
         FROM UserMediaEntity um
         JOIN FETCH um.mediaItem
         WHERE um.user.id = :userId
+            AND um.mediaItem.mediaType != 'TV_SEASON'
+            AND um.mediaItem.mediaType != 'TV_EPISODE'
+            AND um.mediaItem.mediaType != 'MUSIC_TRACK'
         ORDER BY um.mediaItem.title
     """)
     List<UserMediaEntity> findAllByUserId(UUID userId);
@@ -23,4 +26,14 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
     List<UserMediaEntity> findAllByUserIdAndMediaItemExternalIdIn(UUID userId, List<String> externalIds);
 
     UserMediaEntity findByUserIdAndMediaItemExternalId(UUID userId, String externalId);
+
+    @Query("""
+    SELECT um
+    FROM UserMediaEntity um
+    JOIN FETCH um.mediaItem
+    WHERE um.user.id = :userId
+        AND um.mediaItem.parentId = :parentId
+    ORDER BY um.mediaItem.sortOrder
+    """)
+    List<UserMediaEntity> findAllByUserIdAndMediaItemParentId(UUID userId, UUID parentId);
 }

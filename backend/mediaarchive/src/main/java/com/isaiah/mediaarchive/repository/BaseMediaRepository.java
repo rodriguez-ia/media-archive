@@ -13,8 +13,20 @@ public interface BaseMediaRepository extends JpaRepository<BaseMediaEntity, UUID
         SELECT um.mediaItem
         FROM UserMediaEntity um
         WHERE um.user.id = :userId
+            AND um.mediaItem.mediaType != 'TV_SEASON'
+            AND um.mediaItem.mediaType != 'TV_EPISODE'
+            AND um.mediaItem.mediaType != 'MUSIC_TRACK'
     """)
     List<BaseMediaEntity> findAllByUserId(UUID userId);
 
     List<BaseMediaEntity> findAllByExternalIdIn(List<String> externalIds);
+
+    @Query("""
+        SELECT bm
+        FROM BaseMediaEntity bm
+        WHERE bm.externalId = :externalId
+    """)
+    BaseMediaEntity findByExternalId(String externalId);
+
+    List<BaseMediaEntity> findAllByParentId(UUID parentId);
 }
