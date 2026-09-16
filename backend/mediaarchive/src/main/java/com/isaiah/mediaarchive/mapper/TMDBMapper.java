@@ -73,7 +73,7 @@ public class TMDBMapper {
                     null,
                     season.getAir_date(),
                     season.getVote_average(),
-                    season.getPoster_path(),
+                    buildCoverImgUrl(season.getPoster_path()),
                     season.getSeason_number()
             ));
         }
@@ -104,7 +104,7 @@ public class TMDBMapper {
                     null,
                     episode.getAir_date(),
                     episode.getVote_average(),
-                    episode.getStill_path(),
+                    buildCoverImgUrl(episode.getStill_path()),
                     episode.getEpisode_number()
             ));
         }
