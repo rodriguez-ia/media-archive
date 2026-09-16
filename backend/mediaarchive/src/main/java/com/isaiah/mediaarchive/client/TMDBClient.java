@@ -54,7 +54,7 @@ public class TMDBClient {
         return restClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/tv/" + tvShowExternalId + "/" + seasonNumber.toString())
+                        .path("/tv/" + tvShowExternalId + "/season/" + seasonNumber.toString())
                         .build())
                 .header("Authorization", "Bearer " + apiReadAccessToken)
                 .retrieve()
