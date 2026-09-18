@@ -425,32 +425,6 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
                             color: "text.secondary",
                         }}
                     >
-                        {/* View Count */}
-                        {isMovieOrTV && (
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    gap: 0.75
-                                }}
-                            >
-                                <VisibilityIcon
-                                    sx={{
-                                        fontSize: 18,
-                                        opacity: 0.7,
-                                    }}
-                                />
-
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        fontWeight: 500,
-                                    }}
-                                >
-                                    {mediaItem.consumptionCount || 0}
-                                </Typography>
-                            </Box>
-                        )}
-
                         {/* Format */}
                         {mediaItem.format && (
                             <Box
@@ -491,6 +465,40 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
                                     }}
                                 >
                                     {mediaItem.format}
+                                </Typography>
+                            </Box>
+                        ) || (
+                            // Empty Box to keep formatting if mediaItem.format is null
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    gap: 0.75
+                                }}
+                            />
+                        )}
+
+                        {/* View Count */}
+                        {isMovieOrTV && (
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    gap: 0.75
+                                }}
+                            >
+                                <VisibilityIcon
+                                    sx={{
+                                        fontSize: 18,
+                                        opacity: 0.7,
+                                    }}
+                                />
+
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontWeight: 500,
+                                    }}
+                                >
+                                    {mediaItem.consumptionCount || 0}
                                 </Typography>
                             </Box>
                         )}
