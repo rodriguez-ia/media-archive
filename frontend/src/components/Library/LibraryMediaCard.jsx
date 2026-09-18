@@ -35,7 +35,7 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
     const hasRating = mediaItem.communityRating != null;
     let ratingColor = "rgba(255, 255, 255, 0.35)";
     if (hasRating) {
-        if (mediaItem.communityRating >= 7) {
+        if (mediaItem.communityRating >= 8) {
             ratingColor = "#66bb6a";
         } else if (mediaItem.communityRating >= 6) {
             ratingColor = "#ffca28";
