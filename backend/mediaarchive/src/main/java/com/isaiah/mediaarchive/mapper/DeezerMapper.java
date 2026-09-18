@@ -68,7 +68,7 @@ public class DeezerMapper {
                     null,
                     null,
                     null,
-                    track.getPreview(),
+                    null,
                     track.getTrack_position()
             ));
         }
