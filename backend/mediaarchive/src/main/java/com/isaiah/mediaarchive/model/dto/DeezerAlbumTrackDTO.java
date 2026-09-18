@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DeezerAlbumTrackDTO {
 
-    public int id;
+    public long id;
 
     public String title;
 

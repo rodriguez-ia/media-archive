@@ -60,7 +60,7 @@ public class DeezerMapper {
             log.debug("Including media item '{}' in MUSIC_TRACK results list.", track.getTitle());
 
             resultList.add(new BaseMediaEntity(
-                    Integer.toString(track.getId()),
+                    Long.toString(track.getId()),
                     parentId,
                     track.getTitle(),
                     null,
