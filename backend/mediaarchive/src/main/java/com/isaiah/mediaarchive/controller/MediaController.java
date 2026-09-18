@@ -1,9 +1,6 @@
 package com.isaiah.mediaarchive.controller;
 
-import com.isaiah.mediaarchive.model.dto.BaseMediaResponseDTO;
-import com.isaiah.mediaarchive.model.dto.AddMediaToLibraryRequestDTO;
-import com.isaiah.mediaarchive.model.dto.UpdateUserMediaItemRequestDTO;
-import com.isaiah.mediaarchive.model.dto.UserMediaResponseDTO;
+import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.service.MediaService;
 import com.isaiah.mediaarchive.util.ApiResponse;
@@ -114,6 +111,19 @@ public class MediaController {
                         baseMediaResponseDTOList,
                         "MediaController.searchExternalMedia",
                         "Search for external media was successful"
+                )
+        );
+    }
+
+    @GetMapping("/externalMedia/music/track/{externalId}")
+    public ResponseEntity<ApiResponse<DeezerTrackSearchResponseDTO>> getMusicTrackDetails(@PathVariable String externalId) {
+        DeezerTrackSearchResponseDTO musicTrackDetails = mediaService.getMusicTrackDetails(externalId); // call https://api.deezer.com/track/{externalId}
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        musicTrackDetails,
+                        "MediaController.getMusicTrackDetails",
+                        "Retrieved music track details successfully"
                 )
         );
     }

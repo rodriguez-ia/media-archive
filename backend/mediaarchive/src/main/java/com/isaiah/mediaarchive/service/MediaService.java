@@ -345,4 +345,17 @@ public class MediaService {
 
         return searchResultsList;
     }
+
+    public DeezerTrackSearchResponseDTO getMusicTrackDetails(String externalId) {
+
+        log.info("Searching Deezer database for music track with externalId '{}'", externalId);
+
+        DeezerTrackSearchResponseDTO trackDetails = deezerClient.searchTrackDetailsByExternalId(externalId);
+
+        if (trackDetails == null) {
+            throw new MediaNotFoundException("Track not found in Deezer database for externalId '" + externalId + "'");
+        }
+
+        return trackDetails;
+    }
 }
