@@ -50,6 +50,31 @@ export async function addToUserLibrary(mediaItems) {
     return body;
 }
 
+export async function fetchSubItemMedia(externalId) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `${API_BASE_URL}/media/library/${encodeURIComponent(externalId)}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    const body = await response.json();
+
+    if (!response.ok) {
+        const error = new Error(body.message || "Request failed");
+        error.status = response.status;
+        throw error;
+    }
+
+    return body;
+}
+
 export async function updateUserMediaItem(externalId, mediaItemDetails) {
     const token = localStorage.getItem("token");
 
@@ -95,6 +120,30 @@ export async function searchExternalMedia(
 
     const response = await fetch(
         `${API_BASE_URL}/media/externalMedia?${params}`,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+
+    const body = await response.json();
+
+    if (!response.ok) {
+        const error = new Error(body.message || "Request failed");
+        error.status = response.status;
+        throw error;
+    }
+
+    return body;
+}
+
+export async function getMusicTrackDetails(externalId) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `${API_BASE_URL}/media/externalMedia/music/track/${encodeURIComponent(externalId)}`,
         {
             method: "GET",
             headers: {

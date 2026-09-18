@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StarIcon from "@mui/icons-material/Star";
@@ -11,6 +10,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import LibraryMediaSubItemsSection from "./LibraryMediaSubItemsSection.jsx";
 import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
 import {
     CardMedia,
@@ -508,6 +508,38 @@ function LibraryMediaModal({
                                     >
                                         {mediaItem.description}
                                     </Typography>
+                                </Box>
+                            )}
+
+                            {/* ================================================== */}
+                            {/* RELATED MEDIA                                      */}
+                            {/* ================================================== */}
+                            {(mediaItem.mediaType === "TV_SHOW" ||
+                                mediaItem.mediaType === "MUSIC_ALBUM") && (
+                                <Box
+                                    sx={{
+                                        mt: 1,
+                                        mb: 1,
+                                    }}
+                                >
+                                    <LibraryMediaSubItemsSection
+                                        mediaItem={mediaItem}
+                                        sectionLabel={
+                                            mediaItem.mediaType === "TV_SHOW"
+                                                ? "Seasons"
+                                                : "Tracklist"
+                                        }
+                                        itemType={
+                                            mediaItem.mediaType === "TV_SHOW"
+                                                ? "TV_SEASON"
+                                                : "MUSIC_TRACK"
+                                        }
+                                        emptyMessage={
+                                            mediaItem.mediaType === "TV_SHOW"
+                                                ? "No seasons found."
+                                                : "No tracks found."
+                                        }
+                                    />
                                 </Box>
                             )}
 
