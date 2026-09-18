@@ -46,7 +46,7 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
 
     const isMovieOrTV = mediaItem.mediaType === "MOVIE" || mediaItem.mediaType === "TV_SHOW";
     const isMusic = mediaItem.mediaType === "MUSIC_ALBUM";
-    const isBook = mediaItem.mediaItem === "BOOK";
+    const isBook = mediaItem.mediaType === "BOOK";
 
     const truncateDescription = (description) => {
         if (!description) {
