@@ -49,6 +49,9 @@ function LibraryMediaSubItemsSection({
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const playingAudioRef = useRef(null);
+    const [playingTrackId, setPlayingTrackId] = useState(null);
+
     const handleAccordionChange = async (_, isExpanded) => {
         setExpanded(isExpanded);
 
@@ -73,6 +76,25 @@ function LibraryMediaSubItemsSection({
             setError("Unable to load related media.");
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleTrackPlay = (trackId, audioElement) => {
+        if (
+            playingAudioRef.current &&
+            playingAudioRef.current !== audioElement
+        ) {
+            playingAudioRef.current.pause();
+        }
+
+        playingAudioRef.current = audioElement;
+        setPlayingTrackId(trackId);
+    };
+
+    const handleTrackStop = (audioElement) => {
+        if (playingAudioRef.current === audioElement) {
+            playingAudioRef.current = null;
+            setPlayingTrackId(null);
         }
     };
 
@@ -155,6 +177,9 @@ function LibraryMediaSubItemsSection({
                                     <TrackRow
                                         key={subItem.externalId}
                                         track={subItem}
+                                        isPlaying={playingTrackId === subItem.externalId}
+                                        onPlay={handleTrackPlay}
+                                        onStop={handleTrackStop}
                                     />
                                 ) : (
                                     <SeasonAccordion
@@ -408,17 +433,16 @@ function EpisodeRow({ episode }) {
     );
 }
 
-function TrackRow({ track }) {
+function TrackRow({ track, isPlaying, onPlay, onStop }) {
     const audioRef = useRef(null);
 
-    const [isPlaying, setIsPlaying] = useState(false);
     const [isLoadingPreview, setIsLoadingPreview] = useState(false);
     const [previewError, setPreviewError] = useState(null);
 
     const handlePlayPause = async () => {
         if (isPlaying) {
             audioRef.current.pause();
-            setIsPlaying(false);
+            onStop(audioRef.current);
             return;
         }
 
@@ -431,10 +455,12 @@ function TrackRow({ track }) {
             setPreviewError(null);
 
             /*
-             * Fetch the track details so we receive a fresh
-             * temporary preview URL from the backend.
-             */
-            const result = await getMusicTrackDetails(track.externalId);
+            * Fetch the track details so we receive a fresh
+            * temporary preview URL from the backend.
+            */
+            const result = await getMusicTrackDetails(
+                track.externalId
+            );
 
             const freshTrack = result.data;
 
@@ -445,20 +471,27 @@ function TrackRow({ track }) {
             }
 
             /*
-             * The preview URL is temporary, so it is only
-             * assigned to the audio element for playback.
-             * It is not persisted.
-             */
+            * Tell the parent that this track is about to play.
+            * The parent will stop any other currently playing
+            * track.
+            */
+            onPlay(track.externalId, audioRef.current);
+
+            /*
+            * The preview URL is temporary, so it is only
+            * assigned to the audio element for playback.
+            * It is not persisted.
+            */
             audioRef.current.src = freshTrack.preview;
 
             await audioRef.current.play();
-
-            setIsPlaying(true);
         } catch (err) {
             console.error(
                 "Failed to play track preview:",
                 err
             );
+
+            onStop(audioRef.current);
 
             setPreviewError(
                 "Unable to play track preview."
@@ -469,7 +502,7 @@ function TrackRow({ track }) {
     };
 
     const handleEnded = () => {
-        setIsPlaying(false);
+        onStop(audioRef.current);
     };
 
     return (
