@@ -2,6 +2,7 @@ package com.isaiah.mediaarchive.repository;
 
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,14 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
         ORDER BY um.mediaItem.title
     """)
     List<UserMediaEntity> findAllByUserId(UUID userId);
+
+    @Modifying
+    @Query("""
+        DELETE FROM UserMediaEntity um
+        WHERE um.user.id = :userId
+        AND um.mediaItem.externalId IN :externalIds
+    """)
+    int deleteUserMediaByExternalIdList(UUID userId, List<String> externalIds);
 
     List<UserMediaEntity> findAllByUserIdAndMediaItemExternalIdIn(UUID userId, List<String> externalIds);
 

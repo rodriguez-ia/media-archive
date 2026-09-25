@@ -89,4 +89,19 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+
+    @ExceptionHandler(UserMediaDeletionException.class)
+    public ResponseEntity<ApiResponse<?>> handleUserMediaDeletion(UserMediaDeletionException ex) {
+
+        log.warn("User Media deletion error: message='{}'", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ApiResponseFactory.failure(
+                        null,
+                        404,
+                        "UserMediaDeletionException",
+                        ex.getMessage()
+                )
+        );
+    }
 }

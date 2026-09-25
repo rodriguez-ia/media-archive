@@ -6,6 +6,7 @@ import com.isaiah.mediaarchive.service.MediaService;
 import com.isaiah.mediaarchive.util.ApiResponse;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,20 @@ public class MediaController {
                         userMediaResponseDTOList,
                         "MediaController.addToUserLibrary",
                         "Added media to user library successfully"
+                )
+        );
+    }
+
+    @DeleteMapping("/library")
+    public ResponseEntity<ApiResponse<DeleteUserMediaResponseDTO>> deleteFromUserLibrary(@AuthenticationPrincipal UserEntity user,
+                                                                                         @RequestBody @NotEmpty List<String> externalIdList) {
+        DeleteUserMediaResponseDTO deletedUserMediaResponseDTO = mediaService.deleteFromUserLibrary(user, externalIdList);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        deletedUserMediaResponseDTO,
+                        "MediaController.deleteFromUserLibrary",
+                        "Deleted media from user library successfully"
                 )
         );
     }
@@ -117,7 +132,7 @@ public class MediaController {
 
     @GetMapping("/externalMedia/music/track/{externalId}")
     public ResponseEntity<ApiResponse<DeezerTrackSearchResponseDTO>> getMusicTrackDetails(@PathVariable String externalId) {
-        DeezerTrackSearchResponseDTO musicTrackDetails = mediaService.getMusicTrackDetails(externalId); // call https://api.deezer.com/track/{externalId}
+        DeezerTrackSearchResponseDTO musicTrackDetails = mediaService.getMusicTrackDetails(externalId);
 
         return ResponseEntity.status(200).body(
                 ApiResponseFactory.success(

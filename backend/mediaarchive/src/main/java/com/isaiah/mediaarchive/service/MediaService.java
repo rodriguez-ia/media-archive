@@ -5,6 +5,7 @@ import com.isaiah.mediaarchive.client.GoogleBooksClient;
 import com.isaiah.mediaarchive.client.TMDBClient;
 import com.isaiah.mediaarchive.exception.MediaNotFoundException;
 import com.isaiah.mediaarchive.exception.MissingKeywordException;
+import com.isaiah.mediaarchive.exception.UserMediaDeletionException;
 import com.isaiah.mediaarchive.mapper.DeezerMapper;
 import com.isaiah.mediaarchive.mapper.GoogleBooksMapper;
 import com.isaiah.mediaarchive.mapper.MediaMapper;
@@ -166,6 +167,22 @@ public class MediaService {
         return newUserMediaResponseList;
     }
 
+    @Transactional
+    public DeleteUserMediaResponseDTO deleteFromUserLibrary(UserEntity user, List<String> externalIdList) {
+
+        log.info("Deleting media items from user library: username='{}'", user.getUsername());
+
+        // TODO: What if we're deleting a TV_SHOW or MUSIC_ALBUM? Need to delete associated TV_SEASON, TV_EPISODE, MUSIC_TRACK items as well
+
+        int rowsDeleted = userMediaRepository.deleteUserMediaByExternalIdList(user.getId(), externalIdList);
+
+        if (rowsDeleted != externalIdList.size()) {
+            throw new UserMediaDeletionException("Expected to delete %d media items, but deleted %d".formatted(externalIdList.size(), rowsDeleted));
+        }
+
+        return new DeleteUserMediaResponseDTO(rowsDeleted, externalIdList);
+    }
+
     public List<UserMediaResponseDTO> getUserMediaByParentExternalId(UserEntity user, String externalId) {
 
         log.info("Retrieving media data for user: username='{}', externalId='{}'", user.getUsername(), externalId);
@@ -250,6 +267,7 @@ public class MediaService {
                 break;
             case MediaTypeEnum.MUSIC_ALBUM:
 
+                log.debug("External ID: {}", parentMediaItem.getExternalId());
                 DeezerAlbumDetailsSearchResponseDTO albumDetails = deezerClient.searchAlbumDetailsByExternalId(parentMediaItem.getExternalId());
                 resultList = deezerMapper.deezerAlbumDetailsResponseToBaseMediaEntityList(albumDetails, parentMediaItem.getId());
 
