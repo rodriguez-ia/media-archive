@@ -52,8 +52,8 @@ public class MediaController {
 
     @DeleteMapping("/library")
     public ResponseEntity<ApiResponse<DeleteUserMediaResponseDTO>> deleteFromUserLibrary(@AuthenticationPrincipal UserEntity user,
-                                                                                         @RequestBody @NotEmpty List<String> externalIdList) {
-        DeleteUserMediaResponseDTO deletedUserMediaResponseDTO = mediaService.deleteFromUserLibrary(user, externalIdList);
+                                                                                         @RequestBody @NotEmpty List<DeleteUserMediaRequestDTO> userMediaDeletionList) {
+        DeleteUserMediaResponseDTO deletedUserMediaResponseDTO = mediaService.deleteFromUserLibrary(user, userMediaDeletionList);
 
         return ResponseEntity.status(200).body(
                 ApiResponseFactory.success(

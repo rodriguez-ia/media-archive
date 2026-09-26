@@ -1,5 +1,6 @@
 package com.isaiah.mediaarchive.repository;
 
+import com.isaiah.mediaarchive.model.dto.MediaReferenceDTO;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,4 +30,13 @@ public interface BaseMediaRepository extends JpaRepository<BaseMediaEntity, UUID
     BaseMediaEntity findByExternalId(String externalId);
 
     List<BaseMediaEntity> findAllByParentId(UUID parentId);
+
+    @Query("""
+        SELECT child.externalId, child.mediaType
+        FROM BaseMediaEntity child
+        WHERE child.parentId IN (SELECT parent.id
+                                    FROM BaseMediaEntity parent
+                                    WHERE parent.externalId IN :externalIds)
+    """)
+    List<MediaReferenceDTO> findMediaReferenceByParentExternalId(List<String> externalIds);
 }

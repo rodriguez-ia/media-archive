@@ -168,19 +168,72 @@ public class MediaService {
     }
 
     @Transactional
-    public DeleteUserMediaResponseDTO deleteFromUserLibrary(UserEntity user, List<String> externalIdList) {
+    public DeleteUserMediaResponseDTO deleteFromUserLibrary(UserEntity user, List<DeleteUserMediaRequestDTO> userMediaDeletionList) {
 
         log.info("Deleting media items from user library: username='{}'", user.getUsername());
 
-        // TODO: What if we're deleting a TV_SHOW or MUSIC_ALBUM? Need to delete associated TV_SEASON, TV_EPISODE, MUSIC_TRACK items as well
+        List<String> fullExternalIdList = getAllRelatedUserMediaExternalIds(userMediaDeletionList);
 
-        int rowsDeleted = userMediaRepository.deleteUserMediaByExternalIdList(user.getId(), externalIdList);
+        int rowsDeleted = userMediaRepository.deleteUserMediaByExternalIdList(user.getId(), fullExternalIdList);
 
-        if (rowsDeleted != externalIdList.size()) {
-            throw new UserMediaDeletionException("Expected to delete %d media items, but deleted %d".formatted(externalIdList.size(), rowsDeleted));
+        if (rowsDeleted != fullExternalIdList.size()) {
+            throw new UserMediaDeletionException("Expected to delete %d media items, but deleted %d".formatted(fullExternalIdList.size(), rowsDeleted));
         }
 
-        return new DeleteUserMediaResponseDTO(rowsDeleted, externalIdList);
+        return new DeleteUserMediaResponseDTO(rowsDeleted, fullExternalIdList);
+    }
+
+    private List<String> getAllRelatedUserMediaExternalIds(List<DeleteUserMediaRequestDTO> userMediaItems) {
+
+        log.info("Searching provided media items list for related child items");
+
+        List<String> resultList = new ArrayList<>();
+        List<String> parentExternalIdsForQuery = new ArrayList<>();
+
+        for (DeleteUserMediaRequestDTO userMediaItem : userMediaItems) {
+            MediaTypeEnum mediaType = userMediaItem.getMediaType();
+            String externalId = userMediaItem.getExternalId();
+
+            if (mediaType == MediaTypeEnum.TV_SHOW || mediaType == MediaTypeEnum.MUSIC_ALBUM) {
+                parentExternalIdsForQuery.add(externalId);
+            }
+
+            resultList.add(externalId);
+        }
+
+        if (parentExternalIdsForQuery.isEmpty()) {
+            log.debug("None of the provided external ids have any child items");
+
+            return resultList;
+        }
+
+        List<MediaReferenceDTO> childMediaReferences = baseMediaRepository.findMediaReferenceByParentExternalId(parentExternalIdsForQuery);
+        parentExternalIdsForQuery = new ArrayList<>();
+
+        for (MediaReferenceDTO mediaReference : childMediaReferences) {
+            MediaTypeEnum mediaType = mediaReference.getMediaType();
+            String externalId = mediaReference.getExternalId();
+
+            if (mediaType == MediaTypeEnum.TV_SEASON) {
+                parentExternalIdsForQuery.add(externalId);
+            }
+
+            resultList.add(externalId);
+        }
+
+        if (parentExternalIdsForQuery.isEmpty()) {
+            log.debug("None of the additional, queried external ids have any child items");
+
+            return resultList;
+        }
+
+        List<MediaReferenceDTO> grandchildMediaReferences = baseMediaRepository.findMediaReferenceByParentExternalId(parentExternalIdsForQuery);
+
+        for (MediaReferenceDTO mediaReference : grandchildMediaReferences) {
+            resultList.add(mediaReference.getExternalId());
+        }
+
+        return resultList;
     }
 
     public List<UserMediaResponseDTO> getUserMediaByParentExternalId(UserEntity user, String externalId) {
