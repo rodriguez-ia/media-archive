@@ -1,103 +1,414 @@
 import { useState } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import SortIcon from '@mui/icons-material/Sort';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
+import {
+    Box,
+    Button,
+    InputBase,
+    Stack,
+    Typography,
+} from '@mui/material';
 
-function LibraryToolbar({ label }) {
+const SearchField = styled('div')(({ theme }) => ({
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
 
-    const Search = styled('div')(({ theme }) => ({
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: alpha(theme.palette.common.white, 0.15),
-        '&:hover': {
-            backgroundColor: alpha(theme.palette.common.white, 0.25),
+    width: '100%',
+    minWidth: 0,
+
+    border: `1px solid ${alpha(theme.palette.common.white, 0.12)}`,
+    borderRadius: 1.25,
+
+    background: `
+        linear-gradient(
+            135deg,
+            ${alpha(theme.palette.common.white, 0.065)},
+            ${alpha(theme.palette.common.white, 0.025)}
+        )
+    `,
+
+    transition: 'all 160ms ease',
+
+    '&:hover': {
+        borderColor: alpha(theme.palette.primary.main, 0.35),
+        backgroundColor: alpha(theme.palette.common.white, 0.07),
+    },
+
+    '&:focus-within': {
+        borderColor: theme.palette.primary.main,
+        boxShadow: `
+            0 0 0 1px ${alpha(theme.palette.primary.main, 0.18)},
+            0 0 18px ${alpha(theme.palette.primary.main, 0.10)}
+        `,
+    },
+
+    [theme.breakpoints.up('sm')]: {
+        width: 220,
+    },
+
+    [theme.breakpoints.up('md')]: {
+        width: 250,
+    },
+}));
+
+
+const SearchIconWrapper = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    paddingLeft: theme.spacing(1.25),
+
+    color: alpha(theme.palette.common.white, 0.5),
+
+    '& svg': {
+        fontSize: 17,
+    },
+}));
+
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    flex: 1,
+    minWidth: 0,
+
+    color: theme.palette.common.white,
+
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(0.8, 1.1, 0.8, 0.7),
+        fontSize: '0.76rem',
+
+        '&::placeholder': {
+            color: alpha(theme.palette.common.white, 0.42),
+            opacity: 1,
         },
-        marginLeft: 0,
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
-            width: 'auto',
-        },
-    }));
+    },
+}));
 
-    const SearchIconWrapper = styled('div')(({ theme }) => ({
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }));
 
-    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-        color: 'inherit',
-        width: '100%',
-        '& .MuiInputBase-input': {
-            padding: theme.spacing(1, 1, 1, 0),
-            // vertical padding + font size from searchIcon
-            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-            transition: theme.transitions.create('width'),
-            [theme.breakpoints.up('sm')]: {
-            width: '12ch',
-            '&:focus': {
-                width: '20ch',
-            },
-            },
-        },
-    }));
-
+function ToolbarButton({ icon, children, active = false, ...props }) {
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
+        <Button
+            {...props}
+            startIcon={icon}
+            size="small"
+            variant="outlined"
+            sx={(theme) => ({
+                position: 'relative',
+
+                minHeight: 33,
+                px: 1.2,
+
+                borderRadius: 1,
+
+                color: active
+                    ? theme.palette.common.white
+                    : alpha(theme.palette.common.white, 0.68),
+
+                borderColor: active
+                    ? alpha(theme.palette.primary.main, 0.5)
+                    : alpha(theme.palette.common.white, 0.11),
+
+                background: active
+                    ? `linear-gradient(
+                        135deg,
+                        ${alpha(theme.palette.primary.main, 0.16)},
+                        ${alpha(theme.palette.primary.main, 0.05)}
+                    )`
+                    : alpha(theme.palette.common.white, 0.025),
+
+                fontSize: '0.73rem',
+                fontWeight: 500,
+                textTransform: 'none',
+
+                transition: 'all 150ms ease',
+
+                '& .MuiButton-startIcon': {
+                    marginRight: 0.55,
+
+                    color: active
+                        ? theme.palette.primary.main
+                        : alpha(theme.palette.common.white, 0.45),
+
+                    '& svg': {
+                        fontSize: 16,
+                    },
+                },
+
+                '&:hover': {
+                    color: theme.palette.common.white,
+
+                    borderColor: alpha(
+                        theme.palette.primary.main,
+                        0.55
+                    ),
+
+                    backgroundColor: alpha(
+                        theme.palette.primary.main,
+                        0.09
+                    ),
+
+                    boxShadow: `
+                        0 0 12px ${alpha(
+                            theme.palette.primary.main,
+                            0.08
+                        )}
+                    `,
+
+                    '& .MuiButton-startIcon': {
+                        color: theme.palette.primary.main,
+                    },
+                },
+
+                '&:active': {
+                    transform: 'translateY(1px)',
+                },
+
+                '&:focus-visible': {
+                    outline: `2px solid ${theme.palette.primary.main}`,
+                    outlineOffset: 2,
+                },
+
+                ...props.sx,
+            })}
+        >
+            {children}
+        </Button>
+    );
+}
+
+
+function LibraryToolbar() {
+    return (
+        <Box
+            sx={(theme) => ({
+                position: 'relative',
+                width: '100%',
+
+                px: {
+                    xs: 1.25,
+                    sm: 1.75,
+                    md: 2,
+                },
+
+                py: {
+                    xs: 0.9,
+                    sm: 0.8,
+                },
+
+                background: `
+                    linear-gradient(
+                        180deg,
+                        #161616 0%,
+                        #121212 100%
+                    )
+                `,
+
+                borderBottom: '1px solid',
+                borderColor: alpha(theme.palette.common.white, 0.075),
+
+                // Extended atmospheric glow.
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+
+                    width: {
+                        xs: 270,
+                        sm: 400,
+                        md: 450,
+                    },
+
+                    height: '100%',
+                    pointerEvents: 'none',
+
+                    background: `
+                        radial-gradient(
+                            ellipse at left center,
+                            ${alpha(
+                                theme.palette.primary.main,
+                                0.10
+                            )} 0%,
+                            ${alpha(
+                                theme.palette.primary.main,
+                                0.045
+                            )} 35%,
+                            transparent 78%
+                        )
+                    `,
+                },
+
+                // Accent rail underneath.
+                '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    bottom: -1,
+
+                    width: {
+                        xs: 150,
+                        sm: 230,
+                        md: 300,
+                    },
+
+                    height: 2,
+
+                    background: `
+                        linear-gradient(
+                            90deg,
+                            ${theme.palette.primary.main},
+                            ${alpha(
+                                theme.palette.primary.main,
+                                0.25
+                            )},
+                            transparent
+                        )
+                    `,
+
+                    boxShadow: `
+                        0 0 10px ${alpha(
+                            theme.palette.primary.main,
+                            0.35
+                        )}
+                    `,
+                },
+            })}
+        >
+            <Box
+                sx={{
+                    position: 'relative',
+                    zIndex: 1,
+
+                    display: 'flex',
+                    alignItems: 'center',
+
+                    gap: 1,
+
+                    minWidth: 0,
+
+                    flexWrap: {
+                        xs: 'wrap',
+                        sm: 'nowrap',
+                    },
+                }}
+            >
+                {/* Controls */}
+                <Stack
+                    direction="row"
+                    spacing={0.7}
+                    sx={{
+                        flexShrink: 0,
+                        order: 1,
+                    }}
+                >
+                    <ToolbarButton
+                        icon={<SortIcon />}
+                        active
+                        aria-label="Sort library"
                     >
-                        <SortIcon sx={{ mr: 1 }} />
-                        <Typography>Sort</Typography>
-                    </IconButton>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
+                        Sort
+                    </ToolbarButton>
+
+                    <ToolbarButton
+                        icon={<FilterListIcon />}
+                        active
+                        aria-label="Filter library"
                     >
-                        <FilterListIcon sx={{ mr: 1 }} />
-                        <Typography>Filter</Typography>
-                    </IconButton>
+                        Filter
+                    </ToolbarButton>
+                </Stack>
+
+                {/* Title */}
+                <Box
+                    sx={{
+                        display: {
+                            xs: 'none',
+                            sm: 'flex',
+                        },
+
+                        alignItems: 'center',
+
+                        // Let this area use the space between controls and search.
+                        flex: '1 1 auto',
+                        minWidth: 0,
+
+                        order: 2,
+                    }}
+                >
+                    {/* Accent dot */}
+                    <Box
+                        sx={(theme) => ({
+                            width: 5,
+                            height: 5,
+
+                            mr: 0.8,
+
+                            flexShrink: 0,
+
+                            borderRadius: '50%',
+
+                            backgroundColor: theme.palette.primary.main,
+
+                            boxShadow: `0 0 8px ${alpha(
+                                theme.palette.primary.main,
+                                0.7
+                            )}`,
+                        })}
+                    />
+
                     <Typography
-                        variant="h6"
                         noWrap
-                        component="div"
-                        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                        sx={{
+                            minWidth: 0,
+
+                            color: 'rgba(255,255,255,0.78)',
+                            fontSize: '0.78rem',
+                            fontWeight: 500,
+                            letterSpacing: '0.015em',
+
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                        }}
                     >
-                        {label}
+                        Media Library
                     </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
-                </Toolbar>
-            </AppBar>
+                </Box>
+
+                {/* Search */}
+                <SearchField
+                    sx={{
+                        order: 3,
+
+                        flex: '0 0 auto',
+
+                        width: {
+                            xs: '100%',
+                            sm: 220,
+                            md: 250,
+                        },
+
+                        maxWidth: '100%',
+
+                        // On mobile it gets its own row.
+                        mt: {
+                            xs: 0.5,
+                            sm: 0,
+                        },
+                    }}
+                >
+                    <SearchIconWrapper>
+                        <SearchIcon />
+                    </SearchIconWrapper>
+
+                    <StyledInputBase
+                        placeholder="Search library..."
+                    />
+                </SearchField>
+            </Box>
         </Box>
     );
 }
