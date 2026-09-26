@@ -83,51 +83,6 @@ function LibraryPage() {
         }
     }
 
-    const mediaItemsTest = [{
-        simulatedIndex: 0,
-        title:"Starship Troopers",
-        mediaType:"MOVIE",
-        coverImgUrl:"https://image.tmdb.org/t/p/w500/cxCmv23O7p3hyHwqoktHYkZcGsY.jpg"
-    },
-    {
-        simulatedIndex: 1,
-        title:"Good Will Hunting",
-        mediaType:"MOVIE",
-        coverImgUrl:"https://image.tmdb.org/t/p/w500/z2FnLKpFi1HPO7BEJxdkv6hpJSU.jpg"
-    },
-    {
-        simulatedIndex: 2,
-        title:"Dungeon Crawler Carl",
-        mediaType:"BOOK",
-        coverImgUrl:"https://books.google.com/books/content?id=506EEQAAQBAJ&printsec=frontcover&img=1&zoom=10&edge=curl&source=gbs_api"
-        // had to append 's' to 'http' and change 'zoom' value to 10 for higher res google books images
-    },
-    {
-        simulatedIndex: 3,
-        title:"Ride the Lightning",
-        mediaType:"MUSIC_ALBUM",
-        coverImgUrl:"https://cdn-images.dzcdn.net/images/cover/a0bd8b90e4b7fac3fd99f46497e803a7/500x500-000000-80-0-0.jpg"
-        // had to use "cover_big" for image link instead of "cover"
-    },
-    {
-        simulatedIndex: 4,
-        title:"Bare-Metal Embedded C Programming",
-        mediaType:"BOOK",
-        coverImgUrl:"https://books.google.com/books/content?id=UiYqEQAAQBAJ&printsec=frontcover&img=1&zoom=10&edge=curl&source=gbs_api"
-    },
-    {
-        simulatedIndex: 5,
-        title:"DOOM (Original Game Soundtrack)",
-        mediaType:"MUSIC_ALBUM",
-        coverImgUrl:"https://cdn-images.dzcdn.net/images/cover/e4b9313746d5d6e1336cefc4f60cce0d/500x500-000000-80-0-0.jpg"
-    },
-    {
-        simulatedIndex: 6,
-        title:"Home Alone",
-        mediaType:"MOVIE",
-        coverImgUrl:"https://image.tmdb.org/t/p/w500/onTSipZ8R3bliBdKfPtsDuHTdlL.jpg"
-    }];
-
     return (
         <>
             <LibraryToolbar label="Media Library" />
