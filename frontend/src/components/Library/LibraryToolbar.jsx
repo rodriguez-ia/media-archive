@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Link, useNavigate, Outlet } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import SortIcon from '@mui/icons-material/Sort';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import {
     Box,
     Button,
@@ -11,6 +12,7 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
+
 
 const SearchField = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -89,7 +91,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-function ToolbarButton({ icon, children, active = false, ...props }) {
+function ToolbarButton({
+    icon,
+    children,
+    active = false,
+    ...props
+}) {
     return (
         <Button
             {...props}
@@ -181,11 +188,20 @@ function ToolbarButton({ icon, children, active = false, ...props }) {
 }
 
 
-function LibraryToolbar() {
+function LibraryToolbar({
+    selectionMode,
+    selectedCount,
+    onStartSelection,
+    onCancelSelection,
+    onDeleteSelected,
+    deleting,
+}) {
     return (
         <Box
             sx={(theme) => ({
-                position: 'relative',
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
                 width: '100%',
 
                 px: {
@@ -208,7 +224,10 @@ function LibraryToolbar() {
                 `,
 
                 borderBottom: '1px solid',
-                borderColor: alpha(theme.palette.common.white, 0.075),
+                borderColor: alpha(
+                    theme.palette.common.white,
+                    0.075
+                ),
 
                 // Extended atmospheric glow.
                 '&::before': {
@@ -305,21 +324,82 @@ function LibraryToolbar() {
                         order: 1,
                     }}
                 >
-                    <ToolbarButton
-                        icon={<SortIcon />}
-                        active
-                        aria-label="Sort library"
-                    >
-                        Sort
-                    </ToolbarButton>
+                    {!selectionMode ? (
+                        <>
+                            <ToolbarButton
+                                icon={<SortIcon />}
+                                active
+                                aria-label="Sort library"
+                            >
+                                Sort
+                            </ToolbarButton>
 
-                    <ToolbarButton
-                        icon={<FilterListIcon />}
-                        active
-                        aria-label="Filter library"
-                    >
-                        Filter
-                    </ToolbarButton>
+                            <ToolbarButton
+                                icon={<FilterListIcon />}
+                                active
+                                aria-label="Filter library"
+                            >
+                                Filter
+                            </ToolbarButton>
+
+                            <ToolbarButton
+                                icon={
+                                    <CheckBoxOutlineBlankOutlinedIcon />
+                                }
+                                aria-label="Select media"
+                                onClick={onStartSelection}
+                            >
+                                Select
+                            </ToolbarButton>
+                        </>
+                    ) : (
+                        <>
+                            <Typography
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    px: 1,
+                                    color: 'rgba(255,255,255,0.68)',
+                                    fontSize: '0.75rem',
+                                    whiteSpace: 'nowrap',
+                                }}
+                            >
+                                {selectedCount} selected
+                            </Typography>
+
+                            <ToolbarButton
+                                icon={<CloseOutlinedIcon />}
+                                aria-label="Cancel selection"
+                                onClick={onCancelSelection}
+                            >
+                                Cancel
+                            </ToolbarButton>
+
+                            <ToolbarButton
+                                icon={<DeleteOutlinedIcon />}
+                                aria-label="Delete selected media"
+                                onClick={onDeleteSelected}
+                                disabled={
+                                    selectedCount === 0 || deleting
+                                }
+                                sx={(theme) => ({
+                                    '&:hover': {
+                                        borderColor:
+                                            'rgba(239, 83, 80, 0.5)',
+
+                                        backgroundColor:
+                                            'rgba(239, 83, 80, 0.08)',
+
+                                        '& .MuiButton-startIcon': {
+                                            color: '#ef5350',
+                                        },
+                                    },
+                                })}
+                            >
+                                Delete
+                            </ToolbarButton>
+                        </>
+                    )}
                 </Stack>
 
                 {/* Title */}
@@ -332,7 +412,8 @@ function LibraryToolbar() {
 
                         alignItems: 'center',
 
-                        // Let this area use the space between controls and search.
+                        // Let this area use the space between
+                        // controls and search.
                         flex: '1 1 auto',
                         minWidth: 0,
 
@@ -351,7 +432,8 @@ function LibraryToolbar() {
 
                             borderRadius: '50%',
 
-                            backgroundColor: theme.palette.primary.main,
+                            backgroundColor:
+                                theme.palette.primary.main,
 
                             boxShadow: `0 0 8px ${alpha(
                                 theme.palette.primary.main,
@@ -412,5 +494,6 @@ function LibraryToolbar() {
         </Box>
     );
 }
+
 
 export default LibraryToolbar;

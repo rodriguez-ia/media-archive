@@ -1,17 +1,23 @@
 import { useState, useEffect } from "react";
-import { getUserLibrary, updateUserMediaItem } from "../../services/mediaService.js";
+import { getUserLibrary, updateUserMediaItem, deleteUserMediaItems } from "../../services/mediaService.js";
 import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import LibraryToolbar from "../../components/Library/LibraryToolbar.jsx";
-import LibraryMediaModal from "../../components/Library/LibraryMediaModal.jsx";
+import LibraryMediaContentModal from "../../components/Library/LibraryMediaContentModal.jsx";
+import LibraryMediaDeletionModal from "../../components/Library/LibraryMediaDeletionModal.jsx";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Typography } from "@mui/material";
 
 function LibraryPage() {
 
     const [loading, setLoading] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
     const [responseMessage, setResponseMessage] = useState({});
     const [mediaItems, setMediaItems] = useState([]);
     const [selectedMediaItem, setSelectedMediaItem] = useState(null);
+
+    const [selectionMode, setSelectionMode] = useState(false);
+    const [selectedMediaIds, setSelectedMediaIds] = useState([]);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     useEffect(() => {
         async function loadLibrary() {
@@ -42,7 +48,100 @@ function LibraryPage() {
     }, []);
 
     const handleMediaSelect = (mediaItem) => {
+        if (selectionMode) {
+            setSelectedMediaIds((current) => {
+                const isSelected = current.some(
+                    (item) => item.externalId === mediaItem.externalId
+                );
+
+                if (isSelected) {
+                    return current.filter(
+                        (item) => item.externalId !== mediaItem.externalId
+                    );
+                }
+
+                return [
+                    ...current,
+                    {
+                        externalId: mediaItem.externalId,
+                        mediaType: mediaItem.mediaType
+                    }
+                ];
+            });
+
+            return;
+        }
+
         setSelectedMediaItem(mediaItem);
+    };
+
+    const handleStartSelection = () => {
+        setSelectionMode(true);
+        setSelectedMediaIds([]);
+    };
+
+    const handleCancelSelection = () => {
+        setSelectionMode(false);
+        setSelectedMediaIds([]);
+    };
+
+    const handleOpenDeleteDialog = () => {
+        if (selectedMediaIds.length === 0) {
+            return;
+        }
+        
+        setDeleteDialogOpen(true);
+    };
+    
+    const handleCloseDeleteDialog = () => {
+        if (!deleting) {
+            setDeleteDialogOpen(false);
+        }
+    };
+
+    const handleDeleteSelected = async () => {
+        if (selectedMediaIds.length === 0 || deleting) {
+            return;
+        }
+
+        try {
+            setDeleting(true);
+
+            await deleteUserMediaItems(selectedMediaIds);
+
+            /*
+            * Remove the successfully deleted items from local state.
+            *
+            * We compare both externalId and mediaType because those
+            * two fields together identify the library item for the API.
+            */
+            setMediaItems((current) =>
+                current.filter(
+                    (mediaItem) =>
+                        !selectedMediaIds.some(
+                            (selectedItem) =>
+                                selectedItem.externalId === mediaItem.externalId &&
+                                selectedItem.mediaType === mediaItem.mediaType
+                        )
+                )
+            );
+
+            setDeleteDialogOpen(false);
+            handleCancelSelection();
+        } catch (error) {
+            if (error.message) {
+                setResponseMessage(error.message);
+            } else {
+                setResponseMessage({
+                    status: 500,
+                    success: false,
+                    source: "Unknown",
+                    detail: "There was an error deleting the selected media.",
+                });
+            }
+        } finally {
+            setDeleting(false);
+        }
     };
 
     const handleCloseModal = () => {
@@ -85,11 +184,40 @@ function LibraryPage() {
 
     return (
         <>
-            <LibraryToolbar label="Media Library" />
-            
-            { loading ? <CircularProgress /> : <LibraryMediaGrid mediaItemArray={mediaItems} onMediaSelect={handleMediaSelect} /> }
-            
-            <LibraryMediaModal open={selectedMediaItem !== null} onClose={handleCloseModal} mediaItem={selectedMediaItem} onUpdate={handleUpdateMediaItem} />
+            <LibraryToolbar
+                selectionMode={selectionMode}
+                selectedCount={selectedMediaIds.length}
+                onStartSelection={handleStartSelection}
+                onCancelSelection={handleCancelSelection}
+                onDeleteSelected={handleOpenDeleteDialog}
+                deleting={loading}
+            />
+
+            {loading ? (
+                <CircularProgress />
+            ) : (
+                <LibraryMediaGrid
+                    mediaItemArray={mediaItems}
+                    onMediaSelect={handleMediaSelect}
+                    selectionMode={selectionMode}
+                    selectedMediaIds={selectedMediaIds}
+                />
+            )}
+
+            <LibraryMediaContentModal
+                open={selectedMediaItem !== null}
+                onClose={handleCloseModal}
+                mediaItem={selectedMediaItem}
+                onUpdate={handleUpdateMediaItem}
+            />
+
+            <LibraryMediaDeletionModal
+                open={deleteDialogOpen}
+                selectedCount={selectedMediaIds.length}
+                deleting={deleting}
+                onClose={handleCloseDeleteDialog}
+                onConfirm={handleDeleteSelected}
+            />
         </>
     );
 }

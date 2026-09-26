@@ -3,6 +3,7 @@ import StarIcon from "@mui/icons-material/Star";
 import TheatersIcon from "@mui/icons-material/Theaters";
 import AlbumIcon from "@mui/icons-material/Album";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
 import {
     Card,
@@ -13,7 +14,12 @@ import {
 } from "@mui/material";
 
 
-function LibraryMediaCard({ mediaItem, onSelect }) {
+function LibraryMediaCard({
+    mediaItem,
+    onSelect,
+    selectionMode,
+    selected
+}) {
 
     const mediaTypeLabels = {
         MOVIE: "Movie",
@@ -83,13 +89,18 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
                     cursor: "pointer",
                     overflow: "visible",
 
-                    border:
-                        "1px solid rgba(255, 255, 255, 0.08)",
+                    border: selected
+                        ? "1px solid rgba(144, 202, 249, 0.75)"
+                        : "1px solid rgba(255, 255, 255, 0.08)",
 
                     background:
                         "linear-gradient(145deg, rgba(35,35,35,1), rgba(20,20,20,1))",
 
                     position: "relative",
+
+                    boxShadow: selected
+                        ? "0 0 0 2px rgba(144, 202, 249, 0.12)"
+                        : "none",
 
                     transition:
                         "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
@@ -97,17 +108,22 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
                     willChange: "transform",
 
                     "&:hover": {
-                        transform:
-                            "translateY(-8px) scale(1.025)",
+                        transform: selectionMode
+                            ? "translateY(-3px)"
+                            : "translateY(-8px) scale(1.025)",
 
-                        boxShadow:
-                            "0 20px 35px rgba(0, 0, 0, 0.55)",
+                        boxShadow: selectionMode
+                            ? "0 8px 18px rgba(0, 0, 0, 0.35)"
+                            : "0 20px 35px rgba(0, 0, 0, 0.55)",
 
-                        borderColor:
-                            "rgba(255, 255, 255, 0.18)",
+                        borderColor: selected
+                            ? "rgba(144, 202, 249, 0.9)"
+                            : "rgba(255, 255, 255, 0.18)",
 
                         "& .media-image": {
-                            transform: "scale(1.06)",
+                            transform: selectionMode
+                                ? "scale(1.02)"
+                                : "scale(1.06)",
                         },
 
                         "& .card-glow": {
@@ -118,16 +134,55 @@ function LibraryMediaCard({ mediaItem, onSelect }) {
                     "&:focus-visible": {
                         outline:
                             "2px solid rgba(144, 202, 249, 0.9)",
-
                         outlineOffset: "4px",
                     },
 
                     "&:active": {
-                        transform:
-                            "translateY(-4px) scale(1.01)",
+                        transform: selectionMode
+                            ? "translateY(-1px)"
+                            : "translateY(-4px) scale(1.01)",
                     },
                 }}
             >
+                {/* Selected Checkbox */}
+                {selectionMode && (
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            width: 26,
+                            height: 26,
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            zIndex: 5,
+
+                            backgroundColor: selected
+                                ? "primary.main"
+                                : "rgba(0, 0, 0, 0.55)",
+
+                            border: selected
+                                ? "none"
+                                : "1px solid rgba(255, 255, 255, 0.45)",
+
+                            boxShadow: "0 3px 8px rgba(0, 0, 0, 0.45)",
+
+                            transition: "all 150ms ease",
+                        }}
+                    >
+                        {selected && (
+                            <CheckOutlinedIcon
+                                sx={{
+                                    fontSize: 17,
+                                    color: "white",
+                                }}
+                            />
+                        )}
+                    </Box>
+                )}
+
                 {/* Subtle glow */}
                 <Box
                     className="card-glow"

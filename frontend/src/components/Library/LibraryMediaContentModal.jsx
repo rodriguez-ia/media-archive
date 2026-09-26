@@ -27,7 +27,7 @@ import {
     CircularProgress
 } from "@mui/material";
 
-function LibraryMediaModal({
+function LibraryMediaContentModal({
     open,
     onClose,
     mediaItem,
@@ -1103,4 +1103,4 @@ function CollectionDetail({
     );
 }
 
-export default LibraryMediaModal;
+export default LibraryMediaContentModal;
