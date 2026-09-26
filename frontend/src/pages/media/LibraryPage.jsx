@@ -75,13 +75,13 @@ function LibraryPage() {
                     status: 500,
                     success: false,
                     source: "Unknown",
-                    detail: "There was an error loading your library."
+                    detail: "There was an error updating your library."
                 });
             }
 
             throw error;
         }
-    }
+    };
 
     return (
         <>
