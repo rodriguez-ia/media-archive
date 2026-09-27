@@ -1045,6 +1045,7 @@ function LibraryMediaContentModal({
                                             ? "No seasons found."
                                             : "No tracks found."
                                     }
+                                    onUpdate={onUpdate}
                                 />
                             </Box>
                         )}

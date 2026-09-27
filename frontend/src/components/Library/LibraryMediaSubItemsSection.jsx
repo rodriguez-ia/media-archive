@@ -3,10 +3,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-import {
-    fetchSubItemMedia,
-    getMusicTrackDetails,
-} from "../../services/mediaService.js";
+import { fetchSubItemMedia, getMusicTrackDetails, } from "../../services/mediaService.js";
 import {
     Accordion,
     AccordionDetails,
@@ -16,6 +13,8 @@ import {
     CircularProgress,
     Divider,
     IconButton,
+    MenuItem,
+    TextField,
     Typography,
 } from "@mui/material";
 
@@ -34,6 +33,7 @@ function LibraryMediaSubItemsSection({
     sectionLabel,
     itemType,
     emptyMessage,
+    onUpdate,
 }) {
     const [expanded, setExpanded] = useState(false);
 
@@ -51,6 +51,43 @@ function LibraryMediaSubItemsSection({
 
     const playingAudioRef = useRef(null);
     const [playingTrackId, setPlayingTrackId] = useState(null);
+
+    const handleSubItemStatusChange = async (
+        subItem,
+        status,
+        relatedItems = []
+    ) => {
+        // Potential statuses are:
+        //      Not Owned   (null)
+        //      Owned       (OWNED)
+        //      Wishlisted  (WISHLISTED)
+        const updatedStatus = status === "" ? null : status;
+
+        const updates = {
+            [subItem.externalId]: {
+                status: updatedStatus,
+            },
+        };
+
+        relatedItems.forEach((relatedItem) => {
+            updates[relatedItem.externalId] = {
+                status: updatedStatus,
+            };
+        });
+
+        await onUpdate(updates);
+
+        setSubItems((current) =>
+            current?.map((currentItem) =>
+                updates[currentItem.externalId]
+                    ? {
+                        ...currentItem,
+                        status: updatedStatus,
+                    }
+                    : currentItem
+            )
+        );
+    };
 
     const handleAccordionChange = async (_, isExpanded) => {
         setExpanded(isExpanded);
@@ -180,11 +217,13 @@ function LibraryMediaSubItemsSection({
                                         isPlaying={playingTrackId === subItem.externalId}
                                         onPlay={handleTrackPlay}
                                         onStop={handleTrackStop}
+                                        onStatusChange={handleSubItemStatusChange}
                                     />
                                 ) : (
                                     <SeasonAccordion
                                         key={subItem.externalId}
                                         season={subItem}
+                                        onStatusChange={handleSubItemStatusChange}
                                     />
                                 )
                             )}
@@ -199,7 +238,7 @@ function LibraryMediaSubItemsSection({
  * A TV season is itself expandable because its sub-items
  * are TV_EPISODE objects.
  */
-function SeasonAccordion({ season }) {
+function SeasonAccordion({ season, onStatusChange, }) {
     const [expanded, setExpanded] = useState(false);
     const [episodes, setEpisodes] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -232,6 +271,64 @@ function SeasonAccordion({ season }) {
         }
     };
 
+    const handleSeasonStatusChange = async (status) => {
+        let currentEpisodes = episodes;
+
+        /*
+        * We need the episodes in order to update them along
+        * with the season.
+        */
+        if (currentEpisodes === null) {
+            try {
+                setIsLoading(true);
+                setError(null);
+
+                const result = await fetchSubItemMedia(season.externalId);
+
+                currentEpisodes = result.data ?? [];
+                setEpisodes(currentEpisodes);
+            } catch (err) {
+                console.error(
+                    "Failed to load episodes:",
+                    err
+                );
+
+                setError("Unable to load episodes.");
+                return;
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        try {
+            await onStatusChange(
+                season,
+                status,
+                currentEpisodes
+            );
+
+            /*
+            * Keep the local episode state synchronized with
+            * the newly selected season status.
+            */
+            const updatedStatus = status === "" ? null : status;
+
+            setEpisodes((current) =>
+                current?.map((episode) => ({
+                    ...episode,
+                    status: updatedStatus,
+                }))
+            );
+        } catch (err) {
+            console.error(
+                "Failed to update season status:",
+                err
+            );
+
+            setError("Unable to update collection status.");
+        }
+    };
+
     return (
         <Accordion
             expanded={expanded}
@@ -259,6 +356,8 @@ function SeasonAccordion({ season }) {
                         display: "flex",
                         alignItems: "center",
                         gap: 1.5,
+                        width: "100%",
+                        pr: 1,
                     }}
                 >
                     {season.coverImgUrl && (
@@ -276,7 +375,12 @@ function SeasonAccordion({ season }) {
                         />
                     )}
 
-                    <Box>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            minWidth: 0,
+                        }}
+                    >
                         <Typography fontWeight={600}>
                             {season.title}
                         </Typography>
@@ -288,6 +392,11 @@ function SeasonAccordion({ season }) {
                             Season {season.sortOrder}
                         </Typography>
                     </Box>
+
+                    <SubItemStatusSelect
+                        status={season.status}
+                        onChange={handleSeasonStatusChange}
+                    />
                 </Box>
             </AccordionSummary>
 
@@ -333,6 +442,38 @@ function SeasonAccordion({ season }) {
                                 <EpisodeRow
                                     key={episode.externalId}
                                     episode={episode}
+                                    onStatusChange={async (status) => {
+                                        try {
+                                            await onStatusChange(
+                                                episode,
+                                                status
+                                            );
+
+                                            setEpisodes((current) =>
+                                                current?.map((currentEpisode) =>
+                                                    currentEpisode.externalId ===
+                                                    episode.externalId
+                                                        ? {
+                                                            ...currentEpisode,
+                                                            status:
+                                                                status === ""
+                                                                    ? null
+                                                                    : status,
+                                                        }
+                                                        : currentEpisode
+                                                )
+                                            );
+                                        } catch (err) {
+                                            console.error(
+                                                "Failed to update episode status:",
+                                                err
+                                            );
+
+                                            setError(
+                                                "Unable to update collection status."
+                                            );
+                                        }
+                                    }}
                                 />
                             ))}
                         </Box>
@@ -342,7 +483,7 @@ function SeasonAccordion({ season }) {
     );
 }
 
-function EpisodeRow({ episode }) {
+function EpisodeRow({ episode, onStatusChange, }) {
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
     const descriptionRef = useRef(null);
@@ -502,16 +643,37 @@ function EpisodeRow({ episode }) {
                     </>
                 )}
 
-                {/* Rating */}
-                <CollectionRating
-                    rating={episode.communityRating}
-                />
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1.5,
+                        alignItems: "flex-start",
+                    }}
+                >
+                    {/* Rating */}
+                    <CollectionRating
+                        rating={episode.communityRating}
+                    />
+
+                    {/* Status Select */}
+                    <SubItemStatusSelect
+                        status={episode.status}
+                        onChange={onStatusChange}
+                    />
+                </Box>
             </Box>
         </Box>
     );
 }
 
-function TrackRow({ track, isPlaying, onPlay, onStop }) {
+function TrackRow({
+    track,
+    isPlaying,
+    onPlay,
+    onStop,
+    onStatusChange,
+}) {
     const audioRef = useRef(null);
 
     const [isLoadingPreview, setIsLoadingPreview] = useState(false);
@@ -639,6 +801,13 @@ function TrackRow({ track, isPlaying, onPlay, onStop }) {
                     rating={track.communityRating}
                 />
 
+                <SubItemStatusSelect
+                    status={track.status}
+                    onChange={(status) =>
+                        onStatusChange(track, status)
+                    }
+                />
+
                 <audio
                     ref={audioRef}
                     onEnded={handleEnded}
@@ -653,6 +822,53 @@ function TrackRow({ track, isPlaying, onPlay, onStop }) {
                 }}
             />
         </Box>
+    );
+}
+
+function SubItemStatusSelect({
+    status,
+    onChange,
+}) {
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleChange = async (event) => {
+        const newStatus = event.target.value;
+
+        try {
+            setIsSaving(true);
+
+            await onChange(newStatus);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    return (
+        <TextField
+            select
+            size="small"
+            label="Status"
+            placeholder="Not Owned"
+            value={status ?? ""}
+            onChange={handleChange}
+            disabled={isSaving}
+            sx={{
+                minWidth: 135,
+                flexShrink: 0,
+            }}
+        >
+            <MenuItem value="">
+                Not Owned
+            </MenuItem>
+
+            <MenuItem value="OWNED">
+                Owned
+            </MenuItem>
+
+            <MenuItem value="WISHLISTED">
+                Wishlisted
+            </MenuItem>
+        </TextField>
     );
 }
 
