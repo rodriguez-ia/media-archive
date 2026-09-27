@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getUserLibrary, updateUserMediaItems, deleteUserMediaItems } from "../../services/mediaService.js";
 import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import LibraryToolbar from "../../components/Library/LibraryToolbar.jsx";
@@ -18,6 +18,8 @@ function LibraryPage() {
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedMediaIds, setSelectedMediaIds] = useState([]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         async function loadLibrary() {
@@ -46,6 +48,18 @@ function LibraryPage() {
 
         loadLibrary();
     }, []);
+
+    const filteredMediaItems = useMemo(() => {
+        const normalizedQuery = searchQuery.trim().toLowerCase();
+
+        if (!normalizedQuery) {
+            return mediaItems;
+        }
+
+        return mediaItems.filter((mediaItem) =>
+            mediaItem.title?.toLowerCase().includes(normalizedQuery)
+        );
+    }, [mediaItems, searchQuery]);
 
     const handleMediaSelect = (mediaItem) => {
         if (selectionMode) {
@@ -193,14 +207,15 @@ function LibraryPage() {
                 onStartSelection={handleStartSelection}
                 onCancelSelection={handleCancelSelection}
                 onDeleteSelected={handleOpenDeleteDialog}
-                deleting={loading}
+                deleting={deleting}
+                onSearchChange={setSearchQuery}
             />
 
             {loading ? (
                 <CircularProgress />
             ) : (
                 <LibraryMediaGrid
-                    mediaItemArray={mediaItems}
+                    mediaItemArray={filteredMediaItems}
                     onMediaSelect={handleMediaSelect}
                     selectionMode={selectionMode}
                     selectedMediaIds={selectedMediaIds}

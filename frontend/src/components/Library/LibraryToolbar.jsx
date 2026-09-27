@@ -195,6 +195,7 @@ function LibraryToolbar({
     onCancelSelection,
     onDeleteSelected,
     deleting,
+    onSearchChange,
 }) {
     return (
         <Box
@@ -488,6 +489,7 @@ function LibraryToolbar({
 
                     <StyledInputBase
                         placeholder="Search library..."
+                        onChange={(event) => onSearchChange(event.target.value)}
                     />
                 </SearchField>
             </Box>
