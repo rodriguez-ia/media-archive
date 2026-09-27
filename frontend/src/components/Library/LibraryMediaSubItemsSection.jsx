@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -343,6 +343,44 @@ function SeasonAccordion({ season }) {
 }
 
 function EpisodeRow({ episode }) {
+    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+
+    const descriptionRef = useRef(null);
+    const [descriptionIsTruncated, setDescriptionIsTruncated] = useState(false);
+
+    /*
+     * The collapsed description is intentionally limited to a
+     * fixed number of lines so episode rows remain visually
+     * consistent. We measure the rendered element rather than
+     * using a character-count heuristic, because line wrapping
+     * changes with the available width.
+     */
+    useEffect(() => {
+        const element = descriptionRef.current;
+
+        if (!element || !episode.description) {
+            setDescriptionIsTruncated(false);
+            return;
+        }
+
+        const checkTruncation = () => {
+            setDescriptionIsTruncated(
+                element.scrollHeight > element.clientHeight + 1
+            );
+        };
+
+        checkTruncation();
+
+        window.addEventListener("resize", checkTruncation);
+
+        return () => {
+            window.removeEventListener(
+                "resize",
+                checkTruncation
+            );
+        };
+    }, [episode.description]);
+
     return (
         <Box
             sx={{
@@ -408,20 +446,60 @@ function EpisodeRow({ episode }) {
 
                 {/* Description */}
                 {episode.description && (
-                    <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                            mt: 0.5,
-                            lineHeight: 1.4,
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                        }}
-                    >
-                        {episode.description}
-                    </Typography>
+                    <>
+                        <Typography
+                            ref={descriptionRef}
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                                mt: 0.5,
+                                lineHeight: 1.4,
+                                ...(descriptionExpanded
+                                    ? {}
+                                    : {
+                                          display: "-webkit-box",
+                                          WebkitLineClamp: 3,
+                                          WebkitBoxOrient:
+                                              "vertical",
+                                          overflow: "hidden",
+                                      }),
+                            }}
+                        >
+                            {episode.description}
+                        </Typography>
+
+                        {descriptionIsTruncated && (
+                            <Typography
+                                component="button"
+                                type="button"
+                                onClick={() =>
+                                    setDescriptionExpanded(
+                                        (current) => !current
+                                    )
+                                }
+                                sx={{
+                                    display: "block",
+                                    mt: 0.25,
+                                    p: 0,
+                                    border: 0,
+                                    background: "none",
+                                    color: "lightblue",
+                                    font: "inherit",
+                                    fontSize: "0.875rem",
+                                    cursor: "pointer",
+                                    textAlign: "left",
+                                    "&:hover": {
+                                        textDecoration:
+                                            "underline",
+                                    },
+                                }}
+                            >
+                                {descriptionExpanded
+                                    ? "Show less"
+                                    : "Show more"}
+                            </Typography>
+                        )}
+                    </>
                 )}
 
                 {/* Rating */}
