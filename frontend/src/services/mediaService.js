@@ -1,17 +1,24 @@
 const API_BASE_URL = "http://localhost:8080/api";
 
-export async function getUserLibrary() {
+async function apiFetch(endpoint, options = {}) {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        `${API_BASE_URL}/media/library`,
+        `${API_BASE_URL}${endpoint}`,
         {
-            method: "GET",
+            ...options,
             headers: {
+                ...options.headers,
                 "Authorization": `Bearer ${token}`
             }
         }
     );
+
+    if (response.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        return;
+    }
 
     const body = await response.json();
 
@@ -22,109 +29,44 @@ export async function getUserLibrary() {
     }
 
     return body;
+}
+
+export async function getUserLibrary() {
+    return apiFetch("/media/library");
 }
 
 export async function addToUserLibrary(mediaItems) {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-        `${API_BASE_URL}/media/library`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(mediaItems)
-        }
-    );
-
-    const body = await response.json();
-
-    if (!response.ok) {
-        const error = new Error(body.message || "Request failed");
-        error.status = response.status;
-        throw error;
-    }
-
-    return body;
+    return apiFetch("/media/library",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(mediaItems)
+    });
 }
 
 export async function deleteUserMediaItems(mediaItems) {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-        `${API_BASE_URL}/media/library`,
-        {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(mediaItems)
-        }
-    );
-
-    const body = await response.json();
-
-    if (!response.ok) {
-        const error = new Error(body.message || "Request failed");
-        error.status = response.status;
-        throw error;
-    }
-
-    return body;
+    return apiFetch("/media/library", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(mediaItems)
+    });
 }
 
 export async function fetchSubItemMedia(externalId) {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-        `${API_BASE_URL}/media/library/${encodeURIComponent(externalId)}`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            }
-        }
-    );
-
-    const body = await response.json();
-
-    if (!response.ok) {
-        const error = new Error(body.message || "Request failed");
-        error.status = response.status;
-        throw error;
-    }
-
-    return body;
+    return apiFetch(`/media/library/${encodeURIComponent(externalId)}`);
 }
 
 export async function updateUserMediaItems(mediaItemDetailsObj) {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-        `${API_BASE_URL}/media/library`,
-        {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(mediaItemDetailsObj)
-        }
-    );
-
-    const body = await response.json();
-
-    if (!response.ok) {
-        const error = new Error(body.message || "Request failed");
-        error.status = response.status;
-        throw error;
-    }
-
-    return body;
+    return apiFetch("/media/library",{
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(mediaItemDetailsObj)
+    });
 }
 
 export async function searchExternalMedia(
@@ -134,8 +76,6 @@ export async function searchExternalMedia(
     shouldSearchMusic,
     shouldSearchBooks
 ) {
-    const token = localStorage.getItem("token");
-
     const params = new URLSearchParams({
         keyword,
         page,
@@ -144,47 +84,9 @@ export async function searchExternalMedia(
         shouldSearchBooks
     });
 
-    const response = await fetch(
-        `${API_BASE_URL}/media/externalMedia?${params}`,
-        {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }
-    );
-
-    const body = await response.json();
-
-    if (!response.ok) {
-        const error = new Error(body.message || "Request failed");
-        error.status = response.status;
-        throw error;
-    }
-
-    return body;
+    return apiFetch(`/media/externalMedia?${params}`);
 }
 
 export async function getMusicTrackDetails(externalId) {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-        `${API_BASE_URL}/media/externalMedia/music/track/${encodeURIComponent(externalId)}`,
-        {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        }
-    );
-
-    const body = await response.json();
-
-    if (!response.ok) {
-        const error = new Error(body.message || "Request failed");
-        error.status = response.status;
-        throw error;
-    }
-
-    return body;
+    return apiFetch(`/media/externalMedia/music/track/${encodeURIComponent(externalId)}`);
 }
