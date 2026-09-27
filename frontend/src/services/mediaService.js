@@ -101,18 +101,18 @@ export async function fetchSubItemMedia(externalId) {
     return body;
 }
 
-export async function updateUserMediaItem(externalId, mediaItemDetails) {
+export async function updateUserMediaItems(mediaItemDetailsObj) {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-        `${API_BASE_URL}/media/library/${encodeURIComponent(externalId)}`,
+        `${API_BASE_URL}/media/library`,
         {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(mediaItemDetails)
+            body: JSON.stringify(mediaItemDetailsObj)
         }
     );
 

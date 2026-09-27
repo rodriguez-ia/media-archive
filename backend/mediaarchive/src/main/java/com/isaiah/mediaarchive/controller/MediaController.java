@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/media")
@@ -64,6 +65,20 @@ public class MediaController {
         );
     }
 
+    @PatchMapping("/library")
+    public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> updateUserMediaItems(@AuthenticationPrincipal UserEntity user,
+                                                                                        @RequestBody Map<String, UpdateUserMediaItemRequestDTO> userMediaDetailsByExternalId) {
+        List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.updateUserMediaItems(user, userMediaDetailsByExternalId);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTOList,
+                        "MediaController.updateUserMediaItems",
+                        "Updated user media item(s) successfully"
+                )
+        );
+    }
+
     @GetMapping("/library/{externalId}")
     public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getMediaItemDetails(@AuthenticationPrincipal UserEntity user,
                                                                                        @PathVariable String externalId) {
@@ -74,21 +89,6 @@ public class MediaController {
                         userMediaResponseDTOList,
                         "MediaController.getMediaItemDetails",
                         "Retrieved media item details successfully: user=" + user.getUsername() + ", externalId=" + externalId
-                )
-        );
-    }
-
-    @PatchMapping("/library/{externalId}")
-    public ResponseEntity<ApiResponse<UserMediaResponseDTO>> updateUserMediaItem(@AuthenticationPrincipal UserEntity user,
-                                                                                 @PathVariable String externalId,
-                                                                                 @Valid @RequestBody UpdateUserMediaItemRequestDTO userMediaUpdates) {
-        UserMediaResponseDTO userMediaResponseDTO = mediaService.updateUserMediaItem(user, externalId, userMediaUpdates);
-
-        return ResponseEntity.status(200).body(
-                ApiResponseFactory.success(
-                        userMediaResponseDTO,
-                        "MediaController.updateUserMediaItem",
-                        "Updated user media item successfully"
                 )
         );
     }

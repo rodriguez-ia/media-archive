@@ -204,7 +204,7 @@ function LibraryMediaContentModal({
 
             setIsSaving(true);
 
-            await onUpdate(mediaItem.externalId, updatedMediaItem);
+            await onUpdate( {[mediaItem.externalId] : updatedMediaItem} );
 
             setIsEditing(false);
         } finally {

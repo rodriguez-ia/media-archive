@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,9 +33,7 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
     """)
     int deleteUserMediaByExternalIdList(UUID userId, List<String> externalIds);
 
-    List<UserMediaEntity> findAllByUserIdAndMediaItemExternalIdIn(UUID userId, List<String> externalIds);
-
-    UserMediaEntity findByUserIdAndMediaItemExternalId(UUID userId, String externalId);
+    List<UserMediaEntity> findAllByUserIdAndMediaItemExternalIdIn(UUID userId, Collection<String> externalIds);
 
     @Query("""
     SELECT um

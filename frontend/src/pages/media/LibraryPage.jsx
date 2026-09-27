@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getUserLibrary, updateUserMediaItem, deleteUserMediaItems } from "../../services/mediaService.js";
+import { getUserLibrary, updateUserMediaItems, deleteUserMediaItems } from "../../services/mediaService.js";
 import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import LibraryToolbar from "../../components/Library/LibraryToolbar.jsx";
 import LibraryMediaContentModal from "../../components/Library/LibraryMediaContentModal.jsx";
@@ -13,7 +13,7 @@ function LibraryPage() {
 
     const [responseMessage, setResponseMessage] = useState({});
     const [mediaItems, setMediaItems] = useState([]);
-    const [selectedMediaItem, setSelectedMediaItem] = useState(null);
+    const [openedMediaItem, setOpenedMediaItem] = useState(null);
 
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedMediaIds, setSelectedMediaIds] = useState([]);
@@ -72,7 +72,7 @@ function LibraryPage() {
             return;
         }
 
-        setSelectedMediaItem(mediaItem);
+        setOpenedMediaItem(mediaItem);
     };
 
     const handleStartSelection = () => {
@@ -145,26 +145,29 @@ function LibraryPage() {
     };
 
     const handleCloseModal = () => {
-        setSelectedMediaItem(null);
+        setOpenedMediaItem(null);
     };
 
-    const handleUpdateMediaItem = async (externalId, updatedMediaItem) => {
-
+    const handleUpdateMediaItems = async (updatedMediaItems) => {
         try {
+            await updateUserMediaItems(updatedMediaItems);
 
-            await updateUserMediaItem(externalId, updatedMediaItem);
+            setOpenedMediaItem((current) => {
+                const updatedMediaItem = updatedMediaItems[current.externalId];
 
-            setSelectedMediaItem((current) => ({
-                ...current,
-                ...updatedMediaItem
-            }));
+                return updatedMediaItem
+                    ? { ...current, ...updatedMediaItem }
+                    : current;
+            });
 
-            setMediaItems((current) => 
-                current.map((mediaItem) => 
-                    mediaItem.externalId === externalId
-                        ? {...mediaItem, ...updatedMediaItem}
-                        : mediaItem
-                )
+            setMediaItems((current) =>
+                current.map((mediaItem) => {
+                    const updatedMediaItem = updatedMediaItems[mediaItem.externalId];
+
+                    return updatedMediaItem
+                        ? { ...mediaItem, ...updatedMediaItem }
+                        : mediaItem;
+                })
             );
         } catch (error) {
             if (error.message) {
@@ -205,10 +208,10 @@ function LibraryPage() {
             )}
 
             <LibraryMediaContentModal
-                open={selectedMediaItem !== null}
+                open={openedMediaItem !== null}
                 onClose={handleCloseModal}
-                mediaItem={selectedMediaItem}
-                onUpdate={handleUpdateMediaItem}
+                mediaItem={openedMediaItem}
+                onUpdate={handleUpdateMediaItems}
             />
 
             <LibraryMediaDeletionModal

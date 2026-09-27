@@ -331,24 +331,39 @@ public class MediaService {
     }
 
     @Transactional
-    public UserMediaResponseDTO updateUserMediaItem(UserEntity user,
-                                                    String externalId,
-                                                    UpdateUserMediaItemRequestDTO userMediaUpdates) {
+    public List<UserMediaResponseDTO> updateUserMediaItems(UserEntity user, Map<String, UpdateUserMediaItemRequestDTO> userMediaDetailsByExternalId) {
 
-        log.info("Updating the user media item with externalId '{}' for user '{}'", externalId, user.getUsername());
+        log.info("Updating the user media item(s) for user '{}'", user.getUsername());
 
-        UserMediaEntity userMedia = userMediaRepository.findByUserIdAndMediaItemExternalId(user.getId(), externalId);
+        Set<String> externalIds = userMediaDetailsByExternalId.keySet();
 
-        userMedia.setConsumptionCount(userMediaUpdates.getConsumptionCount());
-        userMedia.setPersonalRating(userMediaUpdates.getPersonalRating());
-        userMedia.setPurchaseDate(userMediaUpdates.getPurchaseDate());
-        userMedia.setPurchasePrice(userMediaUpdates.getPurchasePrice());
-        userMedia.setStatus(userMediaUpdates.getStatus());
-        userMedia.setFormat(userMediaUpdates.getFormat());
-        userMedia.setCondition(userMediaUpdates.getCondition());
-        userMedia.setNotes(userMediaUpdates.getNotes());
+        List<UserMediaEntity> userMediaItems = userMediaRepository.findAllByUserIdAndMediaItemExternalIdIn(user.getId(), externalIds);
 
-        return mediaMapper.userMediaEntityToUserMediaResponse(userMedia);
+        if (userMediaItems.isEmpty()) {
+            log.debug("No user media found for provided external Ids");
+
+            return null;
+        }
+
+        List<UserMediaResponseDTO> responseList = new ArrayList<>();
+
+        for (UserMediaEntity userMedia : userMediaItems) {
+            String externalId = userMedia.getMediaItem().getExternalId();
+            UpdateUserMediaItemRequestDTO updatedMediaItemDetails = userMediaDetailsByExternalId.get(externalId);
+
+            userMedia.setConsumptionCount(updatedMediaItemDetails.getConsumptionCount());
+            userMedia.setPersonalRating(updatedMediaItemDetails.getPersonalRating());
+            userMedia.setPurchaseDate(updatedMediaItemDetails.getPurchaseDate());
+            userMedia.setPurchasePrice(updatedMediaItemDetails.getPurchasePrice());
+            userMedia.setStatus(updatedMediaItemDetails.getStatus());
+            userMedia.setFormat(updatedMediaItemDetails.getFormat());
+            userMedia.setCondition(updatedMediaItemDetails.getCondition());
+            userMedia.setNotes(updatedMediaItemDetails.getNotes());
+
+            responseList.add(mediaMapper.userMediaEntityToUserMediaResponse(userMedia));
+        }
+
+        return responseList;
     }
 
     public List<BaseMediaResponseDTO> getFromCatalog(UserEntity user) {
