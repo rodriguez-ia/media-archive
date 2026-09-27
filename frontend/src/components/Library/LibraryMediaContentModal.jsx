@@ -305,743 +305,749 @@ function LibraryMediaContentModal({
                     <Box
                         sx={{
                             display: "flex",
-                            flexDirection: {
-                                xs: "column",
-                                sm: "row",
-                            },
+                            flexDirection: "column",
                             gap: 3,
                             p: 3,
                             flex: 1,
                         }}
                     >
                         {/* ================================================== */}
-                        {/* COVER                                               */}
+                        {/* PRIMARY CONTENT                                      */}
                         {/* ================================================== */}
                         <Box
                             sx={{
-                                flexShrink: 0,
-
-                                width: {
-                                    xs: 160,
-                                    sm: 220,
-                                },
-
-                                /*
-                                 * Keep the poster at its natural
-                                 * 2:3 aspect ratio.
-                                 *
-                                 * Do NOT use height: "100%" here.
-                                 */
-                                aspectRatio: "2 / 3",
-
-                                alignSelf: {
-                                    xs: "center",
-                                    sm: "flex-start",
-                                },
-                            }}
-                        >
-                            <CardMedia
-                                component="img"
-                                image={mediaItem.coverImgUrl}
-                                alt={mediaItem.title}
-                                sx={{
-                                    display: "block",
-
-                                    width: "100%",
-
-                                    height: "auto",
-
-                                    aspectRatio: "2 / 3",
-
-                                    objectFit: "contain",
-
-                                    borderRadius: 2,
-
-                                    boxShadow:
-                                        "0 15px 35px rgba(0,0,0,0.6)",
-                                }}
-                            />
-                        </Box>
-
-                        {/* ================================================== */}
-                        {/* DETAILS                                             */}
-                        {/* ================================================== */}
-                        <Box
-                            sx={{
-                                flexGrow: 1,
-                                minWidth: 0,
                                 display: "flex",
-                                flexDirection: "column",
+                                flexDirection: {
+                                    xs: "column",
+                                    sm: "row",
+                                },
+                                gap: 3,
+                                flexShrink: 0,
                             }}
                         >
                             {/* ================================================== */}
-                            {/* HEADER                                               */}
+                            {/* COVER                                               */}
                             {/* ================================================== */}
                             <Box
                                 sx={{
                                     flexShrink: 0,
+
+                                    width: {
+                                        xs: 160,
+                                        sm: 220,
+                                    },
+
+                                    /*
+                                    * Keep the poster at its natural
+                                    * 2:3 aspect ratio.
+                                    *
+                                    * Do NOT use height: "100%" here.
+                                    */
+                                    aspectRatio: "2 / 3",
+
+                                    alignSelf: {
+                                        xs: "center",
+                                        sm: "flex-start",
+                                    },
                                 }}
                             >
-                                <Typography
-                                    variant="h4"
-                                    fontWeight={700}
+                                <CardMedia
+                                    component="img"
+                                    image={mediaItem.coverImgUrl}
+                                    alt={mediaItem.title}
                                     sx={{
-                                        pr: 5,
+                                        display: "block",
 
-                                        fontSize: {
-                                            xs: "1.5rem",
-                                            sm: "2rem",
-                                        },
+                                        width: "100%",
 
-                                        lineHeight: 1.15,
-                                    }}
-                                >
-                                    {mediaItem.title}
-                                </Typography>
+                                        height: "auto",
 
-                                <Typography
-                                    color="text.secondary"
-                                    sx={{
-                                        mt: 0.5,
-                                    }}
-                                >
-                                    {mediaTypeLabels[
-                                        mediaItem.mediaType
-                                    ] ||
-                                        mediaItem.mediaType}
+                                        aspectRatio: "2 / 3",
 
-                                    {mediaItem.releaseDate &&
-                                        ` • ${mediaItem.releaseDate}`}
-                                </Typography>
+                                        objectFit: "contain",
 
-                                <Divider
-                                    sx={{
-                                        my: 2,
+                                        borderRadius: 2,
 
-                                        borderColor:
-                                            "rgba(255,255,255,0.08)",
+                                        boxShadow:
+                                            "0 15px 35px rgba(0,0,0,0.6)",
                                     }}
                                 />
+                            </Box>
 
-                                {/* Community Rating */}
+                            {/* ================================================== */}
+                            {/* DETAILS                                             */}
+                            {/* ================================================== */}
+                            <Box
+                                sx={{
+                                    flexGrow: 1,
+                                    minWidth: 0,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                }}
+                            >
+                                {/* ================================================== */}
+                                {/* HEADER                                               */}
+                                {/* ================================================== */}
                                 <Box
                                     sx={{
-                                        display: "flex",
-
-                                        alignItems: "center",
-
-                                        gap: 1,
-
-                                        mb: 1.5,
+                                        flexShrink: 0,
                                     }}
                                 >
-                                    <StarIcon
+                                    <Typography
+                                        variant="h4"
+                                        fontWeight={700}
                                         sx={{
-                                            color: ratingColor,
+                                            pr: 5,
+
+                                            fontSize: {
+                                                xs: "1.5rem",
+                                                sm: "2rem",
+                                            },
+
+                                            lineHeight: 1.15,
+                                        }}
+                                    >
+                                        {mediaItem.title}
+                                    </Typography>
+
+                                    <Typography
+                                        color="text.secondary"
+                                        sx={{
+                                            mt: 0.5,
+                                        }}
+                                    >
+                                        {mediaTypeLabels[
+                                            mediaItem.mediaType
+                                        ] ||
+                                            mediaItem.mediaType}
+
+                                        {mediaItem.releaseDate &&
+                                            ` • ${mediaItem.releaseDate}`}
+                                    </Typography>
+
+                                    <Divider
+                                        sx={{
+                                            my: 2,
+
+                                            borderColor:
+                                                "rgba(255,255,255,0.08)",
                                         }}
                                     />
 
-                                    <Typography
-                                        fontWeight={600}
-                                    >
-                                        {hasRating
-                                            ? `${Number(
-                                                mediaItem.communityRating
-                                            ).toFixed(
-                                                1
-                                            )} / 10`
-                                            : "No community rating"}
-                                    </Typography>
-                                </Box>
-
-                                {/* Genres */}
-                                {genres.length > 0 && (
+                                    {/* Community Rating */}
                                     <Box
                                         sx={{
                                             display: "flex",
 
-                                            flexWrap: "wrap",
+                                            alignItems: "center",
 
-                                            gap: 0.75,
+                                            gap: 1,
 
                                             mb: 1.5,
                                         }}
                                     >
-                                        {genres.map((genre) => (
-                                            <Chip
-                                                key={genre}
-                                                label={formatGenre(
-                                                    genre
-                                                )}
-                                                size="small"
-                                                sx={{
-                                                    fontWeight: 600,
-
-                                                    ...getGenreSx(
-                                                        genre,
-                                                        mediaItem.mediaType
-                                                    ),
-                                                }}
-                                            />
-                                        ))}
-                                    </Box>
-                                )}
-                            </Box>
-
-                            {/* ================================================== */}
-                            {/* DESCRIPTION                                         */}
-                            {/* ================================================== */}
-                            {mediaItem.description && (
-                                <Box
-                                    sx={{
-                                        flexShrink: 0,
-                                        mb: 1,
-                                    }}
-                                >
-                                    <Typography
-                                        sx={{
-                                            lineHeight: 1.40,
-                                            fontSize: 17,
-                                            color:
-                                                "rgba(255,255,255,0.72)",
-                                        }}
-                                    >
-                                        {mediaItem.description}
-                                    </Typography>
-                                </Box>
-                            )}
-
-                            {/* ================================================== */}
-                            {/* RELATED MEDIA                                      */}
-                            {/* ================================================== */}
-                            {(mediaItem.mediaType === "TV_SHOW" ||
-                                mediaItem.mediaType === "MUSIC_ALBUM") && (
-                                <Box
-                                    sx={{
-                                        mt: 1,
-                                        mb: 1,
-                                    }}
-                                >
-                                    <LibraryMediaSubItemsSection
-                                        mediaItem={mediaItem}
-                                        sectionLabel={
-                                            mediaItem.mediaType === "TV_SHOW"
-                                                ? "Seasons"
-                                                : "Tracklist"
-                                        }
-                                        itemType={
-                                            mediaItem.mediaType === "TV_SHOW"
-                                                ? "TV_SEASON"
-                                                : "MUSIC_TRACK"
-                                        }
-                                        emptyMessage={
-                                            mediaItem.mediaType === "TV_SHOW"
-                                                ? "No seasons found."
-                                                : "No tracks found."
-                                        }
-                                    />
-                                </Box>
-                            )}
-
-                            {/* ================================================== */}
-                            {/* COLLECTION DETAILS                                  */}
-                            {/* ================================================== */}
-                            <Box
-                                sx={{
-                                    mt: 1,
-
-                                    pt: 2,
-
-                                    minHeight: 0,
-
-                                    /*
-                                     * Give this section the remaining
-                                     * vertical space.
-                                     */
-                                    flex: "1 1 0",
-
-                                    display: "flex",
-                                    flexDirection: "column",
-
-                                    borderTop:
-                                        "1px solid rgba(255,255,255,0.08)",
-                                }}
-                            >
-                                {/* Collection Header */}
-                                <Box
-                                    sx={{
-                                        display: "flex",
-
-                                        alignItems: "center",
-
-                                        justifyContent:
-                                            "space-between",
-
-                                        gap: 2,
-
-                                        flexShrink: 0,
-
-                                        mb: 1.5,
-                                    }}
-                                >
-                                    <Typography
-                                        variant="subtitle1"
-                                        fontWeight={700}
-                                    >
-                                        Collection Details
-                                    </Typography>
-
-                                    {!isEditing ? (
-                                        <Button
-                                            size="small"
-                                            variant="outlined"
-                                            startIcon={
-                                                <EditIcon />
-                                            }
-                                            onClick={handleEdit}
+                                        <StarIcon
                                             sx={{
-                                                textTransform:
-                                                    "none",
-
-                                                flexShrink: 0,
+                                                color: ratingColor,
                                             }}
+                                        />
+
+                                        <Typography
+                                            fontWeight={600}
                                         >
-                                            Edit
-                                        </Button>
-                                    ) : (
+                                            {hasRating
+                                                ? `${Number(
+                                                    mediaItem.communityRating
+                                                ).toFixed(
+                                                    1
+                                                )} / 10`
+                                                : "No community rating"}
+                                        </Typography>
+                                    </Box>
+
+                                    {/* Genres */}
+                                    {genres.length > 0 && (
                                         <Box
                                             sx={{
                                                 display: "flex",
 
-                                                gap: 1,
+                                                flexWrap: "wrap",
 
-                                                flexShrink: 0,
+                                                gap: 0.75,
+
+                                                mb: 1.5,
                                             }}
                                         >
-                                            <Button
-                                                size="small"
-                                                startIcon={
-                                                    <CancelIcon />
-                                                }
-                                                onClick={
-                                                    handleCancel
-                                                }
-                                                disabled={
-                                                    isSaving
-                                                }
-                                                sx={{
-                                                    textTransform:
-                                                        "none",
-                                                }}
-                                            >
-                                                Cancel
-                                            </Button>
+                                            {genres.map((genre) => (
+                                                <Chip
+                                                    key={genre}
+                                                    label={formatGenre(
+                                                        genre
+                                                    )}
+                                                    size="small"
+                                                    sx={{
+                                                        fontWeight: 600,
 
-                                            <Button
-                                                size="small"
-                                                variant="contained"
-                                                startIcon={
-                                                    isSaving ? (
-                                                        <CircularProgress size={16} color="inherit" />
-                                                    ) : (
-                                                        <SaveIcon />
-                                                    )
-                                                }
-                                                onClick={
-                                                    handleSave
-                                                }
-                                                disabled={
-                                                    isSaving
-                                                }
-                                                sx={{
-                                                    textTransform:
-                                                        "none",
-                                                }}
-                                            >
-                                                {isSaving ? "Saving..." : "Save"}
-                                            </Button>
+                                                        ...getGenreSx(
+                                                            genre,
+                                                            mediaItem.mediaType
+                                                        ),
+                                                    }}
+                                                />
+                                            ))}
                                         </Box>
                                     )}
                                 </Box>
 
                                 {/* ================================================== */}
-                                {/* COLLECTION CONTENT                                  */}
+                                {/* DESCRIPTION                                         */}
+                                {/* ================================================== */}
+                                {mediaItem.description && (
+                                    <Box
+                                        sx={{
+                                            flexShrink: 0,
+                                            mb: 1,
+                                        }}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                lineHeight: 1.40,
+                                                fontSize: 17,
+                                                color:
+                                                    "rgba(255,255,255,0.72)",
+                                            }}
+                                        >
+                                            {mediaItem.description}
+                                        </Typography>
+                                    </Box>
+                                )}
+
+                                {/* ================================================== */}
+                                {/* COLLECTION DETAILS                                  */}
                                 {/* ================================================== */}
                                 <Box
                                     sx={{
-                                        pt: 1,
-                                        pr: 0.5,
-                                        pb: 1,
+                                        mt: 1,
+
+                                        pt: 2,
+
+                                        minHeight: 0,
+
+                                        display: "flex",
+                                        flexDirection: "column",
+
+                                        borderTop:
+                                            "1px solid rgba(255,255,255,0.08)",
                                     }}
                                 >
-                                    {isEditing ? (
-                                        <Box
-                                            sx={{
-                                                display: "grid",
+                                    {/* Collection Header */}
+                                    <Box
+                                        sx={{
+                                            display: "flex",
 
-                                                gridTemplateColumns: {
-                                                    xs: "1fr",
-                                                    sm: "1fr 1fr",
-                                                },
+                                            alignItems: "center",
 
-                                                gap: 2,
-                                            }}
+                                            justifyContent:
+                                                "space-between",
+
+                                            gap: 2,
+
+                                            flexShrink: 0,
+
+                                            mb: 1.5,
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="subtitle1"
+                                            fontWeight={700}
                                         >
-                                            {/* ========================================== */}
-                                            {/* VIEW COUNT                                 */}
-                                            {/* ========================================== */}
-                                            {shouldShowViewCount && (
+                                            Collection Details
+                                        </Typography>
+
+                                        {!isEditing ? (
+                                            <Button
+                                                size="small"
+                                                variant="outlined"
+                                                startIcon={
+                                                    <EditIcon />
+                                                }
+                                                onClick={handleEdit}
+                                                sx={{
+                                                    textTransform:
+                                                        "none",
+
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                Edit
+                                            </Button>
+                                        ) : (
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+
+                                                    gap: 1,
+
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                <Button
+                                                    size="small"
+                                                    startIcon={
+                                                        <CancelIcon />
+                                                    }
+                                                    onClick={
+                                                        handleCancel
+                                                    }
+                                                    disabled={
+                                                        isSaving
+                                                    }
+                                                    sx={{
+                                                        textTransform:
+                                                            "none",
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </Button>
+
+                                                <Button
+                                                    size="small"
+                                                    variant="contained"
+                                                    startIcon={
+                                                        isSaving ? (
+                                                            <CircularProgress size={16} color="inherit" />
+                                                        ) : (
+                                                            <SaveIcon />
+                                                        )
+                                                    }
+                                                    onClick={
+                                                        handleSave
+                                                    }
+                                                    disabled={
+                                                        isSaving
+                                                    }
+                                                    sx={{
+                                                        textTransform:
+                                                            "none",
+                                                    }}
+                                                >
+                                                    {isSaving ? "Saving..." : "Save"}
+                                                </Button>
+                                            </Box>
+                                        )}
+                                    </Box>
+
+                                    {/* ================================================== */}
+                                    {/* COLLECTION CONTENT                                  */}
+                                    {/* ================================================== */}
+                                    <Box
+                                        sx={{
+                                            pt: 1,
+                                            pr: 0.5,
+                                            pb: 1,
+                                        }}
+                                    >
+                                        {isEditing ? (
+                                            <Box
+                                                sx={{
+                                                    display: "grid",
+
+                                                    gridTemplateColumns: {
+                                                        xs: "1fr",
+                                                        sm: "1fr 1fr",
+                                                    },
+
+                                                    gap: 2,
+                                                }}
+                                            >
+                                                {/* ========================================== */}
+                                                {/* VIEW COUNT                                 */}
+                                                {/* ========================================== */}
+                                                {shouldShowViewCount && (
+                                                    <TextField
+                                                        label="View Count"
+                                                        type="number"
+                                                        value={
+                                                            editValues.viewCount
+                                                        }
+                                                        onChange={handleEditChange(
+                                                            "viewCount"
+                                                        )}
+                                                        inputProps={{
+                                                            min: 0,
+                                                            step: 1,
+                                                        }}
+                                                        fullWidth
+                                                    />
+                                                )}
+
+                                                {/* ========================================== */}
+                                                {/* PERSONAL RATING                           */}
+                                                {/* ========================================== */}
                                                 <TextField
-                                                    label="View Count"
+                                                    label="Personal Rating"
                                                     type="number"
                                                     value={
-                                                        editValues.viewCount
+                                                        editValues.personalRating
                                                     }
                                                     onChange={handleEditChange(
-                                                        "viewCount"
+                                                        "personalRating"
                                                     )}
                                                     inputProps={{
                                                         min: 0,
-                                                        step: 1,
+                                                        max: 10,
+                                                        step: 0.1,
                                                     }}
                                                     fullWidth
                                                 />
-                                            )}
 
-                                            {/* ========================================== */}
-                                            {/* PERSONAL RATING                           */}
-                                            {/* ========================================== */}
-                                            <TextField
-                                                label="Personal Rating"
-                                                type="number"
-                                                value={
-                                                    editValues.personalRating
-                                                }
-                                                onChange={handleEditChange(
-                                                    "personalRating"
-                                                )}
-                                                inputProps={{
-                                                    min: 0,
-                                                    max: 10,
-                                                    step: 0.1,
-                                                }}
-                                                fullWidth
-                                            />
-
-                                            {/* ========================================== */}
-                                            {/* PURCHASE DATE                             */}
-                                            {/* ========================================== */}
-                                            <TextField
-                                                label="Purchase Date"
-                                                type="date"
-                                                value={editValues.purchaseDate}
-                                                onChange={handleEditChange("purchaseDate")}
-                                                fullWidth
-                                                slotProps={{
-                                                    inputLabel: {
-                                                        shrink: true,
-                                                        sx: {
-                                                            backgroundColor: "#181818",
-                                                            px: 0.5,
+                                                {/* ========================================== */}
+                                                {/* PURCHASE DATE                             */}
+                                                {/* ========================================== */}
+                                                <TextField
+                                                    label="Purchase Date"
+                                                    type="date"
+                                                    value={editValues.purchaseDate}
+                                                    onChange={handleEditChange("purchaseDate")}
+                                                    fullWidth
+                                                    slotProps={{
+                                                        inputLabel: {
+                                                            shrink: true,
+                                                            sx: {
+                                                                backgroundColor: "#181818",
+                                                                px: 0.5,
+                                                            },
                                                         },
-                                                    },
-                                                }}
-                                            />
+                                                    }}
+                                                />
 
-                                            {/* ========================================== */}
-                                            {/* PURCHASE PRICE                            */}
-                                            {/* ========================================== */}
-                                            <TextField
-                                                label="Purchase Price"
-                                                type="number"
-                                                value={
-                                                    editValues.purchasePrice
-                                                }
-                                                onChange={handleEditChange(
-                                                    "purchasePrice"
-                                                )}
-                                                inputProps={{
-                                                    min: 0,
-                                                    step: 0.01,
-                                                }}
-                                                fullWidth
-                                            />
+                                                {/* ========================================== */}
+                                                {/* PURCHASE PRICE                            */}
+                                                {/* ========================================== */}
+                                                <TextField
+                                                    label="Purchase Price"
+                                                    type="number"
+                                                    value={
+                                                        editValues.purchasePrice
+                                                    }
+                                                    onChange={handleEditChange(
+                                                        "purchasePrice"
+                                                    )}
+                                                    inputProps={{
+                                                        min: 0,
+                                                        step: 0.01,
+                                                    }}
+                                                    fullWidth
+                                                />
 
-                                            {/* ========================================== */}
-                                            {/* COLLECTION STATUS                         */}
-                                            {/* ========================================== */}
-                                            <TextField
-                                                select
-                                                label="Collection Status"
-                                                value={
-                                                    editValues.status
-                                                }
-                                                onChange={handleEditChange(
-                                                    "status"
-                                                )}
-                                                fullWidth
-                                            >
-                                                <MenuItem value="OWNED">
-                                                    Owned
-                                                </MenuItem>
-
-                                                <MenuItem value="WISHLISTED">
-                                                    Wishlisted
-                                                </MenuItem>
-                                            </TextField>
-
-                                            {/* ========================================== */}
-                                            {/* FORMAT                                    */}
-                                            {/* ========================================== */}
-                                            <TextField
-                                                select
-                                                label="Format"
-                                                value={editValues.format}
-                                                onChange={handleEditChange("format")}
-                                                fullWidth
-                                            >
-                                                {availableFormats.map((format) => (
-                                                    <MenuItem key={format} value={format}>
-                                                        {format}
+                                                {/* ========================================== */}
+                                                {/* COLLECTION STATUS                         */}
+                                                {/* ========================================== */}
+                                                <TextField
+                                                    select
+                                                    label="Collection Status"
+                                                    value={
+                                                        editValues.status
+                                                    }
+                                                    onChange={handleEditChange(
+                                                        "status"
+                                                    )}
+                                                    fullWidth
+                                                >
+                                                    <MenuItem value="OWNED">
+                                                        Owned
                                                     </MenuItem>
-                                                ))}
-                                            </TextField>
 
-                                            {/* ========================================== */}
-                                            {/* CONDITION                                 */}
-                                            {/* ========================================== */}
-                                            <TextField
-                                                label="Condition"
-                                                value={
-                                                    editValues.condition
-                                                }
-                                                onChange={handleEditChange(
-                                                    "condition"
-                                                )}
-                                                inputProps={{
-                                                    maxLength: 50,
-                                                }}
-                                                fullWidth
-                                            />
+                                                    <MenuItem value="WISHLISTED">
+                                                        Wishlisted
+                                                    </MenuItem>
+                                                </TextField>
 
-                                            {/* ========================================== */}
-                                            {/* NOTES                                     */}
-                                            {/* ========================================== */}
-                                            <TextField
-                                                label="Notes"
-                                                value={
-                                                    editValues.notes
-                                                }
-                                                onChange={handleEditChange(
-                                                    "notes"
-                                                )}
-                                                multiline
-                                                minRows={3}
-                                                maxRows={5}
-                                                fullWidth
+                                                {/* ========================================== */}
+                                                {/* FORMAT                                    */}
+                                                {/* ========================================== */}
+                                                <TextField
+                                                    select
+                                                    label="Format"
+                                                    value={editValues.format}
+                                                    onChange={handleEditChange("format")}
+                                                    fullWidth
+                                                >
+                                                    {availableFormats.map((format) => (
+                                                        <MenuItem key={format} value={format}>
+                                                            {format}
+                                                        </MenuItem>
+                                                    ))}
+                                                </TextField>
+
+                                                {/* ========================================== */}
+                                                {/* CONDITION                                 */}
+                                                {/* ========================================== */}
+                                                <TextField
+                                                    label="Condition"
+                                                    value={
+                                                        editValues.condition
+                                                    }
+                                                    onChange={handleEditChange(
+                                                        "condition"
+                                                    )}
+                                                    inputProps={{
+                                                        maxLength: 50,
+                                                    }}
+                                                    fullWidth
+                                                />
+
+                                                {/* ========================================== */}
+                                                {/* NOTES                                     */}
+                                                {/* ========================================== */}
+                                                <TextField
+                                                    label="Notes"
+                                                    value={
+                                                        editValues.notes
+                                                    }
+                                                    onChange={handleEditChange(
+                                                        "notes"
+                                                    )}
+                                                    multiline
+                                                    minRows={3}
+                                                    maxRows={5}
+                                                    fullWidth
+                                                    sx={{
+                                                        gridColumn: "1 / -1"
+                                                    }}
+                                                />
+                                            </Box>
+                                        ) : (
+                                            <Box
                                                 sx={{
-                                                    gridColumn: "1 / -1"
+                                                    display: "grid",
+
+                                                    gridTemplateColumns: {
+                                                        xs: "1fr",
+                                                        sm: "1fr 1fr",
+                                                    },
+
+                                                    gap: 1.5,
+
+                                                    pb: 1,
                                                 }}
-                                            />
-                                        </Box>
-                                    ) : (
-                                        <Box
-                                            sx={{
-                                                display: "grid",
+                                            >
+                                                {/* ========================================== */}
+                                                {/* VIEW COUNT                                 */}
+                                                {/* ========================================== */}
+                                                {shouldShowViewCount && (
+                                                    <CollectionDetail
+                                                        icon={
+                                                            <VisibilityIcon
+                                                                sx={{
+                                                                    fontSize: 20,
+                                                                }}
+                                                            />
+                                                        }
+                                                        label="View Count"
+                                                        value={
+                                                            mediaItem.consumptionCount ??
+                                                            0
+                                                        }
+                                                    />
+                                                )}
 
-                                                gridTemplateColumns: {
-                                                    xs: "1fr",
-                                                    sm: "1fr 1fr",
-                                                },
-
-                                                gap: 1.5,
-
-                                                pb: 1,
-                                            }}
-                                        >
-                                            {/* ========================================== */}
-                                            {/* VIEW COUNT                                 */}
-                                            {/* ========================================== */}
-                                            {shouldShowViewCount && (
+                                                {/* ========================================== */}
+                                                {/* PERSONAL RATING                           */}
+                                                {/* ========================================== */}
                                                 <CollectionDetail
                                                     icon={
-                                                        <VisibilityIcon
+                                                        <StarIcon
+                                                            sx={{
+                                                                fontSize: 20,
+
+                                                                color:
+                                                                    "#ffca28",
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Personal Rating"
+                                                    value={
+                                                        mediaItem.personalRating !=
+                                                        null
+                                                            ? `${Number(
+                                                                mediaItem.personalRating
+                                                            ).toFixed(
+                                                                1
+                                                            )} / 10`
+                                                            : "—"
+                                                    }
+                                                />
+
+                                                {/* ========================================== */}
+                                                {/* PURCHASE DATE                             */}
+                                                {/* ========================================== */}
+                                                <CollectionDetail
+                                                    icon={
+                                                        <CalendarTodayIcon
+                                                            sx={{
+                                                                fontSize: 19,
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Purchase Date"
+                                                    value={
+                                                        mediaItem.purchaseDate ||
+                                                        "—"
+                                                    }
+                                                />
+
+                                                {/* ========================================== */}
+                                                {/* PURCHASE PRICE                            */}
+                                                {/* ========================================== */}
+                                                <CollectionDetail
+                                                    icon={
+                                                        <AttachMoneyIcon
                                                             sx={{
                                                                 fontSize: 20,
                                                             }}
                                                         />
                                                     }
-                                                    label="View Count"
+                                                    label="Purchase Price"
+                                                    value={formatPrice(
+                                                        mediaItem.purchasePrice
+                                                    )}
+                                                />
+
+                                                {/* ========================================== */}
+                                                {/* COLLECTION STATUS                         */}
+                                                {/* ========================================== */}
+                                                <CollectionDetail
+                                                    icon={
+                                                        <BookmarkIcon
+                                                            sx={{
+                                                                fontSize: 20,
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Collection Status"
                                                     value={
-                                                        mediaItem.consumptionCount ??
-                                                        0
+                                                        mediaItem.status ===
+                                                        "OWNED"
+                                                            ? "Owned"
+                                                            : mediaItem.status ===
+                                                                "WISHLISTED"
+                                                            ? "Wishlisted"
+                                                            : "—"
                                                     }
                                                 />
-                                            )}
 
-                                            {/* ========================================== */}
-                                            {/* PERSONAL RATING                           */}
-                                            {/* ========================================== */}
-                                            <CollectionDetail
-                                                icon={
-                                                    <StarIcon
-                                                        sx={{
-                                                            fontSize: 20,
+                                                {/* ========================================== */}
+                                                {/* FORMAT                                    */}
+                                                {/* ========================================== */}
+                                                <CollectionDetail
+                                                    icon={
+                                                        <LocalOfferIcon
+                                                            sx={{
+                                                                fontSize: 20,
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Format"
+                                                    value={
+                                                        mediaItem.format ||
+                                                        "—"
+                                                    }
+                                                />
 
-                                                            color:
-                                                                "#ffca28",
-                                                        }}
-                                                    />
-                                                }
-                                                label="Personal Rating"
-                                                value={
-                                                    mediaItem.personalRating !=
-                                                    null
-                                                        ? `${Number(
-                                                            mediaItem.personalRating
-                                                        ).toFixed(
-                                                            1
-                                                        )} / 10`
-                                                        : "—"
-                                                }
-                                            />
+                                                {/* ========================================== */}
+                                                {/* CONDITION                                 */}
+                                                {/* ========================================== */}
+                                                <CollectionDetail
+                                                    icon={
+                                                        <InfoOutlinedIcon
+                                                            sx={{
+                                                                fontSize: 20,
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Condition"
+                                                    value={
+                                                        mediaItem.condition ||
+                                                        "—"
+                                                    }
+                                                />
 
-                                            {/* ========================================== */}
-                                            {/* PURCHASE DATE                             */}
-                                            {/* ========================================== */}
-                                            <CollectionDetail
-                                                icon={
-                                                    <CalendarTodayIcon
-                                                        sx={{
-                                                            fontSize: 19,
-                                                        }}
-                                                    />
-                                                }
-                                                label="Purchase Date"
-                                                value={
-                                                    mediaItem.purchaseDate ||
-                                                    "—"
-                                                }
-                                            />
-
-                                            {/* ========================================== */}
-                                            {/* PURCHASE PRICE                            */}
-                                            {/* ========================================== */}
-                                            <CollectionDetail
-                                                icon={
-                                                    <AttachMoneyIcon
-                                                        sx={{
-                                                            fontSize: 20,
-                                                        }}
-                                                    />
-                                                }
-                                                label="Purchase Price"
-                                                value={formatPrice(
-                                                    mediaItem.purchasePrice
-                                                )}
-                                            />
-
-                                            {/* ========================================== */}
-                                            {/* COLLECTION STATUS                         */}
-                                            {/* ========================================== */}
-                                            <CollectionDetail
-                                                icon={
-                                                    <BookmarkIcon
-                                                        sx={{
-                                                            fontSize: 20,
-                                                        }}
-                                                    />
-                                                }
-                                                label="Collection Status"
-                                                value={
-                                                    mediaItem.status ===
-                                                    "OWNED"
-                                                        ? "Owned"
-                                                        : mediaItem.status ===
-                                                            "WISHLISTED"
-                                                          ? "Wishlisted"
-                                                          : "—"
-                                                }
-                                            />
-
-                                            {/* ========================================== */}
-                                            {/* FORMAT                                    */}
-                                            {/* ========================================== */}
-                                            <CollectionDetail
-                                                icon={
-                                                    <LocalOfferIcon
-                                                        sx={{
-                                                            fontSize: 20,
-                                                        }}
-                                                    />
-                                                }
-                                                label="Format"
-                                                value={
-                                                    mediaItem.format ||
-                                                    "—"
-                                                }
-                                            />
-
-                                            {/* ========================================== */}
-                                            {/* CONDITION                                 */}
-                                            {/* ========================================== */}
-                                            <CollectionDetail
-                                                icon={
-                                                    <InfoOutlinedIcon
-                                                        sx={{
-                                                            fontSize: 20,
-                                                        }}
-                                                    />
-                                                }
-                                                label="Condition"
-                                                value={
-                                                    mediaItem.condition ||
-                                                    "—"
-                                                }
-                                            />
-
-                                            {/* ========================================== */}
-                                            {/* NOTES                                     */}
-                                            {/* ========================================== */}
-                                            <Box
-                                                sx={{
-                                                    gridColumn: "1 / -1",
-                                                    minWidth: 0,
-                                                    mt: 0.5
-                                                }}
-                                            >
-                                                <Typography
-                                                    variant="caption"
-                                                    color="text.secondary"
-                                                >
-                                                    Notes
-                                                </Typography>
-
+                                                {/* ========================================== */}
+                                                {/* NOTES                                     */}
+                                                {/* ========================================== */}
                                                 <Box
                                                     sx={{
-                                                        mt: 0.5,
-                                                        pr: 0.5,
+                                                        gridColumn: "1 / -1",
+                                                        minWidth: 0,
+                                                        mt: 0.5
                                                     }}
                                                 >
                                                     <Typography
+                                                        variant="caption"
+                                                        color="text.secondary"
+                                                    >
+                                                        Notes
+                                                    </Typography>
+
+                                                    <Box
                                                         sx={{
-                                                            lineHeight: 1.6,
-                                                            color: mediaItem.notes
-                                                                    ? "rgba(255,255,255,0.72)"
-                                                                    : "text.secondary",
-                                                            whiteSpace: "pre-line",
-                                                            overflowWrap: "anywhere",
+                                                            mt: 0.5,
+                                                            pr: 0.5,
                                                         }}
                                                     >
-                                                        {mediaItem.notes || "—"}
-                                                    </Typography>
+                                                        <Typography
+                                                            sx={{
+                                                                lineHeight: 1.6,
+                                                                color: mediaItem.notes
+                                                                        ? "rgba(255,255,255,0.72)"
+                                                                        : "text.secondary",
+                                                                whiteSpace: "pre-line",
+                                                                overflowWrap: "anywhere",
+                                                            }}
+                                                        >
+                                                            {mediaItem.notes || "—"}
+                                                        </Typography>
+                                                    </Box>
                                                 </Box>
                                             </Box>
-                                        </Box>
-                                    )}
+                                        )}
+                                    </Box>
                                 </Box>
                             </Box>
                         </Box>
+
+                        {/* ================================================== */}
+                        {/* RELATED MEDIA                                      */}
+                        {/* ================================================== */}
+                        {(mediaItem.mediaType === "TV_SHOW" ||
+                            mediaItem.mediaType === "MUSIC_ALBUM") && (
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    flexShrink: 0,
+                                }}
+                            >
+                                <LibraryMediaSubItemsSection
+                                    mediaItem={mediaItem}
+                                    sectionLabel={
+                                        mediaItem.mediaType === "TV_SHOW"
+                                            ? "Seasons"
+                                            : "Tracklist"
+                                    }
+                                    itemType={
+                                        mediaItem.mediaType === "TV_SHOW"
+                                            ? "TV_SEASON"
+                                            : "MUSIC_TRACK"
+                                    }
+                                    emptyMessage={
+                                        mediaItem.mediaType === "TV_SHOW"
+                                            ? "No seasons found."
+                                            : "No tracks found."
+                                    }
+                                />
+                            </Box>
+                        )}
                     </Box>
                 </Box>
             </Fade>
