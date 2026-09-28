@@ -24,6 +24,13 @@ function LibraryPage() {
     const [sortOption, setSortOption] = useState("title");
     const [sortDirection, setSortDirection] = useState("asc");
 
+    const [filters, setFilters] = useState({
+        mediaTypes: [],
+        formats: [],
+        genres: [],
+        statuses: [],
+    });
+
     useEffect(() => {
         async function loadLibrary() {
             try {
@@ -52,7 +59,7 @@ function LibraryPage() {
         loadLibrary();
     }, []);
 
-    const filteredMediaItems = useMemo(() => {
+    const searchedMediaItems = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLowerCase();
 
         if (!normalizedQuery) {
@@ -65,7 +72,7 @@ function LibraryPage() {
     }, [mediaItems, searchQuery]);
 
     const sortedMediaItems = useMemo(() => {
-        const sorted = [...filteredMediaItems];
+        const sorted = [...searchedMediaItems];
 
         sorted.sort((a, b) => {
             let comparison = 0;
@@ -101,7 +108,53 @@ function LibraryPage() {
         });
 
         return sorted;
-    }, [filteredMediaItems, sortOption, sortDirection]);
+    }, [searchedMediaItems, sortOption, sortDirection]);
+
+    const filteredMediaItems = useMemo(() => {
+        return sortedMediaItems.filter((mediaItem) => {
+
+            const matchesMediaType =
+                filters.mediaTypes.length === 0 ||
+                filters.mediaTypes.includes(mediaItem.mediaType);
+
+            const matchesFormat =
+                filters.formats.length === 0 ||
+                filters.formats.includes(mediaItem.format);
+
+            const matchesGenre =
+                filters.genres.length === 0 ||
+                (mediaItem.genres ?? []).some((genre) =>
+                    filters.genres.includes(genre)
+                );
+
+            const matchesStatus =
+                filters.statuses.length === 0 ||
+                filters.statuses.includes(mediaItem.status);
+
+            return (
+                matchesMediaType &&
+                matchesFormat &&
+                matchesGenre &&
+                matchesStatus
+            );
+        });
+    }, [sortedMediaItems, filters]);
+
+    const handleFilterChange = (filterType, values) => {
+        setFilters((current) => ({
+            ...current,
+            [filterType]: values,
+        }));
+    };
+
+    const handleClearFilters = () => {
+        setFilters({
+            mediaTypes: [],
+            formats: [],
+            genres: [],
+            statuses: [],
+        });
+    };
 
     const handleMediaSelect = (mediaItem) => {
         if (selectionMode) {
@@ -257,13 +310,16 @@ function LibraryPage() {
                     setSortOption(option);
                     setSortDirection(direction);
                 }}
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onClearFilters={handleClearFilters}
             />
 
             {loading ? (
                 <CircularProgress />
             ) : (
                 <LibraryMediaGrid
-                    mediaItemArray={sortedMediaItems}
+                    mediaItemArray={filteredMediaItems}
                     onMediaSelect={handleMediaSelect}
                     selectionMode={selectionMode}
                     selectedMediaIds={selectedMediaIds}

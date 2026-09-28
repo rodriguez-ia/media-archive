@@ -7,6 +7,13 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import CheckIcon from '@mui/icons-material/Check';
+import { formatGenre } from '../../utils/genreUtils';
+import {
+    mediaTypeOptions,
+    formatOptions,
+    genreOptions,
+    statusOptions,
+} from "../../utils/mediaOptions.js"
 import {
     Box,
     Button,
@@ -205,9 +212,12 @@ function LibraryToolbar({
     sortOption,
     sortDirection,
     onSortChange,
+    filters,
+    onFilterChange,
+    onClearFilters,
 }) {
+    // Sort
     const [sortMenuAnchor, setSortMenuAnchor] = useState(null);
-
     const sortMenuOpen = Boolean(sortMenuAnchor);
 
     const handleSortClick = (event) => {
@@ -216,6 +226,28 @@ function LibraryToolbar({
 
     const handleSortClose = () => {
         setSortMenuAnchor(null);
+    };
+
+    // Filter
+    const [filterMenuAnchor, setFilterMenuAnchor] = useState(null);
+    const filterMenuOpen = Boolean(filterMenuAnchor);
+
+    const handleFilterClick = (event) => {
+        setFilterMenuAnchor(event.currentTarget);
+    };
+
+    const handleFilterClose = () => {
+        setFilterMenuAnchor(null);
+    };
+
+    const toggleFilterValue = (filterType, value) => {
+        const currentValues = filters[filterType];
+
+        const newValues = currentValues.includes(value)
+            ? currentValues.filter((current) => current !== value)
+            : [...currentValues, value];
+
+        onFilterChange(filterType, newValues);
     };
 
     return (
@@ -433,13 +465,196 @@ function LibraryToolbar({
                                 </MenuItem>
                             </Menu>
 
+                            {/* Filter Button */}
                             <ToolbarButton
                                 icon={<FilterListIcon />}
-                                active
+                                active={
+                                    filters.mediaTypes.length > 0 ||
+                                    filters.formats.length > 0 ||
+                                    filters.genres.length > 0 ||
+                                    filters.statuses.length > 0
+                                }
                                 aria-label="Filter library"
+                                onClick={handleFilterClick}
                             >
                                 Filter
                             </ToolbarButton>
+
+                            {/* Filter Menu */}
+                            <Menu
+                                anchorEl={filterMenuAnchor}
+                                open={filterMenuOpen}
+                                onClose={handleFilterClose}
+                                slotProps={{
+                                    paper: {
+                                        sx: {
+                                            mt: 1,
+                                            width: 280,
+                                            maxHeight: "70vh",
+                                        },
+                                    },
+                                }}
+                            >
+                                {/* MEDIA TYPE */}
+                                <Typography
+                                    sx={{
+                                        px: 2,
+                                        pt: 1,
+                                        pb: 0.5,
+                                        fontSize: "0.7rem",
+                                        fontWeight: 700,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                    }}
+                                >
+                                    Media Type
+                                </Typography>
+
+                                {mediaTypeOptions.map((option) => (
+                                    <MenuItem
+                                        key={option.value}
+                                        onClick={() =>
+                                            toggleFilterValue(
+                                                "mediaTypes",
+                                                option.value
+                                            )
+                                        }
+                                    >
+                                        <ListItemText primary={option.label} />
+
+                                        {filters.mediaTypes.includes(option.value) && (
+                                            <ListItemIcon sx={{ minWidth: "auto" }}>
+                                                <CheckIcon fontSize="small" />
+                                            </ListItemIcon>
+                                        )}
+                                    </MenuItem>
+                                ))}
+
+                                {/* FORMAT */}
+                                <Typography
+                                    sx={{
+                                        px: 2,
+                                        pt: 1.5,
+                                        pb: 0.5,
+                                        fontSize: "0.7rem",
+                                        fontWeight: 700,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                    }}
+                                >
+                                    Format
+                                </Typography>
+
+                                {formatOptions.map((format) => (
+                                    <MenuItem
+                                        key={format}
+                                        onClick={() =>
+                                            toggleFilterValue("formats", format)
+                                        }
+                                    >
+                                        <ListItemText primary={format} />
+
+                                        {filters.formats.includes(format) && (
+                                            <ListItemIcon sx={{ minWidth: "auto" }}>
+                                                <CheckIcon fontSize="small" />
+                                            </ListItemIcon>
+                                        )}
+                                    </MenuItem>
+                                ))}
+
+                                {/* GENRE */}
+                                <Typography
+                                    sx={{
+                                        px: 2,
+                                        pt: 1.5,
+                                        pb: 0.5,
+                                        fontSize: "0.7rem",
+                                        fontWeight: 700,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                    }}
+                                >
+                                    Genre
+                                </Typography>
+
+                                {genreOptions.map((genre) => (
+                                    <MenuItem
+                                        key={genre}
+                                        onClick={() =>
+                                            toggleFilterValue("genres", genre)
+                                        }
+                                    >
+                                        <ListItemText primary={formatGenre(genre)} />
+
+                                        {filters.genres.includes(genre) && (
+                                            <ListItemIcon sx={{ minWidth: "auto" }}>
+                                                <CheckIcon fontSize="small" />
+                                            </ListItemIcon>
+                                        )}
+                                    </MenuItem>
+                                ))}
+
+                                {/* STATUS */}
+                                <Typography
+                                    sx={{
+                                        px: 2,
+                                        pt: 1.5,
+                                        pb: 0.5,
+                                        fontSize: "0.7rem",
+                                        fontWeight: 700,
+                                        color: "text.secondary",
+                                        textTransform: "uppercase",
+                                    }}
+                                >
+                                    Status
+                                </Typography>
+
+                                {statusOptions.map((option) => (
+                                    <MenuItem
+                                        key={option.value}
+                                        onClick={() =>
+                                            toggleFilterValue(
+                                                "statuses",
+                                                option.value
+                                            )
+                                        }
+                                    >
+                                        <ListItemText primary={option.label} />
+
+                                        {filters.statuses.includes(option.value) && (
+                                            <ListItemIcon sx={{ minWidth: "auto" }}>
+                                                <CheckIcon fontSize="small" />
+                                            </ListItemIcon>
+                                        )}
+                                    </MenuItem>
+                                ))}
+
+                                {/* CLEAR */}
+                                <Box
+                                    sx={{
+                                        px: 1.5,
+                                        py: 1,
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                    }}
+                                >
+                                    <Button
+                                        size="small"
+                                        onClick={onClearFilters}
+                                        disabled={
+                                            filters.mediaTypes.length === 0 &&
+                                            filters.formats.length === 0 &&
+                                            filters.genres.length === 0 &&
+                                            filters.statuses.length === 0
+                                        }
+                                        sx={{
+                                            textTransform: "none",
+                                        }}
+                                    >
+                                        Clear Filters
+                                    </Button>
+                                </Box>
+                            </Menu>
 
                             <ToolbarButton
                                 icon={
