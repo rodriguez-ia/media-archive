@@ -71,8 +71,38 @@ function LibraryPage() {
         );
     }, [mediaItems, searchQuery]);
 
+    const filteredMediaItems = useMemo(() => {
+        return searchedMediaItems.filter((mediaItem) => {
+
+            const matchesMediaType =
+                filters.mediaTypes.length === 0 ||
+                filters.mediaTypes.includes(mediaItem.mediaType);
+
+            const matchesFormat =
+                filters.formats.length === 0 ||
+                filters.formats.includes(mediaItem.format);
+
+            const matchesGenre =
+                filters.genres.length === 0 ||
+                (mediaItem.genres ?? []).some((genre) =>
+                    filters.genres.includes(genre)
+                );
+
+            const matchesStatus =
+                filters.statuses.length === 0 ||
+                filters.statuses.includes(mediaItem.status);
+
+            return (
+                matchesMediaType &&
+                matchesFormat &&
+                matchesGenre &&
+                matchesStatus
+            );
+        });
+    }, [searchedMediaItems, filters]);
+
     const sortedMediaItems = useMemo(() => {
-        const sorted = [...searchedMediaItems];
+        const sorted = [...filteredMediaItems];
 
         sorted.sort((a, b) => {
             let comparison = 0;
@@ -108,37 +138,7 @@ function LibraryPage() {
         });
 
         return sorted;
-    }, [searchedMediaItems, sortOption, sortDirection]);
-
-    const filteredMediaItems = useMemo(() => {
-        return sortedMediaItems.filter((mediaItem) => {
-
-            const matchesMediaType =
-                filters.mediaTypes.length === 0 ||
-                filters.mediaTypes.includes(mediaItem.mediaType);
-
-            const matchesFormat =
-                filters.formats.length === 0 ||
-                filters.formats.includes(mediaItem.format);
-
-            const matchesGenre =
-                filters.genres.length === 0 ||
-                (mediaItem.genres ?? []).some((genre) =>
-                    filters.genres.includes(genre)
-                );
-
-            const matchesStatus =
-                filters.statuses.length === 0 ||
-                filters.statuses.includes(mediaItem.status);
-
-            return (
-                matchesMediaType &&
-                matchesFormat &&
-                matchesGenre &&
-                matchesStatus
-            );
-        });
-    }, [sortedMediaItems, filters]);
+    }, [filteredMediaItems, sortOption, sortDirection]);
 
     const handleFilterChange = (filterType, values) => {
         setFilters((current) => ({
@@ -319,7 +319,7 @@ function LibraryPage() {
                 <CircularProgress />
             ) : (
                 <LibraryMediaGrid
-                    mediaItemArray={filteredMediaItems}
+                    mediaItemArray={sortedMediaItems}
                     onMediaSelect={handleMediaSelect}
                     selectionMode={selectionMode}
                     selectedMediaIds={selectedMediaIds}
