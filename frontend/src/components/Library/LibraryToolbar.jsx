@@ -204,6 +204,110 @@ function ToolbarButton({
 }
 
 
+function SortOption({
+    label,
+    description,
+    selected,
+    onClick,
+}) {
+    return (
+        <Button
+            fullWidth
+            onClick={onClick}
+            sx={(theme) => ({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+
+                minHeight: 42,
+
+                px: 1.25,
+                py: 0.65,
+
+                borderRadius: 1,
+
+                color: selected
+                    ? theme.palette.common.white
+                    : alpha(
+                        theme.palette.common.white,
+                        0.65
+                    ),
+
+                backgroundColor: selected
+                    ? alpha(
+                        theme.palette.primary.main,
+                        0.10
+                    )
+                    : 'transparent',
+
+                textTransform: 'none',
+                textAlign: 'left',
+
+                transition: 'all 120ms ease',
+
+                '&:hover': {
+                    backgroundColor: selected
+                        ? alpha(
+                            theme.palette.primary.main,
+                            0.15
+                        )
+                        : alpha(
+                            theme.palette.common.white,
+                            0.05
+                        ),
+                },
+            })}
+        >
+            <Box
+                sx={{
+                    minWidth: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                }}
+            >
+                <Typography
+                    sx={{
+                        fontSize: '0.72rem',
+                        fontWeight: selected ? 600 : 500,
+                        lineHeight: 1.3,
+                    }}
+                >
+                    {label}
+                </Typography>
+
+                <Typography
+                    sx={{
+                        mt: 0.15,
+
+                        color: 'rgba(255,255,255,0.35)',
+
+                        fontSize: '0.6rem',
+                        fontWeight: 400,
+                        lineHeight: 1.2,
+                    }}
+                >
+                    {description}
+                </Typography>
+            </Box>
+
+            {selected && (
+                <CheckIcon
+                    sx={(theme) => ({
+                        ml: 1,
+
+                        flexShrink: 0,
+
+                        color: theme.palette.primary.main,
+                        fontSize: 17,
+                    })}
+                />
+            )}
+        </Button>
+    );
+}
+
+
 const FilterSection = styled(Box)(({ theme }) => ({
     padding: theme.spacing(1.25, 1.5),
 
@@ -522,70 +626,147 @@ function LibraryToolbar({
                                     paper: {
                                         sx: {
                                             mt: 1,
-                                            minWidth: 210,
+
+                                            width: 270,
+
+                                            p: 0,
+
+                                            overflow: 'hidden',
+
+                                            border: '1px solid',
+                                            borderColor: alpha(
+                                                '#ffffff',
+                                                0.09
+                                            ),
+
+                                            borderRadius: 1.5,
+
+                                            background: `
+                                                linear-gradient(
+                                                    145deg,
+                                                    #1c1c1c,
+                                                    #151515
+                                                )
+                                            `,
+
+                                            boxShadow: `
+                                                0 12px 40px rgba(0,0,0,0.45),
+                                                0 0 24px rgba(0,0,0,0.25)
+                                            `,
                                         },
                                     },
                                 }}
                             >
-                                <MenuItem
-                                    onClick={() => {
-                                        onSortChange("title", "asc");
-                                        handleSortClose();
-                                    }}
+                                {/* Header */}
+                                <Box
+                                    sx={(theme) => ({
+                                        px: 1.5,
+                                        py: 1.15,
+
+                                        borderBottom: '1px solid',
+                                        borderColor: alpha(
+                                            theme.palette.common.white,
+                                            0.08
+                                        ),
+
+                                        background: `
+                                            linear-gradient(
+                                                90deg,
+                                                ${alpha(
+                                                    theme.palette.primary.main,
+                                                    0.09
+                                                )},
+                                                transparent
+                                            )
+                                        `,
+                                    })}
                                 >
-                                    <ListItemText>Title</ListItemText>
+                                    <Typography
+                                        sx={{
+                                            color: 'rgba(255,255,255,0.92)',
+                                            fontSize: '0.82rem',
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        Sort Library
+                                    </Typography>
 
-                                    {sortOption === "title" && sortDirection === "asc" && (
-                                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                                            <CheckIcon fontSize="small" />
-                                        </ListItemIcon>
-                                    )}
-                                </MenuItem>
+                                    <Typography
+                                        sx={{
+                                            mt: 0.15,
 
-                                <MenuItem
-                                    onClick={() => {
-                                        onSortChange("personalRating", "desc");
-                                        handleSortClose();
-                                    }}
-                                >
-                                    <ListItemText>Personal Rating</ListItemText>
+                                            color: 'rgba(255,255,255,0.38)',
 
-                                    {sortOption === "personalRating" && sortDirection === "desc" && (
-                                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                                            <CheckIcon fontSize="small" />
-                                        </ListItemIcon>
-                                    )}
-                                </MenuItem>
+                                            fontSize: '0.63rem',
+                                        }}
+                                    >
+                                        Choose how your library is ordered
+                                    </Typography>
+                                </Box>
 
-                                <MenuItem
-                                    onClick={() => {
-                                        onSortChange("communityRating", "desc");
-                                        handleSortClose();
-                                    }}
-                                >
-                                    <ListItemText>Community Rating</ListItemText>
+                                {/* Sort Options */}
+                                <Box sx={{ p: 0.75 }}>
+                                    <SortOption
+                                        label="Title"
+                                        description="A–Z"
+                                        selected={
+                                            sortOption === "title" &&
+                                            sortDirection === "asc"
+                                        }
+                                        onClick={() => {
+                                            onSortChange("title", "asc");
+                                            handleSortClose();
+                                        }}
+                                    />
 
-                                    {sortOption === "communityRating" && sortDirection === "desc" && (
-                                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                                            <CheckIcon fontSize="small" />
-                                        </ListItemIcon>
-                                    )}
-                                </MenuItem>
+                                    <SortOption
+                                        label="Personal Rating"
+                                        description="Highest rated first"
+                                        selected={
+                                            sortOption === "personalRating" &&
+                                            sortDirection === "desc"
+                                        }
+                                        onClick={() => {
+                                            onSortChange(
+                                                "personalRating",
+                                                "desc"
+                                            );
+                                            handleSortClose();
+                                        }}
+                                    />
 
-                                <MenuItem
-                                    onClick={() => {
-                                        onSortChange("viewCount", "desc");
-                                        handleSortClose();
-                                    }}
-                                >
-                                    <ListItemText>View Count</ListItemText>
+                                    <SortOption
+                                        label="Community Rating"
+                                        description="Highest rated first"
+                                        selected={
+                                            sortOption === "communityRating" &&
+                                            sortDirection === "desc"
+                                        }
+                                        onClick={() => {
+                                            onSortChange(
+                                                "communityRating",
+                                                "desc"
+                                            );
+                                            handleSortClose();
+                                        }}
+                                    />
 
-                                    {sortOption === "viewCount" && sortDirection === "desc" && (
-                                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                                            <CheckIcon fontSize="small" />
-                                        </ListItemIcon>
-                                    )}
-                                </MenuItem>
+                                    <SortOption
+                                        label="View Count"
+                                        description="Most viewed first"
+                                        selected={
+                                            sortOption === "viewCount" &&
+                                            sortDirection === "desc"
+                                        }
+                                        onClick={() => {
+                                            onSortChange(
+                                                "viewCount",
+                                                "desc"
+                                            );
+                                            handleSortClose();
+                                        }}
+                                    />
+                                </Box>
                             </Menu>
 
                             {/* Filter Button */}
