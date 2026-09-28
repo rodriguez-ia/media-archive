@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { getUserLibrary, updateUserMediaItems, deleteUserMediaItems } from "../../services/mediaService.js";
 import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
+import LibraryPagination from "../../components/Library/LibraryPagination.jsx";
 import LibraryToolbar from "../../components/Library/LibraryToolbar.jsx";
 import LibraryMediaContentModal from "../../components/Library/LibraryMediaContentModal.jsx";
 import LibraryMediaDeletionModal from "../../components/Library/LibraryMediaDeletionModal.jsx";
@@ -30,6 +31,9 @@ function LibraryPage() {
         genres: [],
         statuses: [],
     });
+
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(25);
 
     useEffect(() => {
         async function loadLibrary() {
@@ -139,6 +143,37 @@ function LibraryPage() {
 
         return sorted;
     }, [filteredMediaItems, sortOption, sortDirection]);
+
+    const pageCount = Math.ceil(sortedMediaItems.length / pageSize);
+
+    const paginatedMediaItems = useMemo(() => {
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+
+        return sortedMediaItems.slice(startIndex, endIndex);
+    }, [sortedMediaItems, page, pageSize]);
+
+    // If search, filter, or sort are changed, reset to page 1
+    useEffect(() => {
+        setPage(1);
+    }, [
+        searchQuery,
+        filters,
+        sortOption,
+        sortDirection,
+    ]);
+
+    // If user deletes all items on current page, set to previous page
+    useEffect(() => {
+        setPage((currentPage) =>
+            Math.min(currentPage, Math.max(pageCount, 1))
+        );
+    }, [pageCount]);
+
+    const handlePageSizeChange = (event) => {
+        setPageSize(Number(event.target.value));
+        setPage(1);
+    };
 
     const handleFilterChange = (filterType, values) => {
         setFilters((current) => ({
@@ -318,12 +353,23 @@ function LibraryPage() {
             {loading ? (
                 <CircularProgress />
             ) : (
-                <LibraryMediaGrid
-                    mediaItemArray={sortedMediaItems}
-                    onMediaSelect={handleMediaSelect}
-                    selectionMode={selectionMode}
-                    selectedMediaIds={selectedMediaIds}
-                />
+                <>
+                    <LibraryMediaGrid
+                        mediaItemArray={paginatedMediaItems}
+                        onMediaSelect={handleMediaSelect}
+                        selectionMode={selectionMode}
+                        selectedMediaIds={selectedMediaIds}
+                    />
+
+                    <LibraryPagination
+                        page={page}
+                        pageCount={pageCount}
+                        pageSize={pageSize}
+                        totalItems={sortedMediaItems.length}
+                        onPageChange={setPage}
+                        onPageSizeChange={handlePageSizeChange}
+                    />
+                </>
             )}
 
             <LibraryMediaContentModal
