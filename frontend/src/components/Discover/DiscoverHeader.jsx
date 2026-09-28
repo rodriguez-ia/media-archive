@@ -6,7 +6,7 @@ function DiscoverHeader() {
     return (
         <Box
             sx={{
-                marginTop: 2,
+                margin: 2,
                 width: "100%",
                 display: "flex",
                 justifyContent: "center"
