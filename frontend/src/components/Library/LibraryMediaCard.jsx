@@ -1,5 +1,6 @@
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import TheatersIcon from "@mui/icons-material/Theaters";
 import AlbumIcon from "@mui/icons-material/Album";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
@@ -49,6 +50,8 @@ function LibraryMediaCard({
             ratingColor = "#ef5350";
         }
     }
+
+    const hasPersonalRating = mediaItem.personalRating != null;
 
     const isMovieOrTV = mediaItem.mediaType === "MOVIE" || mediaItem.mediaType === "TV_SHOW";
     const isMusic = mediaItem.mediaType === "MUSIC_ALBUM";
@@ -325,6 +328,53 @@ function LibraryMediaCard({
                             </>
                         )}
                     </Box>
+
+                    {/* Personal Rating */}
+                    {hasPersonalRating && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                bottom: -8,
+                                left: 68,
+
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.35,
+
+                                px: 0.8,
+                                py: 0.45,
+
+                                borderRadius: "12px",
+
+                                backgroundColor: "rgba(24, 24, 24, 0.96)",
+
+                                border: "1px solid rgba(255, 255, 255, 0.12)",
+
+                                boxShadow:
+                                    "0 3px 10px rgba(0, 0, 0, 0.5)",
+
+                                zIndex: 3,
+                            }}
+                        >
+                            <StarBorderIcon
+                                sx={{
+                                    fontSize: 12,
+                                    color: "rgba(224, 120, 242, 0.8)",
+                                }}
+                            />
+
+                            <Typography
+                                sx={{
+                                    fontSize: "0.68rem",
+                                    fontWeight: 600,
+                                    lineHeight: 1,
+                                    color: "rgba(255, 255, 255, 0.72)",
+                                }}
+                            >
+                                {Number(mediaItem.personalRating).toFixed(1)}
+                            </Typography>
+                        </Box>
+                    )}
                 </Box>
 
                 <CardContent

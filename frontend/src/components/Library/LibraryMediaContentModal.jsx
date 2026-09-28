@@ -862,7 +862,7 @@ function LibraryMediaContentModal({
                                                                 fontSize: 20,
 
                                                                 color:
-                                                                    "#ffca28",
+                                                                    "rgba(224, 120, 242, 0.8)",
                                                             }}
                                                         />
                                                     }
