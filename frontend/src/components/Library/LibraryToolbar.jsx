@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import SortIcon from '@mui/icons-material/Sort';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -5,12 +6,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import CheckIcon from '@mui/icons-material/Check';
 import {
     Box,
     Button,
     InputBase,
     Stack,
     Typography,
+    Menu,
+    MenuItem,
+    ListItemText,
+    ListItemIcon,
 } from '@mui/material';
 
 
@@ -196,7 +202,22 @@ function LibraryToolbar({
     onDeleteSelected,
     deleting,
     onSearchChange,
+    sortOption,
+    sortDirection,
+    onSortChange,
 }) {
+    const [sortMenuAnchor, setSortMenuAnchor] = useState(null);
+
+    const sortMenuOpen = Boolean(sortMenuAnchor);
+
+    const handleSortClick = (event) => {
+        setSortMenuAnchor(event.currentTarget);
+    };
+
+    const handleSortClose = () => {
+        setSortMenuAnchor(null);
+    };
+
     return (
         <Box
             sx={(theme) => ({
@@ -327,13 +348,90 @@ function LibraryToolbar({
                 >
                     {!selectionMode ? (
                         <>
+                            {/* Sort Button */ }
                             <ToolbarButton
                                 icon={<SortIcon />}
-                                active
+                                active={sortOption !== "title" || sortDirection !== "asc"}
                                 aria-label="Sort library"
+                                onClick={handleSortClick}
                             >
                                 Sort
                             </ToolbarButton>
+
+                            {/* Sort Menu */}
+                            <Menu
+                                anchorEl={sortMenuAnchor}
+                                open={sortMenuOpen}
+                                onClose={handleSortClose}
+                                slotProps={{
+                                    paper: {
+                                        sx: {
+                                            mt: 1,
+                                            minWidth: 210,
+                                        },
+                                    },
+                                }}
+                            >
+                                <MenuItem
+                                    onClick={() => {
+                                        onSortChange("title", "asc");
+                                        handleSortClose();
+                                    }}
+                                >
+                                    <ListItemText>Title</ListItemText>
+
+                                    {sortOption === "title" && sortDirection === "asc" && (
+                                        <ListItemIcon sx={{ minWidth: "auto" }}>
+                                            <CheckIcon fontSize="small" />
+                                        </ListItemIcon>
+                                    )}
+                                </MenuItem>
+
+                                <MenuItem
+                                    onClick={() => {
+                                        onSortChange("personalRating", "desc");
+                                        handleSortClose();
+                                    }}
+                                >
+                                    <ListItemText>Personal Rating</ListItemText>
+
+                                    {sortOption === "personalRating" && sortDirection === "desc" && (
+                                        <ListItemIcon sx={{ minWidth: "auto" }}>
+                                            <CheckIcon fontSize="small" />
+                                        </ListItemIcon>
+                                    )}
+                                </MenuItem>
+
+                                <MenuItem
+                                    onClick={() => {
+                                        onSortChange("communityRating", "desc");
+                                        handleSortClose();
+                                    }}
+                                >
+                                    <ListItemText>Community Rating</ListItemText>
+
+                                    {sortOption === "communityRating" && sortDirection === "desc" && (
+                                        <ListItemIcon sx={{ minWidth: "auto" }}>
+                                            <CheckIcon fontSize="small" />
+                                        </ListItemIcon>
+                                    )}
+                                </MenuItem>
+
+                                <MenuItem
+                                    onClick={() => {
+                                        onSortChange("viewCount", "desc");
+                                        handleSortClose();
+                                    }}
+                                >
+                                    <ListItemText>View Count</ListItemText>
+
+                                    {sortOption === "viewCount" && sortDirection === "desc" && (
+                                        <ListItemIcon sx={{ minWidth: "auto" }}>
+                                            <CheckIcon fontSize="small" />
+                                        </ListItemIcon>
+                                    )}
+                                </MenuItem>
+                            </Menu>
 
                             <ToolbarButton
                                 icon={<FilterListIcon />}

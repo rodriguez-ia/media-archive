@@ -21,6 +21,9 @@ function LibraryPage() {
 
     const [searchQuery, setSearchQuery] = useState("");
 
+    const [sortOption, setSortOption] = useState("title");
+    const [sortDirection, setSortDirection] = useState("asc");
+
     useEffect(() => {
         async function loadLibrary() {
             try {
@@ -60,6 +63,45 @@ function LibraryPage() {
             mediaItem.title?.toLowerCase().includes(normalizedQuery)
         );
     }, [mediaItems, searchQuery]);
+
+    const sortedMediaItems = useMemo(() => {
+        const sorted = [...filteredMediaItems];
+
+        sorted.sort((a, b) => {
+            let comparison = 0;
+
+            switch (sortOption) {
+                case "title":
+                    comparison = (a.title ?? "").localeCompare(
+                        b.title ?? "",
+                        undefined,
+                        { sensitivity: "base" }
+                    );
+                    break;
+
+                case "personalRating":
+                    comparison = (a.personalRating ?? 0) - (b.personalRating ?? 0);
+                    break;
+
+                case "communityRating":
+                    comparison = (a.communityRating ?? 0) - (b.communityRating ?? 0);
+                    break;
+
+                case "viewCount":
+                    comparison = (a.consumptionCount ?? 0) - (b.consumptionCount ?? 0);
+                    break;
+
+                default:
+                    comparison = 0;
+            }
+
+            return sortDirection === "asc"
+                ? comparison
+                : -comparison;
+        });
+
+        return sorted;
+    }, [filteredMediaItems, sortOption, sortDirection]);
 
     const handleMediaSelect = (mediaItem) => {
         if (selectionMode) {
@@ -209,13 +251,19 @@ function LibraryPage() {
                 onDeleteSelected={handleOpenDeleteDialog}
                 deleting={deleting}
                 onSearchChange={setSearchQuery}
+                sortOption={sortOption}
+                sortDirection={sortDirection}
+                onSortChange={(option, direction) => {
+                    setSortOption(option);
+                    setSortDirection(direction);
+                }}
             />
 
             {loading ? (
                 <CircularProgress />
             ) : (
                 <LibraryMediaGrid
-                    mediaItemArray={filteredMediaItems}
+                    mediaItemArray={sortedMediaItems}
                     onMediaSelect={handleMediaSelect}
                     selectionMode={selectionMode}
                     selectedMediaIds={selectedMediaIds}
