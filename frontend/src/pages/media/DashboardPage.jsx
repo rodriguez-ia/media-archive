@@ -1,4 +1,5 @@
 import { Container, Box } from "@mui/material";
+import DashboardCard from "../../components/Dashboard/DashboardCard.jsx";
 
 function DashboardPage() {
 
@@ -6,106 +7,79 @@ function DashboardPage() {
         <Container maxWidth="xl">
             <Box
                 sx={{
-                    marginY: 2,
-                    display: "flex",
-                    flexDirection: "column",
+                    my: 2,
+                    display: "grid",
                     gap: 3,
                     overflowX: "hidden",
-                    overflowY: "auto",
                 }}    
             >
                 {/* Upper Section */}
                 <Box>
                     <Box
                         sx={{
-                            height: "50vh",
-                            display: "flex",
-                            flexDirection: "row",
+                            display: "grid",
+                            gridTemplateColumns: {
+                                xs: "1fr",
+                                md: "minmax(0, 1.5fr) minmax(0, 1fr)",
+                            },
                             gap: 3,
                         }}
                     >
                         {/* Summary */}
-                        <Box
+                        <DashboardCard
                             sx={{
-                                width: "50%",
-
-                                bgcolor: "#181818",
-                                border:
-                                    "1px solid rgba(255,255,255,0.1)",
-                                borderRadius: 3,
-                                boxShadow:
-                                    "0 20px 20px rgba(0,0,0,0.3)",
-                                outline: "none",
+                                minHeight: {
+                                    xs: 280,
+                                    sm: 320,
+                                    md: "clamp(320px, 42vh, 440px)",
+                                }
                             }}
                         >
                             Summary
-                        </Box>
+                        </DashboardCard>
 
+                        {/* Personal + Community */}
                         <Box
                             sx={{
-                                width: "50%",
-
-                                display: "flex",
-                                flexDirection: "column",
+                                display: "grid",
+                                gridTemplateColumns: {
+                                    xs: "1fr",
+                                    sm: "1fr 1fr",
+                                    md: "1fr",
+                                },
+                                gridTemplateRows: {
+                                    xs: "repeat(2, minmax(180px, auto))",
+                                    sm: "minmax(220px, auto)",
+                                    md: "repeat(2, minmax(0, 1fr))",
+                                },
                                 gap: 3,
                             }}
                         >
                             {/* Personal */}
-                            <Box
-                                sx={{
-                                    height: "25vh",
-
-                                    bgcolor: "#181818",
-                                    border:
-                                        "1px solid rgba(255,255,255,0.1)",
-                                    borderRadius: 3,
-                                    boxShadow:
-                                        "0 20px 20px rgba(0,0,0,0.3)",
-                                    outline: "none",
-                                }}
-                            >
+                            <DashboardCard>
                                 Personal
-                            </Box>
+                            </DashboardCard>
 
                             {/* Community */}
-                            <Box
-                                sx={{
-                                    height: "25vh",
-
-                                    bgcolor: "#181818",
-                                    border:
-                                        "1px solid rgba(255,255,255,0.1)",
-                                    borderRadius: 3,
-                                    boxShadow:
-                                        "0 20px 20px rgba(0,0,0,0.3)",
-                                    outline: "none",
-                                }}
-                            >
+                            <DashboardCard>
                                 Community
-                            </Box>
+                            </DashboardCard>
                         </Box>
                     </Box>
                 </Box>
 
-                {/* Lower Section */}
-                <Box>
-                    {/* Daily Spotlight */}
-                    <Box
-                        sx={{
-                            height: "35vh",
-
-                            bgcolor: "#181818",
-                            border:
-                                "1px solid rgba(255,255,255,0.1)",
-                            borderRadius: 3,
-                            boxShadow:
-                                "0 20px 20px rgba(0,0,0,0.3)",
-                            outline: "none",
-                        }}
-                    >
-                        Daily Spotlight
-                    </Box>
-                </Box>
+                {/* Daily Spotlight */}
+                <DashboardCard
+                    sx={{
+                        minHeight: {
+                            xs: 280,
+                            sm: 300,
+                            md: "clamp(240px, 30vh, 340px)",
+                        }
+                    }}
+                >
+                    Daily Spotlight
+                </DashboardCard>
             </Box>
         </Container>
     );
