@@ -1,135 +1,198 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { PieChart } from '@mui/x-charts/PieChart';
 
-function SummaryLegend({ mediaCounts}) {
+const MEDIA_COLORS = {
+    movies: "#5C8DDE",
+    tvShows: "#9B7EDE",
+    musicAlbums: "#4DB6AC",
+    books: "#E6A65D",
+}
+
+function SummaryLegend({ mediaCounts }) {
+
+    const mediaTypeData = [
+        {
+            label: "Movies",
+            color: MEDIA_COLORS.movies,
+            value: mediaCounts.movies,
+        },
+        {
+            label: "TV Shows",
+            color: MEDIA_COLORS.tvShows,
+            value: mediaCounts.tvShows,
+        },
+        {
+            label: "Music Albums",
+            color: MEDIA_COLORS.musicAlbums,
+            value: mediaCounts.musicAlbums,
+        },
+        {
+            label: "Books",
+            color: MEDIA_COLORS.books,
+            value: mediaCounts.books,
+        },
+    ];
 
     return (
         <Box
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                gap: '10px',
-                padding: '10px',
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+                mt: 1,
+                width: "fit-content",
             }}
         >
-            {[
-                { label: 'Movies', color: '#5C8DDE', value: mediaCounts.movies },
-                { label: 'TV Shows', color: '#9B7EDE', value: mediaCounts.tvShows },
-                { label: 'Music Albums', color: '#4DB6AC', value: mediaCounts.musicAlbums },
-                { label: 'Books', color: '#E6A65D', value: mediaCounts.books },
-            ].map(({ label, color, value }) => (
+            {mediaTypeData.map(({ label, color, value }) => (
                 <Box
                     key={label}
                     sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        height: '20px',
-                        fontSize: '14px',
-                        fontFamily: 'Roboto, sans-serif',
-                        color: 'text.primary',
+                        display: "flex",
+                        alignItems: "center",
+                        minHeight: 20,
+                        fontSize: "14px",
+                        fontFamily: "Roboto, sans-serif",
+                        color: "text.primary",
                     }}
                 >
                     <Box
                         sx={{
-                            width: '14px',
-                            height: '14px',
-                            borderRadius: '50%',
+                            width: 14,
+                            height: 14,
+                            borderRadius: "50%",
                             backgroundColor: color,
                             flexShrink: 0,
-                            mr: '10px',
+                            mr: 1.25,
                         }}
                     />
-                    {label}: {value}
+
+                    <Box component="span">
+                        {label}: {value}
+                    </Box>
                 </Box>
             ))}
         </Box>
     );
 }
 
+function MediaSummary({ title, mediaCounts }) {
+
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                flex: 1,
+                minWidth: 0,
+                px: {
+                    xs: 1,
+                    sm: 2,
+                    md: 3,
+                },
+                py: {
+                    xs: 2,
+                    sm: 1,
+                    md: 2,
+                }
+            }}
+        >
+            <Typography
+                variant="subtitle1"
+                sx={{
+                    fontWeight: 600,
+                    mb: 0.5,
+                }}
+            >
+                {title}
+            </Typography>
+
+            <PieChart
+                series={[
+                    {
+                        data: [
+                            { id: 0, value: mediaCounts.movies, color: MEDIA_COLORS.movies },           // Movies
+                            { id: 1, value: mediaCounts.tvShows, color: MEDIA_COLORS.tvShows },         // TV Shows
+                            { id: 2, value: mediaCounts.musicAlbums, color: MEDIA_COLORS.musicAlbums }, // Music Albums
+                            { id: 3, value: mediaCounts.books, color: MEDIA_COLORS.books },             // Books
+                        ],
+                        highlightScope: {
+                            fade: 'global',
+                            highlight: 'item'
+                        },
+                        faded: {
+                            innerRadius: 60,
+                            additionalRadius: -10,
+                            color: 'gray'
+                        },
+                        innerRadius: 60,
+                    },
+                ]}
+                width={200}
+                height={200}
+            />
+
+            <SummaryLegend mediaCounts={mediaCounts} />
+        </Box>
+    );
+}
+
 function DashboardSummary() {
+
+    const ownedCounts = {
+                        movies: 130,
+                        tvShows: 25,
+                        musicAlbums: 15,
+                        books: 50
+                    };
+    const wishlistedCounts = {
+                        movies: 5,
+                        tvShows: 15,
+                        musicAlbums: 5,
+                        books: 20
+                    };
 
     return (
         <Box
             sx={{
                 my: 2,
-                display: "flex",
-                flexDirection: "row",
+                width: "100%",
+                display: "grid",
+                
+                // xs: vertically stacked
+                // sm/md+: side-by-side
+                gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr",
+                },
+
+                // alignItems: "stretch",
             }}
         >
             {/* Owned Media */}
-            <Box>
-                <PieChart
-                    series={[
-                        {
-                            data: [
-                                { id: 0, value: 10, color: '#5C8DDE' }, // Movies
-                                { id: 1, value: 15, color: '#9B7EDE' }, // TV Shows
-                                { id: 2, value: 20, color: '#4DB6AC' }, // Music Albums
-                                { id: 3, value: 20, color: '#E6A65D' }, // Books
-                            ],
-                            highlightScope: { fade: 'global', highlight: 'item' },
-                            faded: {
-                                    innerRadius: 60,
-                                    additionalRadius: -10,
-                                    color: 'gray'
-                                },
-                            innerRadius: 60,
-                        },
-                    ]}
-                    width={200}
-                    height={200}
-                />
-                <SummaryLegend
-                    mediaCounts={{
-                        movies: 10,
-                        tvShows: 15,
-                        musicAlbums: 20,
-                        books: 20
-                    }}
-                />
+            <Box
+                sx={{
+                    // Horizontal divider on xs
+                    borderBottom: {
+                        xs: "1px solid #3A3A3A",
+                        sm: "none",
+                    },
+                    
+                    // Vertical divider on sm/md+
+                    borderRight: {
+                        xs: "none",
+                        sm: "1px solid #3A3A3A",
+                    },
+
+                    borderColor: "#3A3A3A",
+                }}
+            >
+                <MediaSummary title={"Owned"} mediaCounts={ownedCounts}/>
             </Box>
 
             {/* Wishlisted Media */}
             <Box>
-                <PieChart
-                    series={[
-                        {
-                            data: [
-                                { id: 0, value: 10, color: '#5C8DDE' }, // Movies
-                                { id: 1, value: 15, color: '#9B7EDE' }, // TV Shows
-                                { id: 2, value: 20, color: '#4DB6AC' }, // Music Albums
-                                { id: 3, value: 20, color: '#E6A65D' }, // Books
-                            ],
-                            highlightScope: { fade: 'global', highlight: 'item' },
-                            faded: {
-                                innerRadius: 60,
-                                additionalRadius: -10,
-                                color: 'gray'
-                            },
-                            innerRadius: 60,
-                        },
-                    ]}
-                    slotProps={{
-                        legend: {
-                            direction: 'vertical',
-                            position: {
-                                vertical: 'bottom',
-                                horizontal: 'middle',
-                            }
-                        }
-                    }}
-                    width={200}
-                    height={200}
-                />
-                <SummaryLegend
-                    mediaCounts={{
-                        movies: 10,
-                        tvShows: 15,
-                        musicAlbums: 20,
-                        books: 20
-                    }}
-                />
+                <MediaSummary title={"Wishlisted"} mediaCounts={wishlistedCounts}/>
             </Box>
         </Box>
     );
