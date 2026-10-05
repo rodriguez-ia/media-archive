@@ -2,10 +2,10 @@ import { Box, Typography } from "@mui/material";
 import { PieChart } from '@mui/x-charts/PieChart';
 
 const MEDIA_COLORS = {
-    movies: "#5C8DDE",
-    tvShows: "#9B7EDE",
-    musicAlbums: "#4DB6AC",
-    books: "#E6A65D",
+    movies: "#7DB9F2",
+    tvShows: "#8FD3A8",
+    musicAlbums: "#F28FA8",
+    books: "#F5CF65",
 }
 
 function SummaryLegend({ mediaCounts }) {
@@ -126,6 +126,8 @@ function MediaSummary({ title, mediaCounts }) {
                             color: 'gray'
                         },
                         innerRadius: 60,
+                        cornerRadius: 3,
+                        paddingAngle: 2,
                     },
                 ]}
                 width={200}
