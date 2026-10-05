@@ -1,5 +1,6 @@
 import { Container, Box } from "@mui/material";
 import DashboardCard from "../../components/Dashboard/DashboardCard.jsx";
+import DashboardSummary from "../../components/Dashboard/DashboardSummary.jsx";
 
 function DashboardPage() {
 
@@ -35,7 +36,7 @@ function DashboardPage() {
                                 }
                             }}
                         >
-                            Summary
+                            <DashboardSummary />
                         </DashboardCard>
 
                         {/* Personal + Community */}
