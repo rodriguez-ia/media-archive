@@ -130,3 +130,15 @@ export const getGenreSx = (genre, mediaType) => {
     return genreColors[genre] || defaultGenreStyle;
 
 };
+
+const genreImages = import.meta.glob(
+    "../assets/genre-portraits/*.png",
+    {
+        eager: true,
+        import: "default",
+    }
+);
+
+export const getGenreImage = (genre) => {
+    return genreImages[`../assets/genre-portraits/${genre}.png`];
+};
