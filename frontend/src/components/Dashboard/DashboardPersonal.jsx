@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import MediaCarousel from "./MediaCarousel.jsx";
+import { getGenreImage } from "../../utils/genreUtils.js";
 
 const personalPages = [
     {
@@ -57,25 +58,25 @@ const personalPages = [
     {
         id: "favorite-genre",
         label: "Top Genre",
-        description: "Based on your viewing history",
+        description: "Based on your rating history",
         items: [
             {
                 id: 7,
                 title: "Science Fiction",
-                image: "https://image.tmdb.org/t/p/w500/5BHuvQ6p9kfc091Z8RiFNhCwL4b.jpg",
-                stat: "★ 8.4 • 127 views",
+                image: getGenreImage("SCIENCE_FICTION"),
+                stat: "★ 8.4",
             },
             {
                 id: 8,
-                title: "Drama",
-                image: "https://image.tmdb.org/t/p/w342/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
-                stat: "★ 8.1 • 103 views",
+                title: "Horror",
+                image: getGenreImage("HORROR"),
+                stat: "★ 8.1",
             },
             {
                 id: 9,
                 title: "Action",
-                image: "https://image.tmdb.org/t/p/w500/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg",
-                stat: "★ 7.9 • 98 views",
+                image: getGenreImage("ACTION"),
+                stat: "★ 7.9",
             },
         ],
     },
@@ -91,7 +92,7 @@ function DashboardPersonal() {
         >
             <MediaCarousel
                 pages={personalPages}
-                itemsPerPage={3}
+                itemsPerView={3}
             />
         </Box>
     );

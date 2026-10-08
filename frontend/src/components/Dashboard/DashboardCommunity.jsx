@@ -5,7 +5,7 @@ const communityPages = [
     {
         id: "trending",
         label: "Trending",
-        description: "The movies everyone is talking about right now",
+        description: "What everyone's talking about right now",
         items: [
             {
                 id: 1,
@@ -22,7 +22,7 @@ const communityPages = [
             {
                 id: 3,
                 title: "Whiplash",
-                image: "https://media.themoviedb.org/t/p/w94_and_h141_face/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
+                image: "https://image.tmdb.org/t/p/w342/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
                 stat: "★ 8.5",
             },
             {
@@ -43,7 +43,7 @@ const communityPages = [
     {
         id: "now-playing",
         label: "Now Playing",
-        description: "Popular movies people are watching and discussing today",
+        description: "What's in theaters today",
         items: [
             {
                 id: 1,
@@ -72,7 +72,7 @@ const communityPages = [
             {
                 id: 5,
                 title: "The Super Mario Bros. Movie",
-                image: "https://media.themoviedb.org/t/p/w94_and_h141_face/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
+                image: "https://image.tmdb.org/t/p/w342/qNBAXBIQlnOThrVvA6mA2B5ggV6.jpg",
                 stat: "★ 7.6",
             },
         ],
@@ -81,7 +81,7 @@ const communityPages = [
     {
         id: "recommended",
         label: "Recommended",
-        description: "Hand-picked movies you might want to watch next",
+        description: "Movies & TV for you",
         items: [
             {
                 id: 1,
@@ -98,7 +98,7 @@ const communityPages = [
             {
                 id: 3,
                 title: "The Prestige",
-                image: "https://media.themoviedb.org/t/p/w94_and_h141_face/Ag2B2KHKQPukjH7WutmgnnSNurZ.jpg",
+                image: "https://image.tmdb.org/t/p/w342/Ag2B2KHKQPukjH7WutmgnnSNurZ.jpg",
                 stat: "★ 8.2",
             },
             {
@@ -128,7 +128,7 @@ function DashboardCommunity() {
         >
             <MediaCarousel
                 pages={communityPages}
-                itemsPerPage={5}
+                itemsPerView={3}
             />
         </Box>
     );
