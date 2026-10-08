@@ -132,7 +132,7 @@ export const getGenreSx = (genre, mediaType) => {
 };
 
 const genreImages = import.meta.glob(
-    "../assets/genre-portraits/*.png",
+    "../assets/genre-portraits/*.webp",
     {
         eager: true,
         import: "default",
@@ -140,5 +140,5 @@ const genreImages = import.meta.glob(
 );
 
 export const getGenreImage = (genre) => {
-    return genreImages[`../assets/genre-portraits/${genre}.png`];
+    return genreImages[`../assets/genre-portraits/${genre}.webp`];
 };
