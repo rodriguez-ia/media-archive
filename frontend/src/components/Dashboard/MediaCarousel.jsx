@@ -89,23 +89,50 @@ function MediaCarouselItem({ item }) {
 
 function MediaCarousel({
     pages = [],
-    itemsPerPage = 3,
+    itemsPerView = 3,
 }) {
     const [activePage, setActivePage] = useState(0);
 
-    if (!pages.length) {
+    /*
+     * Split each category into display pages.
+     *
+     * Example:
+     *
+     * Trending: [1, 2, 3, 4, 5]
+     *
+     * becomes:
+     *
+     * Trending page 1: [1, 2, 3]
+     * Trending page 2: [4, 5]
+     */
+    const displayPages = pages.flatMap((page) => {
+        const chunks = [];
+
+        for (let i = 0; i < page.items.length; i += itemsPerView) {
+            chunks.push({
+                id: `${page.id}-${i / itemsPerView}`,
+                label: page.label,
+                description: page.description,
+                items: page.items.slice(i, i + itemsPerView),
+            });
+        }
+
+        return chunks;
+    });
+
+    if (!displayPages.length) {
         return null;
     }
 
     const previousPage = () => {
         setActivePage((current) =>
-            current === 0 ? pages.length - 1 : current - 1
+            current === 0 ? displayPages.length - 1 : current - 1
         );
     };
 
     const nextPage = () => {
         setActivePage((current) =>
-            current === pages.length - 1 ? 0 : current + 1
+            current === displayPages.length - 1 ? 0 : current + 1
         );
     };
 
@@ -142,21 +169,21 @@ function MediaCarousel({
                         fontWeight={600}
                         noWrap
                     >
-                        {pages[activePage].label}
+                        {displayPages[activePage].label}
                     </Typography>
 
-                    {pages[activePage].description && (
+                    {displayPages[activePage].description && (
                         <Typography
                             variant="caption"
                             color="text.secondary"
                             noWrap
                         >
-                            {pages[activePage].description}
+                            {displayPages[activePage].description}
                         </Typography>
                     )}
                 </Box>
 
-                {pages.length > 1 && (
+                {displayPages.length > 1 && (
                     <Box
                         sx={{
                             display: "flex",
@@ -205,7 +232,7 @@ function MediaCarousel({
                         transition: "transform 300ms ease",
                     }}
                 >
-                    {pages.map((page, pageIndex) => (
+                    {displayPages.map((page, pageIndex) => (
                         <Box
                             key={page.id ?? pageIndex}
                             sx={{
@@ -216,8 +243,8 @@ function MediaCarousel({
                                 display: "grid",
 
                                 gridTemplateColumns: {
-                                    xs: `repeat(${Math.min(itemsPerPage, 2)}, minmax(0, 1fr))`,
-                                    sm: `repeat(${itemsPerPage}, minmax(0, 1fr))`,
+                                    xs: `repeat(${Math.min(itemsPerView, 2)}, minmax(0, 1fr))`,
+                                    sm: `repeat(${itemsPerView}, minmax(0, 1fr))`,
                                 },
 
                                 gap: {
@@ -238,7 +265,7 @@ function MediaCarousel({
             </Box>
 
             {/* Page indicators */}
-            {pages.length > 1 && (
+            {displayPages.length > 1 && (
                 <Box
                     sx={{
                         display: "flex",
@@ -249,12 +276,12 @@ function MediaCarousel({
                         flexShrink: 0,
                     }}
                 >
-                    {pages.map((page, index) => (
+                    {displayPages.map((page, index) => (
                         <Box
                             key={page.id ?? index}
                             component="button"
                             onClick={() => setActivePage(index)}
-                            aria-label={`Go to ${page.label}`}
+                            aria-label={`Go to ${page.label} page ${index + 1}`}
                             sx={{
                                 border: 0,
                                 p: 0,
