@@ -3,6 +3,7 @@ import DashboardCard from "../../components/Dashboard/DashboardCard.jsx";
 import DashboardSummary from "../../components/Dashboard/DashboardSummary.jsx";
 import DashboardPersonal from "../../components/Dashboard/DashboardPersonal.jsx";
 import DashboardCommunity from "../../components/Dashboard/DashboardCommunity.jsx";
+import DashboardDailySpotlight from "../../components/Dashboard/DashboardDailySpotlight.jsx";
 
 function DashboardPage() {
 
@@ -25,7 +26,7 @@ function DashboardPage() {
                         },
                     }}
                 >
-                    Daily Spotlight
+                    <DashboardDailySpotlight />
                 </DashboardCard>
 
                 {/* Summary */}
