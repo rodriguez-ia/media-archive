@@ -1,4 +1,4 @@
-export const getDailyRandom = (min = 0, max = 5) => {
+export const getDailyRandom = (min = 0, max = 3) => {
     const date = new Date();
     const seed = date.getFullYear() * 10000
         + (date.getMonth() + 1) * 100

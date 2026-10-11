@@ -90,3 +90,24 @@ export async function searchExternalMedia(
 export async function getMusicTrackDetails(externalId) {
     return apiFetch(`/media/externalMedia/music/track/${encodeURIComponent(externalId)}`);
 }
+
+export async function getSpotlightOnThisDay() {
+    return {message: {}, data: {}};
+}
+
+export async function getSpotlightForgottenFavorite() {
+    return {message: {}, data: {}};
+}
+
+export async function getSpotlightGenreShoutout() {
+    return {message: {}, data: {}};
+}
+
+export async function getSpotlightRandomSpotlight() {
+    return {message: {}, data: {}};
+}
+
+export async function getSpotlightTopTrending() {
+    return {message: {}, data: {}};
+}
+
