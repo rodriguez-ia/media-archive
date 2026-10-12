@@ -69,19 +69,17 @@ function DashboardDailySpotlight() {
             ];
 
             const hasData = (response) => {
-                return Array.isArray(response?.data) && response.data.length > 0;
+                return Object.keys(response?.data ?? {}).length > 0;
             }
                 
             try {
                 // Always try OnThisDay first.
-                let chosen = defaultComponent
+                let chosen = defaultComponent;
                 let response = await chosen.apiCallback();
 
                 if (!hasData(response)) {
                     // Try a daily-selected spotlight.
-                    const randomIndex = getDailyRandom();
-
-                    chosen = otherComponents[randomIndex];
+                    chosen = otherComponents[getDailyRandom()];
                     response = await chosen.apiCallback();
                 }
 
