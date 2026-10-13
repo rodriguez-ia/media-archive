@@ -1,8 +1,8 @@
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "http://localhost:8080/api/auth";
 
 export async function registerUser(registerRequest) {
     const response = await fetch(
-        `${API_BASE_URL}/auth/register`,
+        `${API_BASE_URL}/register`,
         {
             method: "POST",
             headers: {
@@ -23,7 +23,7 @@ export async function registerUser(registerRequest) {
 
 export async function loginUser(loginRequest) {
     const response = await fetch(
-        `${API_BASE_URL}/auth/login`,
+        `${API_BASE_URL}/login`,
         {
             method: "POST",
             headers: {
