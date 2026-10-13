@@ -515,6 +515,18 @@ function DashboardDailySpotlight() {
     useEffect(() => {
         let cancelled = false;
 
+        async function fetchSpotlightSafely(apiCallback) {
+            try {
+                return await apiCallback();
+            } catch (error) {
+                if (error.status === 404) {
+                    return null;
+                }
+
+                throw error;
+            }
+        }
+
         async function fetchSpotlight() {
             const defaultComponent = {component: OnThisDay, apiCallback: getSpotlightOnThisDay};
 
@@ -532,12 +544,12 @@ function DashboardDailySpotlight() {
             try {
                 // Always try OnThisDay first.
                 let chosen = defaultComponent;
-                let response = await chosen.apiCallback();
+                let response = await fetchSpotlightSafely(chosen.apiCallback);
 
                 if (!hasData(response)) {
                     // Try a daily-selected spotlight.
                     chosen = otherComponents[getDailyRandom()];
-                    response = await chosen.apiCallback();
+                    response = await fetchSpotlightSafely(chosen.apiCallback);
                 }
 
                 if (!hasData(response) && chosen.component !== RandomSpotlight) {
@@ -546,7 +558,7 @@ function DashboardDailySpotlight() {
                     chosen = otherComponents.find(
                         item => item.component === RandomSpotlight
                     );
-                    response = await chosen.apiCallback();
+                    response = await fetchSpotlightSafely(chosen.apiCallback);
                 }
 
                 if (!cancelled) {
