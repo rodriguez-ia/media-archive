@@ -26,14 +26,13 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
     List<UserMediaEntity> findAllByUserAndReleaseMonthAndDay(UUID userId, int month, int day);
 
     @Query("""
-        SELECT um
+        SELECT DISTINCT um
         FROM UserMediaEntity um
-        JOIN FETCH um.mediaItem
+        JOIN FETCH um.mediaItem bm
+        LEFT JOIN FETCH bm.genres
         WHERE um.user.id = :userId
-            AND um.mediaItem.mediaType != 'TV_SEASON'
-            AND um.mediaItem.mediaType != 'TV_EPISODE'
-            AND um.mediaItem.mediaType != 'MUSIC_TRACK'
-        ORDER BY um.mediaItem.title
+            AND bm.mediaType NOT IN ('TV_SEASON', 'TV_EPISODE', 'MUSIC_TRACK')
+        ORDER BY bm.title
     """)
     List<UserMediaEntity> findAllByUserId(UUID userId);
 
