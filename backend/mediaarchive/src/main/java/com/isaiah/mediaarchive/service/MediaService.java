@@ -95,6 +95,25 @@ public class MediaService {
         return mediaMapper.userMediaEntityToUserMediaResponse(result);
     }
 
+    public BaseMediaResponseDTO getSpotlightTopTrending() {
+
+        log.info("Retrieving top trending media item.");
+
+        TMDBSearchResponseDTO tmdbResponse = tmdbClient.searchTrending();
+
+        if (tmdbResponse == null) {
+            throw new MediaNotFoundException("TMDB callout returned a null value.");
+        }
+
+        List<BaseMediaResponseDTO> trendingMediaList = tmdbMapper.tmdbResponseToBaseMediaResponseDTOList(tmdbResponse);
+
+        if (trendingMediaList == null || trendingMediaList.isEmpty()) {
+            throw new MediaNotFoundException("Trending media list is null or empty.");
+        }
+
+        return trendingMediaList.getFirst();
+    }
+
     public List<UserMediaResponseDTO> getAllFromUserLibrary(UserEntity user) {
 
         log.info("Retrieving all USER media items for user: username='{}'", user.getUsername());

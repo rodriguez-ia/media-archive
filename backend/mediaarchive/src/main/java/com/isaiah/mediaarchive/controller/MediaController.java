@@ -37,6 +37,19 @@ public class MediaController {
         );
     }
 
+    @GetMapping("/dashboard/spotlight/top-trending")
+    public ResponseEntity<ApiResponse<BaseMediaResponseDTO>> getSpotlightTopTrending() {
+        BaseMediaResponseDTO baseMediaResponseDTO = mediaService.getSpotlightTopTrending();
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        baseMediaResponseDTO,
+                        "MediaController.getSpotlightTopTrending",
+                        "Retrieved 'Top Trending' Spotlight media successfully"
+                )
+        );
+    }
+
     @GetMapping("/library")
     public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getAllFromUserLibrary(@AuthenticationPrincipal UserEntity user) {
         List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.getAllFromUserLibrary(user);

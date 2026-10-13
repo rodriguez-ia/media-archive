@@ -108,6 +108,6 @@ export async function getSpotlightRandomSpotlight() {
 }
 
 export async function getSpotlightTopTrending() {
-    return {message: {}, data: {}};
+    return apiFetch("/dashboard/spotlight/top-trending");
 }
 

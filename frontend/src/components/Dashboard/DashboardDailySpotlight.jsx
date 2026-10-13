@@ -438,8 +438,6 @@ function TopTrending({ data }) {
             <MediaFacts>
                 {data.communityRating != null &&
                     [`★ ${Number(data.communityRating).toFixed(1)} community rating`]}
-                {data.personalRating != null &&
-                    [`Your rating: ${data.personalRating}/10`]}
             </MediaFacts>
         </SpotlightCard>
     );

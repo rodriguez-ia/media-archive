@@ -60,4 +60,16 @@ public class TMDBClient {
                 .retrieve()
                 .body(TMDBTVSeasonDetailsSearchResponseDTO.class);
     }
+
+    public TMDBSearchResponseDTO searchTrending() {
+        return restClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/trending/all/day")
+                        .build())
+                .header("Authorization", "Bearer " + apiReadAccessToken)
+                .retrieve()
+                .body(TMDBSearchResponseDTO.class);
+    }
+
 }
