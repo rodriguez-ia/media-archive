@@ -92,7 +92,7 @@ export async function getMusicTrackDetails(externalId) {
 }
 
 export async function getSpotlightOnThisDay() {
-    return {message: {}, data: {}};
+    return apiFetch("/dashboard/spotlight/on-this-day");
 }
 
 export async function getSpotlightForgottenFavorite() {

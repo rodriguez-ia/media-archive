@@ -14,6 +14,18 @@ import java.util.UUID;
 public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID> {
 
     @Query("""
+        SELECT DISTINCT um
+        FROM UserMediaEntity um
+        JOIN FETCH um.mediaItem bm
+        LEFT JOIN FETCH bm.genres
+        WHERE um.user.id = :userId
+            AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'BOOK')
+            AND MONTH(bm.releaseDate) = :month
+            AND DAY(bm.releaseDate) = :day
+    """)
+    List<UserMediaEntity> findAllByUserAndReleaseMonthAndDay(UUID userId, int month, int day);
+
+    @Query("""
         SELECT um
         FROM UserMediaEntity um
         JOIN FETCH um.mediaItem

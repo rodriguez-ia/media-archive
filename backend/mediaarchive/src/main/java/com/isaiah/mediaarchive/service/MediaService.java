@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -62,6 +63,36 @@ public class MediaService {
         this.deezerMapper = deezerMapper;
         this.googleBooksClient = googleBooksClient;
         this.googleBooksMapper = googleBooksMapper;
+    }
+
+    public UserMediaResponseDTO getSpotlightOnThisDay(UserEntity user) {
+
+        log.info("Attempting to retrieve user media with a release date that matches the current day & month: username='{}'", user.getUsername());
+
+        LocalDate today = LocalDate.now();
+        int monthValue = today.getMonthValue();
+        int dayOfMonth = today.getDayOfMonth();
+
+        List<UserMediaEntity> userMediaList = userMediaRepository.findAllByUserAndReleaseMonthAndDay(user.getId(), monthValue, dayOfMonth);
+
+        if (userMediaList == null || userMediaList.isEmpty()) {
+            throw new MediaNotFoundException("Did not find user media items released on this month & day.");
+        }
+
+        UserMediaEntity result;
+
+        if (userMediaList.size() > 1) {
+            log.debug("More than one results found. Getting random element from result List.");
+
+            int randomIndex = (int)(Math.random() * userMediaList.size());
+            result = userMediaList.get(randomIndex);
+        } else {
+            log.debug("One result found.");
+
+            result = userMediaList.getFirst();
+        }
+
+        return mediaMapper.userMediaEntityToUserMediaResponse(result);
     }
 
     public List<UserMediaResponseDTO> getAllFromUserLibrary(UserEntity user) {

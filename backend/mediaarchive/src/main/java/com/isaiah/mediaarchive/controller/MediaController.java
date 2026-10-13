@@ -24,6 +24,19 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
+    @GetMapping("/dashboard/spotlight/on-this-day")
+    public ResponseEntity<ApiResponse<UserMediaResponseDTO>> getSpotlightOnThisDay(@AuthenticationPrincipal UserEntity user) {
+        UserMediaResponseDTO userMediaResponseDTO = mediaService.getSpotlightOnThisDay(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTO,
+                        "MediaController.getSpotlightOnThisDay",
+                        "Retrieved 'On This Day' Spotlight media successfully"
+                )
+        );
+    }
+
     @GetMapping("/library")
     public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getAllFromUserLibrary(@AuthenticationPrincipal UserEntity user) {
         List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.getAllFromUserLibrary(user);
