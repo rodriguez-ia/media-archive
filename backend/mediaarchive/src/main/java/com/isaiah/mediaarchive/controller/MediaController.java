@@ -37,6 +37,19 @@ public class MediaController {
         );
     }
 
+    @GetMapping("/dashboard/spotlight/random-spotlight")
+    public ResponseEntity<ApiResponse<UserMediaResponseDTO>> getSpotlightRandomSpotlight(@AuthenticationPrincipal UserEntity user) {
+        UserMediaResponseDTO userMediaResponseDTO = mediaService.getSpotlightRandomSpotlight(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTO,
+                        "MediaController.getSpotlightRandomSpotlight",
+                        "Retrieved 'Random Spotlight' Spotlight media successfully"
+                )
+        );
+    }
+
     @GetMapping("/dashboard/spotlight/top-trending")
     public ResponseEntity<ApiResponse<BaseMediaResponseDTO>> getSpotlightTopTrending() {
         BaseMediaResponseDTO baseMediaResponseDTO = mediaService.getSpotlightTopTrending();

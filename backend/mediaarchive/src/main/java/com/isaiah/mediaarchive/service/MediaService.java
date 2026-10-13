@@ -95,6 +95,22 @@ public class MediaService {
         return mediaMapper.userMediaEntityToUserMediaResponse(result);
     }
 
+    public UserMediaResponseDTO getSpotlightRandomSpotlight(UserEntity user) {
+
+        log.info("Retrieving random spotlight media item for user: username='{}'", user.getUsername());
+
+        List<UserMediaEntity> userMediaList = userMediaRepository.findAllByUserId(user.getId());
+
+        if (userMediaList == null || userMediaList.isEmpty()) {
+            throw new MediaNotFoundException("Unable to get user media items.");
+        }
+
+        int randomIndex = (int)(Math.random() * userMediaList.size());
+        UserMediaEntity result = userMediaList.get(randomIndex);
+
+        return mediaMapper.userMediaEntityToUserMediaResponse(result);
+    }
+
     public BaseMediaResponseDTO getSpotlightTopTrending() {
 
         log.info("Retrieving top trending media item.");

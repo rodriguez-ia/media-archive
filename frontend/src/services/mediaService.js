@@ -104,7 +104,7 @@ export async function getSpotlightGenreShoutout() {
 }
 
 export async function getSpotlightRandomSpotlight() {
-    return {message: {}, data: {}};
+    return apiFetch("/dashboard/spotlight/random-spotlight");
 }
 
 export async function getSpotlightTopTrending() {
