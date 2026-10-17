@@ -23,7 +23,7 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
             AND MONTH(bm.releaseDate) = :month
             AND DAY(bm.releaseDate) = :day
     """)
-    List<UserMediaEntity> findAllByUserAndReleaseMonthAndDay(UUID userId, int month, int day);
+    List<UserMediaEntity> findAllByUserIdAndReleaseMonthAndDay(UUID userId, int month, int day);
 
     @Query("""
         SELECT DISTINCT um
