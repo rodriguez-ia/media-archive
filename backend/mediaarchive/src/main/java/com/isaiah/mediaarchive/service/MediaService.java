@@ -12,10 +12,12 @@ import com.isaiah.mediaarchive.mapper.MediaMapper;
 import com.isaiah.mediaarchive.mapper.TMDBMapper;
 import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
+import com.isaiah.mediaarchive.model.entity.DailySpotlightEntity;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
 import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import com.isaiah.mediaarchive.repository.BaseMediaRepository;
+import com.isaiah.mediaarchive.repository.DailySpotlightRepository;
 import com.isaiah.mediaarchive.repository.UserMediaRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 @Service
 public class MediaService {
 
+    private final DailySpotlightRepository dailySpotlightRepository;
     private final UserMediaRepository userMediaRepository;
     private final BaseMediaRepository baseMediaRepository;
     private final MediaMapper mediaMapper;
@@ -45,7 +48,8 @@ public class MediaService {
 
     private static final Logger log = LoggerFactory.getLogger(MediaService.class);
 
-    public MediaService(UserMediaRepository userMediaRepository,
+    public MediaService(DailySpotlightRepository dailySpotlightRepository,
+                        UserMediaRepository userMediaRepository,
                         BaseMediaRepository baseMediaRepository,
                         MediaMapper mediaMapper,
                         TMDBClient tmdbClient,
@@ -54,6 +58,7 @@ public class MediaService {
                         DeezerMapper deezerMapper,
                         GoogleBooksClient googleBooksClient,
                         GoogleBooksMapper googleBooksMapper) {
+        this.dailySpotlightRepository = dailySpotlightRepository;
         this.userMediaRepository = userMediaRepository;
         this.baseMediaRepository = baseMediaRepository;
         this.mediaMapper = mediaMapper;
@@ -70,6 +75,14 @@ public class MediaService {
         log.info("Attempting to retrieve user media with a release date that matches the current day & month: username='{}'", user.getUsername());
 
         LocalDate today = LocalDate.now();
+        DailySpotlightEntity dailySpotlight = dailySpotlightRepository.findByUserId(user.getId());
+
+        if (dailySpotlight != null && dailySpotlight.getSpotlightDate().isEqual(today)) {
+            log.debug("Daily spotlight is up to date.");
+
+            return mediaMapper.userMediaEntityToUserMediaResponse(dailySpotlight.getUserMedia());
+        }
+
         int monthValue = today.getMonthValue();
         int dayOfMonth = today.getDayOfMonth();
 
@@ -79,18 +92,8 @@ public class MediaService {
             throw new MediaNotFoundException("Did not find user media items released on this month & day.");
         }
 
-        UserMediaEntity result;
-
-        if (userMediaList.size() > 1) {
-            log.debug("More than one results found. Getting random element from result List.");
-
-            int randomIndex = (int)(Math.random() * userMediaList.size());
-            result = userMediaList.get(randomIndex);
-        } else {
-            log.debug("One result found.");
-
-            result = userMediaList.getFirst();
-        }
+        UserMediaEntity result = selectRandomMedia(userMediaList);
+        saveDailySpotlight(dailySpotlight, user, result, today);
 
         return mediaMapper.userMediaEntityToUserMediaResponse(result);
     }
@@ -99,16 +102,50 @@ public class MediaService {
 
         log.info("Retrieving random spotlight media item for user: username='{}'", user.getUsername());
 
+        LocalDate today = LocalDate.now();
+        DailySpotlightEntity dailySpotlight = dailySpotlightRepository.findByUserId(user.getId());
+
+        if (dailySpotlight != null && dailySpotlight.getSpotlightDate().isEqual(today)) {
+            log.debug("Daily spotlight is up to date.");
+
+            return mediaMapper.userMediaEntityToUserMediaResponse(dailySpotlight.getUserMedia());
+        }
+
         List<UserMediaEntity> userMediaList = userMediaRepository.findAllByUserId(user.getId());
 
         if (userMediaList == null || userMediaList.isEmpty()) {
             throw new MediaNotFoundException("Unable to get user media items.");
         }
 
-        int randomIndex = (int)(Math.random() * userMediaList.size());
-        UserMediaEntity result = userMediaList.get(randomIndex);
+        UserMediaEntity result = selectRandomMedia(userMediaList);
+        saveDailySpotlight(dailySpotlight, user, result, today);
 
         return mediaMapper.userMediaEntityToUserMediaResponse(result);
+    }
+
+    private UserMediaEntity selectRandomMedia(List<UserMediaEntity> userMediaList) {
+
+        int random = (int) (
+                Math.random() * userMediaList.size()
+        );
+
+        return userMediaList.get(random);
+    }
+
+    private void saveDailySpotlight(
+            DailySpotlightEntity dailySpotlight,
+            UserEntity user,
+            UserMediaEntity userMedia,
+            LocalDate today)
+    {
+        if (dailySpotlight == null) {
+            dailySpotlight = new DailySpotlightEntity(user, userMedia, today);
+        } else {
+            dailySpotlight.setUserMedia(userMedia);
+            dailySpotlight.setSpotlightDate(today);
+        }
+
+        dailySpotlightRepository.save(dailySpotlight);
     }
 
     public BaseMediaResponseDTO getSpotlightTopTrending() {
