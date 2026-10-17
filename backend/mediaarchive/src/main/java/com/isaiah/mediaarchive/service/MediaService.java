@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,52 +73,52 @@ public class MediaService {
 
     public UserMediaResponseDTO getSpotlightOnThisDay(UserEntity user) {
 
-        log.info("Attempting to retrieve user media with a release date that matches the current day & month: username='{}'", user.getUsername());
-
         LocalDate today = LocalDate.now();
-        DailySpotlightEntity dailySpotlight = dailySpotlightRepository.findByUserId(user.getId());
 
-        if (dailySpotlight != null && dailySpotlight.getSpotlightDate().isEqual(today)) {
-            log.debug("Daily spotlight is up to date.");
-
-            return mediaMapper.userMediaEntityToUserMediaResponse(dailySpotlight.getUserMedia());
-        }
-
-        int monthValue = today.getMonthValue();
-        int dayOfMonth = today.getDayOfMonth();
-
-        List<UserMediaEntity> userMediaList = userMediaRepository.findAllByUserAndReleaseMonthAndDay(user.getId(), monthValue, dayOfMonth);
-
-        if (userMediaList == null || userMediaList.isEmpty()) {
-            throw new MediaNotFoundException("Did not find user media items released on this month & day.");
-        }
-
-        UserMediaEntity result = selectRandomMedia(userMediaList);
-        saveDailySpotlight(dailySpotlight, user, result, today);
-
-        return mediaMapper.userMediaEntityToUserMediaResponse(result);
+        return getOrCreateDailySpotlight(
+                user,
+                today,
+                () -> userMediaRepository.findAllByUserIdAndReleaseMonthAndDay(
+                        user.getId(),
+                        today.getMonthValue(),
+                        today.getDayOfMonth()
+                ),
+                "Did not find user media items released on this month & day."
+        );
     }
 
     public UserMediaResponseDTO getSpotlightRandomSpotlight(UserEntity user) {
 
-        log.info("Retrieving random spotlight media item for user: username='{}'", user.getUsername());
+        return getOrCreateDailySpotlight(
+                user,
+                LocalDate.now(),
+                () -> userMediaRepository.findAllByUserId(user.getId()),
+                "Unable to find user media items."
+        );
+    }
 
-        LocalDate today = LocalDate.now();
+    private UserMediaResponseDTO getOrCreateDailySpotlight(
+            UserEntity user,
+            LocalDate today,
+            Supplier<List<UserMediaEntity>> mediaSupplier,
+            String emptyResultMessage
+    ) {
         DailySpotlightEntity dailySpotlight = dailySpotlightRepository.findByUserId(user.getId());
 
         if (dailySpotlight != null && dailySpotlight.getSpotlightDate().isEqual(today)) {
-            log.debug("Daily spotlight is up to date.");
+            log.debug("Daily spotlight is up to date");
 
             return mediaMapper.userMediaEntityToUserMediaResponse(dailySpotlight.getUserMedia());
         }
 
-        List<UserMediaEntity> userMediaList = userMediaRepository.findAllByUserId(user.getId());
+        List<UserMediaEntity> userMediaList = mediaSupplier.get();
 
         if (userMediaList == null || userMediaList.isEmpty()) {
-            throw new MediaNotFoundException("Unable to get user media items.");
+            throw new MediaNotFoundException(emptyResultMessage);
         }
 
         UserMediaEntity result = selectRandomMedia(userMediaList);
+
         saveDailySpotlight(dailySpotlight, user, result, today);
 
         return mediaMapper.userMediaEntityToUserMediaResponse(result);
