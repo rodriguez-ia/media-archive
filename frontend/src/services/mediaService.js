@@ -96,11 +96,11 @@ export async function getSpotlightOnThisDay() {
 }
 
 export async function getSpotlightForgottenFavorite() {
-    return {message: {}, data: {}};
+    return apiFetch("/dashboard/spotlight/forgotten-favorite")
 }
 
 export async function getSpotlightGenreShoutout() {
-    return {message: {}, data: {}};
+    return apiFetch("/dashboard/spotlight/genre-shoutout");
 }
 
 export async function getSpotlightRandomSpotlight() {
