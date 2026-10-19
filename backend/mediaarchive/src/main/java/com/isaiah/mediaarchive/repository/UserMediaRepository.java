@@ -2,7 +2,6 @@ package com.isaiah.mediaarchive.repository;
 
 import com.isaiah.mediaarchive.model.dto.GenreRatingTotalDTO;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
-import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -38,7 +37,10 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
     List<UserMediaEntity> findAllByUserIdAndHighPersonalRating(UUID userId);
 
     @Query("""
-    SELECT g AS genre, SUM(um.personalRating) AS ratingTotal
+    SELECT new com.isaiah.mediaarchive.model.dto.GenreRatingTotalDTO(
+        g,
+        SUM(um.personalRating)
+        )
     FROM UserMediaEntity um
     JOIN um.mediaItem bm
     JOIN bm.genres g
