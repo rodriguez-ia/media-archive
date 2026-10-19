@@ -1,5 +1,6 @@
 package com.isaiah.mediaarchive.model.entity;
 
+import com.isaiah.mediaarchive.model.enums.DailySpotlightEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,13 +33,20 @@ public class DailySpotlightEntity {
     @Column(nullable = false)
     private LocalDate spotlightDate;
 
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private DailySpotlightEnum spotlightType;
+
     public DailySpotlightEntity(
             UserEntity user,
             UserMediaEntity userMedia,
-            LocalDate spotlightDate
+            LocalDate spotlightDate,
+            DailySpotlightEnum spotlightType
     ) {
         this.user = user;
         this.userMedia = userMedia;
         this.spotlightDate = spotlightDate;
+        this.spotlightType = spotlightType;
     }
 }

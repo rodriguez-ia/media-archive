@@ -45,6 +45,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IncorrectSpotlightTypeException.class)
+    public ResponseEntity<ApiResponse<?>> handleIncorrectSpotlightType(IncorrectSpotlightTypeException ex) {
+
+        log.warn("Incorrect spotlight type error: message='{}'", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ApiResponseFactory.failure(
+                        null,
+                        400,
+                        "IncorrectSpotlightTypeException",
+                        ex.getMessage()
+                )
+        );
+    }
+
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiResponse<?>> handleInvalidCredentials(InvalidCredentialsException ex) {
 
@@ -53,7 +68,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 ApiResponseFactory.failure(
                         null,
-                        404,
+                        401,
                         "InvalidCredentialsException",
                         ex.getMessage()
                 )

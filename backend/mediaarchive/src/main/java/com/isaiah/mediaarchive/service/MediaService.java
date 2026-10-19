@@ -3,6 +3,7 @@ package com.isaiah.mediaarchive.service;
 import com.isaiah.mediaarchive.client.DeezerClient;
 import com.isaiah.mediaarchive.client.GoogleBooksClient;
 import com.isaiah.mediaarchive.client.TMDBClient;
+import com.isaiah.mediaarchive.exception.IncorrectSpotlightTypeException;
 import com.isaiah.mediaarchive.exception.MediaNotFoundException;
 import com.isaiah.mediaarchive.exception.MissingKeywordException;
 import com.isaiah.mediaarchive.exception.UserMediaDeletionException;
@@ -15,6 +16,7 @@ import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.entity.DailySpotlightEntity;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
+import com.isaiah.mediaarchive.model.enums.DailySpotlightEnum;
 import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import com.isaiah.mediaarchive.repository.BaseMediaRepository;
 import com.isaiah.mediaarchive.repository.DailySpotlightRepository;
@@ -84,7 +86,8 @@ public class MediaService {
                         today.getMonthValue(),
                         today.getDayOfMonth()
                 ),
-                "Did not find user media items released on this month & day."
+                "Did not find user media items released on this month & day.",
+                DailySpotlightEnum.ON_THIS_DAY
         );
     }
 
@@ -94,7 +97,8 @@ public class MediaService {
                 user,
                 LocalDate.now(),
                 () -> userMediaRepository.findAllByUserIdAndHighPersonalRating(user.getId()),
-                "Did not find user media items with high personal ratings."
+                "Did not find user media items with high personal ratings.",
+                DailySpotlightEnum.FORGOTTEN_FAVORITE
         );
     }
 
@@ -117,7 +121,8 @@ public class MediaService {
                 user,
                 LocalDate.now(),
                 () -> userMediaRepository.findAllByUserIdAndGenres(user.getId(), highestRatedGenres),
-                "Unable to find media for user's highest rated genre"
+                "Unable to find media for user's highest rated genre",
+                DailySpotlightEnum.GENRE_SHOUTOUT
         );
     }
 
@@ -127,7 +132,8 @@ public class MediaService {
                 user,
                 LocalDate.now(),
                 () -> userMediaRepository.findAllByUserId(user.getId()),
-                "Unable to find user media items."
+                "Unable to find user media items.",
+                DailySpotlightEnum.RANDOM_SPOTLIGHT
         );
     }
 
@@ -135,11 +141,23 @@ public class MediaService {
             UserEntity user,
             LocalDate today,
             Supplier<List<UserMediaEntity>> mediaSupplier,
-            String emptyResultMessage
+            String emptyResultMessage,
+            DailySpotlightEnum spotlightType
     ) {
         DailySpotlightEntity dailySpotlight = dailySpotlightRepository.findByUserId(user.getId());
 
         if (dailySpotlight != null && dailySpotlight.getSpotlightDate().isEqual(today)) {
+
+            if (dailySpotlight.getSpotlightType() != spotlightType) {
+                throw new IncorrectSpotlightTypeException(
+                        String.format(
+                                "Today's spotlight type is %s, but the HTTP request is for %s",
+                                dailySpotlight.getSpotlightType(),
+                                spotlightType
+                        )
+                );
+            }
+
             log.debug("Daily spotlight is up to date");
 
             return mediaMapper.userMediaEntityToUserMediaResponse(dailySpotlight.getUserMedia());
@@ -153,7 +171,7 @@ public class MediaService {
 
         UserMediaEntity result = selectRandomMedia(userMediaList);
 
-        saveDailySpotlight(dailySpotlight, user, result, today);
+        saveDailySpotlight(dailySpotlight, user, result, today, spotlightType);
 
         return mediaMapper.userMediaEntityToUserMediaResponse(result);
     }
@@ -171,13 +189,15 @@ public class MediaService {
             DailySpotlightEntity dailySpotlight,
             UserEntity user,
             UserMediaEntity userMedia,
-            LocalDate today)
+            LocalDate today,
+            DailySpotlightEnum spotlightType)
     {
         if (dailySpotlight == null) {
-            dailySpotlight = new DailySpotlightEntity(user, userMedia, today);
+            dailySpotlight = new DailySpotlightEntity(user, userMedia, today, spotlightType);
         } else {
             dailySpotlight.setUserMedia(userMedia);
             dailySpotlight.setSpotlightDate(today);
+            dailySpotlight.setSpotlightType(spotlightType);
         }
 
         dailySpotlightRepository.save(dailySpotlight);
