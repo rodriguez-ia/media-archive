@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
@@ -84,6 +85,39 @@ public class MediaService {
                         today.getDayOfMonth()
                 ),
                 "Did not find user media items released on this month & day."
+        );
+    }
+
+    public UserMediaResponseDTO getSpotlightForgottenFavorite(UserEntity user) {
+
+        return getOrCreateDailySpotlight(
+                user,
+                LocalDate.now(),
+                () -> userMediaRepository.findAllByUserIdAndHighPersonalRating(user.getId()),
+                "Did not find user media items with high personal ratings."
+        );
+    }
+
+    public UserMediaResponseDTO getSpotlightGenreShoutout(UserEntity user) {
+
+        List<GenreRatingTotalDTO> genreRatingTotals = userMediaRepository.findGenreRatingTotals(user.getId());
+
+        if (genreRatingTotals == null || genreRatingTotals.isEmpty()) {
+            throw new MediaNotFoundException("Unable to find genre rating totals for user.");
+        }
+
+        BigDecimal highestTotal = genreRatingTotals.getFirst().getRatingTotal();
+
+        List<String> highestRatedGenres = genreRatingTotals.stream()
+                .filter(total -> Objects.equals(total.getRatingTotal(), highestTotal))
+                .map(GenreRatingTotalDTO::getGenre)
+                .toList();
+
+        return getOrCreateDailySpotlight(
+                user,
+                LocalDate.now(),
+                () -> userMediaRepository.findAllByUserIdAndGenres(user.getId(), highestRatedGenres),
+                "Unable to find media for user's highest rated genre"
         );
     }
 

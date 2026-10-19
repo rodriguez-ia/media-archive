@@ -37,6 +37,32 @@ public class MediaController {
         );
     }
 
+    @GetMapping("/dashboard/spotlight/forgotten-favorite")
+    public ResponseEntity<ApiResponse<UserMediaResponseDTO>> getSpotlightForgottenFavorite(@AuthenticationPrincipal UserEntity user) {
+        UserMediaResponseDTO userMediaResponseDTO = mediaService.getSpotlightForgottenFavorite(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTO,
+                        "MediaController.getSpotlightForgottenFavorite",
+                        "Retrieved 'Forgotten Favorite' Spotlight media successfully"
+                )
+        );
+    }
+
+    @GetMapping("/dashboard/spotlight/genre-shoutout")
+    public ResponseEntity<ApiResponse<UserMediaResponseDTO>> getSpotlightGenreShoutout(@AuthenticationPrincipal UserEntity user) {
+        UserMediaResponseDTO userMediaResponseDTO = mediaService.getSpotlightGenreShoutout(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        userMediaResponseDTO,
+                        "MediaController.getSpotlightGengreShoutout",
+                        "Retrieved 'Genre Shoutout' Spotlight media successfully"
+                )
+        );
+    }
+
     @GetMapping("/dashboard/spotlight/random-spotlight")
     public ResponseEntity<ApiResponse<UserMediaResponseDTO>> getSpotlightRandomSpotlight(@AuthenticationPrincipal UserEntity user) {
         UserMediaResponseDTO userMediaResponseDTO = mediaService.getSpotlightRandomSpotlight(user);

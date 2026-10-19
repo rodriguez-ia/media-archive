@@ -1,6 +1,8 @@
 package com.isaiah.mediaarchive.repository;
 
+import com.isaiah.mediaarchive.model.dto.GenreRatingTotalDTO;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
+import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +26,38 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
             AND DAY(bm.releaseDate) = :day
     """)
     List<UserMediaEntity> findAllByUserIdAndReleaseMonthAndDay(UUID userId, int month, int day);
+
+    @Query("""
+        SELECT DISTINCT um
+        FROM UserMediaEntity um
+        JOIN FETCH um.mediaItem bm
+        LEFT JOIN FETCH bm.genres
+        WHERE um.user.id = :userId
+            AND um.personalRating > 8
+    """)
+    List<UserMediaEntity> findAllByUserIdAndHighPersonalRating(UUID userId);
+
+    @Query("""
+    SELECT g AS genre, SUM(um.personalRating) AS ratingTotal
+    FROM UserMediaEntity um
+    JOIN um.mediaItem bm
+    JOIN bm.genres g
+    WHERE um.user.id = :userId
+      AND um.personalRating IS NOT NULL
+    GROUP BY g
+    ORDER BY SUM(um.personalRating) DESC
+    """)
+    List<GenreRatingTotalDTO> findGenreRatingTotals(UUID userId);
+
+    @Query("""
+    SELECT DISTINCT um
+    FROM UserMediaEntity um
+    JOIN FETCH um.mediaItem bm
+    JOIN FETCH bm.genres g
+    WHERE um.user.id = :userId
+      AND g IN :genres
+    """)
+    List<UserMediaEntity> findAllByUserIdAndGenres(UUID userId, Collection<String> genres);
 
     @Query("""
         SELECT DISTINCT um
