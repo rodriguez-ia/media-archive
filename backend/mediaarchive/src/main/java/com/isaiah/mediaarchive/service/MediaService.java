@@ -17,6 +17,7 @@ import com.isaiah.mediaarchive.model.entity.DailySpotlightEntity;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
 import com.isaiah.mediaarchive.model.enums.DailySpotlightEnum;
+import com.isaiah.mediaarchive.model.enums.GenreEnum;
 import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import com.isaiah.mediaarchive.repository.BaseMediaRepository;
 import com.isaiah.mediaarchive.repository.DailySpotlightRepository;
@@ -132,17 +133,34 @@ public class MediaService {
         BigDecimal highestTotal = genreRatingTotals.getFirst().getRatingTotal();
 
         List<String> highestRatedGenres = genreRatingTotals.stream()
-                .filter(total -> Objects.equals(total.getRatingTotal(), highestTotal))
+                .filter(total -> !total.getGenre().equals("OTHER") && Objects.equals(total.getRatingTotal(), highestTotal))
                 .map(GenreRatingTotalDTO::getGenre)
                 .toList();
 
-        return getOrCreateDailySpotlight(
+        UserMediaResponseDTO responseDTO = getOrCreateDailySpotlight(
                 user,
                 LocalDate.now(),
                 () -> userMediaRepository.findAllByUserIdAndGenres(user.getId(), highestRatedGenres),
                 "Unable to find media for user's highest rated genre",
                 DailySpotlightEnum.GENRE_SHOUTOUT
         );
+
+        // Order the queried media item's highest rated genre first so it is displayed in the spotlight
+        Set<GenreEnum> ordered = new LinkedHashSet<>();
+        GenreEnum spotlightGenre = highestRatedGenres.stream()
+                .map(GenreEnum::valueOf)
+                .filter(responseDTO.getGenres()::contains)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "Spotlight media does not belong to any of the user's highest-rated genres."
+                ));
+
+        ordered.add(spotlightGenre);
+        ordered.addAll(responseDTO.getGenres());
+
+        responseDTO.setGenres(ordered);
+
+        return responseDTO;
     }
 
     public UserMediaResponseDTO getSpotlightRandomSpotlight(UserEntity user) {
