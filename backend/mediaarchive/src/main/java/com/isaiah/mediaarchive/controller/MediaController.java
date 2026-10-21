@@ -24,6 +24,19 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
+    @GetMapping("/dashboard/spotlight/top-trending")
+    public ResponseEntity<ApiResponse<BaseMediaResponseDTO>> getSpotlightTopTrending(@AuthenticationPrincipal UserEntity user) {
+        BaseMediaResponseDTO baseMediaResponseDTO = mediaService.getSpotlightTopTrending(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        baseMediaResponseDTO,
+                        "MediaController.getSpotlightTopTrending",
+                        "Retrieved 'Top Trending' Spotlight media successfully"
+                )
+        );
+    }
+
     @GetMapping("/dashboard/spotlight/on-this-day")
     public ResponseEntity<ApiResponse<UserMediaResponseDTO>> getSpotlightOnThisDay(@AuthenticationPrincipal UserEntity user) {
         UserMediaResponseDTO userMediaResponseDTO = mediaService.getSpotlightOnThisDay(user);
@@ -72,19 +85,6 @@ public class MediaController {
                         userMediaResponseDTO,
                         "MediaController.getSpotlightRandomSpotlight",
                         "Retrieved 'Random Spotlight' Spotlight media successfully"
-                )
-        );
-    }
-
-    @GetMapping("/dashboard/spotlight/top-trending")
-    public ResponseEntity<ApiResponse<BaseMediaResponseDTO>> getSpotlightTopTrending() {
-        BaseMediaResponseDTO baseMediaResponseDTO = mediaService.getSpotlightTopTrending();
-
-        return ResponseEntity.status(200).body(
-                ApiResponseFactory.success(
-                        baseMediaResponseDTO,
-                        "MediaController.getSpotlightTopTrending",
-                        "Retrieved 'Top Trending' Spotlight media successfully"
                 )
         );
     }
