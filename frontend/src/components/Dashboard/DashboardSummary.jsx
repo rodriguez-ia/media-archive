@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import { PieChart } from '@mui/x-charts/PieChart';
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { PieChart } from "@mui/x-charts/PieChart";
 
 const MEDIA_COLORS = {
     movies: "#7DB9F2",
@@ -8,74 +8,16 @@ const MEDIA_COLORS = {
     books: "#F5CF65",
 }
 
-function SummaryLegend({ mediaCounts }) {
-
-    const mediaTypeData = [
-        {
-            label: "Movies",
-            color: MEDIA_COLORS.movies,
-            value: mediaCounts.movies,
-        },
-        {
-            label: "TV Shows",
-            color: MEDIA_COLORS.tvShows,
-            value: mediaCounts.tvShows,
-        },
-        {
-            label: "Music Albums",
-            color: MEDIA_COLORS.musicAlbums,
-            value: mediaCounts.musicAlbums,
-        },
-        {
-            label: "Books",
-            color: MEDIA_COLORS.books,
-            value: mediaCounts.books,
-        },
-    ];
-
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-                mt: 1,
-                width: "fit-content",
-            }}
-        >
-            {mediaTypeData.map(({ label, color, value }) => (
-                <Box
-                    key={label}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        minHeight: 20,
-                        fontSize: "14px",
-                        fontFamily: "Roboto, sans-serif",
-                        color: "text.primary",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            width: 14,
-                            height: 14,
-                            borderRadius: "50%",
-                            backgroundColor: color,
-                            flexShrink: 0,
-                            mr: 1.25,
-                        }}
-                    />
-
-                    <Box component="span">
-                        {label}: {value}
-                    </Box>
-                </Box>
-            ))}
-        </Box>
-    );
-}
-
 function MediaSummary({ title, mediaCounts }) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const chartWidth = isMobile ? 280 : 400;
+    const chartHeight = isMobile ? 210 : 250;
+    const cx = chartWidth / 2;
+    const cy = isMobile ? 175 : 220;
+    const outerRadius = isMobile ? 125 : 170;
+    const innerRadius = isMobile ? 45 : 60;
 
     return (
         <Box
@@ -85,56 +27,67 @@ function MediaSummary({ title, mediaCounts }) {
                 alignItems: "center",
                 flex: 1,
                 minWidth: 0,
-                px: {
-                    xs: 1,
-                    sm: 2,
-                    md: 3,
-                },
-                py: {
-                    xs: 2,
-                    sm: 1,
-                    md: 2,
-                }
+                px: { xs: 1, sm: 2, md: 3 },
+                py: { xs: 2, sm: 1, md: 2 },
             }}
         >
             <Typography
                 variant="subtitle1"
-                sx={{
-                    fontWeight: 600,
-                    mb: 0.5,
-                }}
+                sx={{ fontWeight: 600 }}
             >
                 {title}
             </Typography>
 
-            <PieChart
-                series={[
-                    {
-                        data: [
-                            { id: 0, value: mediaCounts.movies, color: MEDIA_COLORS.movies },           // Movies
-                            { id: 1, value: mediaCounts.tvShows, color: MEDIA_COLORS.tvShows },         // TV Shows
-                            { id: 2, value: mediaCounts.musicAlbums, color: MEDIA_COLORS.musicAlbums }, // Music Albums
-                            { id: 3, value: mediaCounts.books, color: MEDIA_COLORS.books },             // Books
-                        ],
-                        highlightScope: {
-                            fade: 'global',
-                            highlight: 'item'
+            <Box
+                sx={{
+                    width: "100%",
+                    maxWidth: chartWidth,
+                    minWidth: 0,
+                    overflow: "hidden",
+                }}
+            >
+                <PieChart
+                    series={[
+                        {
+                            data: [
+                                { id: 0, label: "Movies", value: mediaCounts.movies, color: MEDIA_COLORS.movies },
+                                { id: 1, label: "TV Shows", value: mediaCounts.tvShows, color: MEDIA_COLORS.tvShows },
+                                { id: 2, label: "Music Albums", value: mediaCounts.musicAlbums, color: MEDIA_COLORS.musicAlbums },
+                                { id: 3, label: "Books", value: mediaCounts.books, color: MEDIA_COLORS.books },
+                            ],
+                            startAngle: -90,
+                            endAngle: 90,
+                            cx,
+                            cy,
+                            outerRadius,
+                            innerRadius,
+                            cornerRadius: 3,
+                            paddingAngle: 2,
+                            highlightScope: {
+                                fade: "global",
+                                highlight: "item",
+                            },
+                            faded: {
+                                innerRadius,
+                                additionalRadius: -10,
+                                color: "gray",
+                            },
                         },
-                        faded: {
-                            innerRadius: 60,
-                            additionalRadius: -10,
-                            color: 'gray'
+                    ]}
+                    margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
+                    width={chartWidth}
+                    height={chartHeight}
+                    slotProps={{
+                        legend: {
+                            direction: "row",
+                            position: {
+                                vertical: "bottom",
+                                horizontal: "middle",
+                            },
                         },
-                        innerRadius: 60,
-                        cornerRadius: 3,
-                        paddingAngle: 2,
-                    },
-                ]}
-                width={200}
-                height={200}
-            />
-
-            <SummaryLegend mediaCounts={mediaCounts} />
+                    }}
+                />
+            </Box>
         </Box>
     );
 }
@@ -165,7 +118,7 @@ function DashboardSummary() {
                 // sm/md+: side-by-side
                 gridTemplateColumns: {
                     xs: "1fr",
-                    sm: "1fr 1fr",
+                    md: "1fr 1fr",
                 },
 
                 // alignItems: "stretch",
