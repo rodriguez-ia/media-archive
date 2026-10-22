@@ -31,6 +31,26 @@ async function apiFetch(endpoint, options = {}) {
     return body;
 }
 
+export async function getSpotlightOnThisDay() {
+    return apiFetch("/dashboard/spotlight/on-this-day");
+}
+
+export async function getSpotlightForgottenFavorite() {
+    return apiFetch("/dashboard/spotlight/forgotten-favorite")
+}
+
+export async function getSpotlightGenreShoutout() {
+    return apiFetch("/dashboard/spotlight/genre-shoutout");
+}
+
+export async function getSpotlightRandomSpotlight() {
+    return apiFetch("/dashboard/spotlight/random-spotlight");
+}
+
+export async function getSpotlightTopTrending() {
+    return apiFetch("/dashboard/spotlight/top-trending");
+}
+
 export async function getUserLibrary() {
     return apiFetch("/library");
 }
@@ -89,25 +109,5 @@ export async function searchExternalMedia(
 
 export async function getMusicTrackDetails(externalId) {
     return apiFetch(`/externalMedia/music/track/${encodeURIComponent(externalId)}`);
-}
-
-export async function getSpotlightOnThisDay() {
-    return apiFetch("/dashboard/spotlight/on-this-day");
-}
-
-export async function getSpotlightForgottenFavorite() {
-    return apiFetch("/dashboard/spotlight/forgotten-favorite")
-}
-
-export async function getSpotlightGenreShoutout() {
-    return apiFetch("/dashboard/spotlight/genre-shoutout");
-}
-
-export async function getSpotlightRandomSpotlight() {
-    return apiFetch("/dashboard/spotlight/random-spotlight");
-}
-
-export async function getSpotlightTopTrending() {
-    return apiFetch("/dashboard/spotlight/top-trending");
 }
 
