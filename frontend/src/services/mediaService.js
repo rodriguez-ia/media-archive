@@ -51,6 +51,10 @@ export async function getSpotlightTopTrending() {
     return apiFetch("/dashboard/spotlight/top-trending");
 }
 
+export async function getDashboardMediaSummary() {
+    return apiFetch("/dashboard/summary");
+}
+
 export async function getUserLibrary() {
     return apiFetch("/library");
 }

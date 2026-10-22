@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { getDashboardMediaSummary } from "../../services/mediaService";
 
 const MEDIA_COLORS = {
     movies: "#7DB9F2",
@@ -94,18 +96,44 @@ function MediaSummary({ title, mediaCounts }) {
 
 function DashboardSummary() {
 
-    const ownedCounts = {
-                        movies: 130,
-                        tvShows: 25,
-                        musicAlbums: 15,
-                        books: 50
-                    };
-    const wishlistedCounts = {
-                        movies: 5,
-                        tvShows: 15,
-                        musicAlbums: 5,
-                        books: 20
-                    };
+    const [ownedCounts, setOwnedCounts] = useState({});
+    const [wishlistedCounts, setWishlistedCounts] = useState({});
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function loadSummary() {
+            try {
+                const response = await getDashboardMediaSummary();
+
+                if (cancelled) {return;}
+
+                setOwnedCounts({
+                    movies : response.data.ownedMoviesCount,
+                    tvShows : response.data.ownedTVShowsCount,
+                    musicAlbums : response.data.ownedMusicAlbumsCount,
+                    books : response.data.ownedBooksCount
+                });
+
+                setWishlistedCounts({
+                    movies : response.data.wishlistedMoviesCount,
+                    tvShows : response.data.wishlistedTVShowsCount,
+                    musicAlbums : response.data.wishlistedMusicAlbumsCount,
+                    books : response.data.wishlistedBooksCount
+                });
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Failed to fetch media summary: " + error);
+                }
+            }
+        }
+
+        loadSummary();
+
+        return () => {
+            cancelled = true;
+        }
+    }, []);
 
     return (
         <Box
@@ -142,12 +170,12 @@ function DashboardSummary() {
                     borderColor: "#3A3A3A",
                 }}
             >
-                <MediaSummary title={"Owned"} mediaCounts={ownedCounts}/>
+                <MediaSummary title={"My Owned Media"} mediaCounts={ownedCounts}/>
             </Box>
 
             {/* Wishlisted Media */}
             <Box>
-                <MediaSummary title={"Wishlisted"} mediaCounts={wishlistedCounts}/>
+                <MediaSummary title={"My Wishlisted Media"} mediaCounts={wishlistedCounts}/>
             </Box>
         </Box>
     );
