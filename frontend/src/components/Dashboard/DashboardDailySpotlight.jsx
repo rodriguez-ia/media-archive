@@ -517,7 +517,7 @@ function DashboardDailySpotlight() {
             try {
                 return await apiCallback();
             } catch (error) {
-                if (error.status === 404) {
+                if (error.status === 400 || error.status === 404) {
                     return null;
                 }
 
