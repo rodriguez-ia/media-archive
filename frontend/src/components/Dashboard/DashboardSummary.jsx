@@ -19,7 +19,7 @@ function MediaSummary({ title, mediaCounts }) {
     const cx = chartWidth / 2;
     const cy = isMobile ? 175 : 220;
     const outerRadius = isMobile ? 125 : 170;
-    const innerRadius = isMobile ? 45 : 60;
+    const innerRadius = isMobile ? 55 : 75;
 
     return (
         <Box
@@ -46,16 +46,17 @@ function MediaSummary({ title, mediaCounts }) {
                     maxWidth: chartWidth,
                     minWidth: 0,
                     overflow: "hidden",
+                    position: "relative",
                 }}
             >
                 <PieChart
                     series={[
                         {
                             data: [
-                                { id: 0, label: "Movies", value: mediaCounts.movies, color: MEDIA_COLORS.movies },
-                                { id: 1, label: "TV Shows", value: mediaCounts.tvShows, color: MEDIA_COLORS.tvShows },
-                                { id: 2, label: "Music Albums", value: mediaCounts.musicAlbums, color: MEDIA_COLORS.musicAlbums },
-                                { id: 3, label: "Books", value: mediaCounts.books, color: MEDIA_COLORS.books },
+                                { id: 0, label: "Movies", value: mediaCounts.movies ?? 0, color: MEDIA_COLORS.movies },
+                                { id: 1, label: "TV Shows", value: mediaCounts.tvShows ?? 0, color: MEDIA_COLORS.tvShows },
+                                { id: 2, label: "Music Albums", value: mediaCounts.musicAlbums ?? 0, color: MEDIA_COLORS.musicAlbums },
+                                { id: 3, label: "Books", value: mediaCounts.books ?? 0, color: MEDIA_COLORS.books },
                             ],
                             startAngle: -90,
                             endAngle: 90,
@@ -89,6 +90,43 @@ function MediaSummary({ title, mediaCounts }) {
                         },
                     }}
                 />
+
+                {/* Total centered inside the semicircle opening */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        left: "50%",
+                        top: cy - innerRadius / 2,
+                        transform: "translate(-50%, -50%)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 0,
+                        pointerEvents: "none",
+                    }}
+                >
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: 700,
+                            lineHeight: 1.1,
+                        }}
+                    >
+                        {mediaCounts.total ?? 0}
+                    </Typography>
+
+                    <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{
+                            lineHeight: 1.1,
+                            mt: 0.25,
+                        }}
+                    >
+                        Total
+                    </Typography>
+                </Box>
             </Box>
         </Box>
     );
@@ -109,6 +147,7 @@ function DashboardSummary() {
                 if (cancelled) {return;}
 
                 setOwnedCounts({
+                    total : response.data.ownedTotal,
                     movies : response.data.ownedMoviesCount,
                     tvShows : response.data.ownedTVShowsCount,
                     musicAlbums : response.data.ownedMusicAlbumsCount,
@@ -116,6 +155,7 @@ function DashboardSummary() {
                 });
 
                 setWishlistedCounts({
+                    total : response.data.wishlistedTotal,
                     movies : response.data.wishlistedMoviesCount,
                     tvShows : response.data.wishlistedTVShowsCount,
                     musicAlbums : response.data.wishlistedMusicAlbumsCount,

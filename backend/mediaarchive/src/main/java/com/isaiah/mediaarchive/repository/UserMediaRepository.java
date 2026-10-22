@@ -64,10 +64,12 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
 
     @Query("""
         SELECT new com.isaiah.mediaarchive.model.dto.MediaSummaryResponseDTO(
+            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'BOOK') THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'MOVIE' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'TV_SHOW' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'MUSIC_ALBUM' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'BOOK' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'BOOK') THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'MOVIE' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'TV_SHOW' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'MUSIC_ALBUM' THEN 1 ELSE 0 END),
