@@ -35,6 +35,10 @@ function DiscoverPage() {
                     element => element.externalId !== selectedMediaItem.externalId
                 );
             }
+
+            // Ensure the staged media item has a non-null status.
+            // If added to library, it must be either OWNED or WISHLISTED.
+            selectedMediaItem.status = selectedMediaItem.status ?? "OWNED";
             
             return [...current, selectedMediaItem];
         });
