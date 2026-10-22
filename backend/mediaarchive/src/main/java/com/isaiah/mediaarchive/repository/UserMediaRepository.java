@@ -1,6 +1,7 @@
 package com.isaiah.mediaarchive.repository;
 
 import com.isaiah.mediaarchive.model.dto.GenreRatingTotalDTO;
+import com.isaiah.mediaarchive.model.dto.MediaSummaryResponseDTO;
 import com.isaiah.mediaarchive.model.entity.UserMediaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -60,6 +61,24 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
       AND g IN :genres
     """)
     List<UserMediaEntity> findAllByUserIdAndGenres(UUID userId, Collection<String> genres);
+
+    @Query("""
+        SELECT new com.isaiah.mediaarchive.model.dto.MediaSummaryResponseDTO(
+            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'MOVIE' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'TV_SHOW' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'MUSIC_ALBUM' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'BOOK' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'MOVIE' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'TV_SHOW' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'MUSIC_ALBUM' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'BOOK' THEN 1 ELSE 0 END)
+            )
+        FROM UserMediaEntity um
+        JOIN um.mediaItem bm
+        WHERE um.user.id = :userId
+            AND um.status IN ('OWNED', 'WISHLISTED')
+    """)
+    MediaSummaryResponseDTO findAllMediaTypeCounts(UUID userId);
 
     @Query("""
         SELECT DISTINCT um

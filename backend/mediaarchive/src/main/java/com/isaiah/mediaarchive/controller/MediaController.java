@@ -89,6 +89,19 @@ public class MediaController {
         );
     }
 
+    @GetMapping("/dashboard/summary")
+    public ResponseEntity<ApiResponse<MediaSummaryResponseDTO>> getDashboardSummary(@AuthenticationPrincipal UserEntity user) {
+        MediaSummaryResponseDTO mediaSummaryResponseDTO = mediaService.getDashboardMediaSummary(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        mediaSummaryResponseDTO,
+                        "MediaController.getDashboardSummary",
+                        "Retrieved dashboard summary details successfully"
+                )
+        );
+    }
+
     @GetMapping("/library")
     public ResponseEntity<ApiResponse<List<UserMediaResponseDTO>>> getAllFromUserLibrary(@AuthenticationPrincipal UserEntity user) {
         List<UserMediaResponseDTO> userMediaResponseDTOList = mediaService.getAllFromUserLibrary(user);

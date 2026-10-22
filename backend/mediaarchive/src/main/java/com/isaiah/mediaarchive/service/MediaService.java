@@ -240,6 +240,19 @@ public class MediaService {
         dailySpotlightRepository.save(dailySpotlight);
     }
 
+    public MediaSummaryResponseDTO getDashboardMediaSummary(UserEntity user) {
+
+        log.info("Retrieving dashboard media summary details for user: username='{}'", user.getUsername());
+
+        MediaSummaryResponseDTO result = userMediaRepository.findAllMediaTypeCounts(user.getId());
+
+        if (result == null) {
+            throw new MediaNotFoundException("Unable to get dashboard media summary details");
+        }
+
+        return result;
+    }
+
     public List<UserMediaResponseDTO> getAllFromUserLibrary(UserEntity user) {
 
         log.info("Retrieving all USER media items for user: username='{}'", user.getUsername());
