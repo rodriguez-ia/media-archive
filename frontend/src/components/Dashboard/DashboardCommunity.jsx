@@ -18,13 +18,13 @@ function DashboardCommunity() {
 
                 let pages = response.data;
                 for (let page of pages) {
-                    setItemStats(page);
+                    setItemInfo(page);
                 }
 
                 setCommunityPages(pages);
             } catch (error) {
                 if (!cancelled) {
-                    console.error("Failed to fetch media summary: " + error);
+                    console.error("Failed to fetch community carousel data: " + error);
                 }
             }
         }
@@ -36,15 +36,17 @@ function DashboardCommunity() {
         }
     }, [])
 
-    const setItemStats = (page) => {
-        function truncateTwoDecimals(number) {
+    const setItemInfo = (page) => {
+        function truncateOneDecimal(number) {
             return Math.trunc(number * 10) / 10;
         }
 
         for (const item of page.items) {
             item.stat = item.communityRating
-            ? "★ " + truncateTwoDecimals(item.communityRating).toFixed(1)
+            ? "★ " + truncateOneDecimal(item.communityRating).toFixed(1)
             : "";
+
+            item.id = item.externalId;
         }
     }
 
