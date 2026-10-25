@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import MediaCarousel from "./MediaCarousel";
-import { getDashboardCommunityData } from "../../services/mediaService";
+import { getDashboardCommunityData, addToUserLibrary } from "../../services/mediaService";
 
 function DashboardCommunity() {
 
@@ -47,6 +47,23 @@ function DashboardCommunity() {
             : "";
 
             item.id = item.externalId;
+
+            console.log(JSON.stringify(item));
+        }
+    }
+
+    const handleAddToWishlist = async (item) => {
+        item = {
+            ...item,
+            status: "WISHLISTED"
+        };
+
+        try {
+            await addToUserLibrary([item]);
+            return true;
+        } catch (error) {
+            console.error("Failed to add media to wishlist:", error);
+            return false;
         }
     }
 
@@ -60,6 +77,7 @@ function DashboardCommunity() {
             <MediaCarousel
                 pages={communityPages}
                 itemsPerView={3}
+                onItemClick={handleAddToWishlist}
             />
         </Box>
     );
