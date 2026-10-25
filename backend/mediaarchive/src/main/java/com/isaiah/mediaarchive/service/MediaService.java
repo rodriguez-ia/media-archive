@@ -253,6 +253,113 @@ public class MediaService {
         return result;
     }
 
+    public List<MediaPageDataResponseDTO<BaseMediaResponseDTO>> getDashboardCommunityPages(UserEntity user) {
+
+        log.info("Retrieving dashboard community section data");
+
+        List<MediaPageDataResponseDTO<BaseMediaResponseDTO>> result = new ArrayList<>();
+
+        try {
+            // Trending
+            TMDBSearchResponseDTO tmdbTrendingResponse = tmdbClient.searchTrending();
+
+            MediaPageDataResponseDTO<BaseMediaResponseDTO> trendingPage = buildCommunityMediaPage(
+                    "trending",
+                    "Trending",
+                    "What everyone's talking about right now",
+                    tmdbTrendingResponse
+            );
+
+            if (trendingPage != null) {
+                result.add(trendingPage);
+            }
+        } catch (Exception e) {
+            log.info("TMDB 'Trending' data NOT found");
+        }
+
+        try {
+            // Now Playing
+            TMDBSearchResponseDTO tmdbNowPlayingResponse = tmdbClient.searchNowPlaying();
+
+            tmdbMapper.setMediaTypeForAllResponseItems("movie", tmdbNowPlayingResponse);
+
+            MediaPageDataResponseDTO<BaseMediaResponseDTO> nowPlayingPage = buildCommunityMediaPage(
+                    "now-playing",
+                    "Now Playing",
+                    "What's in theaters today",
+                    tmdbNowPlayingResponse
+            );
+
+            if (nowPlayingPage != null) {
+                result.add(nowPlayingPage);
+            }
+        } catch (Exception e) {
+            log.info("TMDB 'Now Playing' data NOT found");
+        }
+
+        try {
+            // Recommended
+            List<UserMediaEntity> highestRatedUserTMDBList = userMediaRepository.findAllTMDBExternalIdsByPersonalRating(user.getId(), BigDecimal.valueOf(8));
+
+            if (highestRatedUserTMDBList != null && !highestRatedUserTMDBList.isEmpty()) {
+                int randomIndex = (int) (Math.random() * highestRatedUserTMDBList.size());
+                UserMediaEntity randomHighestRated = highestRatedUserTMDBList.get(randomIndex);
+
+                MediaTypeEnum referenceMediaType = randomHighestRated.getMediaItem().getMediaType();
+                String referenceExternalId = randomHighestRated.getMediaItem().getExternalId();
+
+                log.debug("Random user media for recommendation: title='{}', mediaType='{}', externalId='{}'",
+                        randomHighestRated.getMediaItem().getTitle(),
+                        referenceMediaType,
+                        referenceExternalId
+                );
+
+                TMDBSearchResponseDTO tmdbRecommendedResponse = tmdbClient.searchRecommended(referenceExternalId, referenceMediaType);
+
+                MediaPageDataResponseDTO<BaseMediaResponseDTO> recommendedPage = buildCommunityMediaPage(
+                        "recommended",
+                        "Recommended",
+                        "Media picked for you",
+                        tmdbRecommendedResponse
+                );
+
+                if (recommendedPage != null) {
+                    result.add(recommendedPage);
+                }
+            }
+        } catch (Exception e) {
+            log.info("TMDB 'Recommended' data NOT found");
+        }
+
+        return result;
+    }
+
+    private MediaPageDataResponseDTO<BaseMediaResponseDTO> buildCommunityMediaPage(
+            String id,
+            String label,
+            String description,
+            TMDBSearchResponseDTO tmdbResponse
+    ) {
+        if (tmdbResponse == null) {
+            return null;
+        }
+
+        List<BaseMediaResponseDTO> mediaList = tmdbMapper.tmdbResponseToBaseMediaResponseDTOList(tmdbResponse);
+
+        if (mediaList.isEmpty()) {
+            return null;
+        }
+
+        int endIndex = Math.min(mediaList.size(), 5);
+
+        return new MediaPageDataResponseDTO<>(
+                id,
+                label,
+                description,
+                mediaList.subList(0, endIndex)
+        );
+    }
+
     public List<UserMediaResponseDTO> getAllFromUserLibrary(UserEntity user) {
 
         log.info("Retrieving all USER media items for user: username='{}'", user.getUsername());

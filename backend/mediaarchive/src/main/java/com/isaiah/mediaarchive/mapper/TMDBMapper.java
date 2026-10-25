@@ -50,6 +50,19 @@ public class TMDBMapper {
             Map.entry(37, GenreEnum.WESTERN)
     );
 
+    public void setMediaTypeForAllResponseItems(String mediaType, TMDBSearchResponseDTO searchResponse) {
+
+        if (searchResponse == null || searchResponse.getResults() == null) {
+            return;
+        }
+
+        log.debug("Setting media type to '{}' for response items", mediaType);
+
+        for (TMDBResponseItemDTO responseItem : searchResponse.getResults()) {
+            responseItem.setMedia_type(mediaType);
+        }
+    }
+
     public List<BaseMediaEntity> tmdbTVShowDetailsResponseToBaseMediaEntityList(TMDBTVShowDetailsSearchResponseDTO tmdbResponse, UUID parentId) {
 
         log.debug("Mapping TMDB API TV show details response data to List<BaseMediaEntity>...");

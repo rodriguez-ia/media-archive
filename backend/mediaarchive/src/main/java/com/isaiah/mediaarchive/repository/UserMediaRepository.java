@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -81,6 +82,16 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
             AND um.status IN ('OWNED', 'WISHLISTED')
     """)
     MediaSummaryResponseDTO findAllMediaTypeCounts(UUID userId);
+
+    @Query("""
+    SELECT DISTINCT um
+    FROM UserMediaEntity um
+    JOIN FETCH um.mediaItem bm
+    WHERE um.user.id = :userId
+        AND um.personalRating >= :ratingThreshold
+        AND bm.mediaType IN ('MOVIE', 'TV_SHOW')
+    """)
+    List<UserMediaEntity> findAllTMDBExternalIdsByPersonalRating(UUID userId, BigDecimal ratingThreshold);
 
     @Query("""
         SELECT DISTINCT um

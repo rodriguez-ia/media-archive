@@ -3,6 +3,7 @@ package com.isaiah.mediaarchive.model.dto;
 import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ public class TMDBResponseItemDTO {
 
     private String poster_path;
 
+    @Setter
     private String media_type;
 
     private List<Integer> genre_ids;

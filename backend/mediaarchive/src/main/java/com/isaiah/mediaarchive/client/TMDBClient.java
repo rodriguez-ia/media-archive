@@ -3,6 +3,7 @@ package com.isaiah.mediaarchive.client;
 import com.isaiah.mediaarchive.model.dto.TMDBSearchResponseDTO;
 import com.isaiah.mediaarchive.model.dto.TMDBTVSeasonDetailsSearchResponseDTO;
 import com.isaiah.mediaarchive.model.dto.TMDBTVShowDetailsSearchResponseDTO;
+import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -66,6 +67,30 @@ public class TMDBClient {
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/trending/all/day")
+                        .build())
+                .header("Authorization", "Bearer " + apiReadAccessToken)
+                .retrieve()
+                .body(TMDBSearchResponseDTO.class);
+    }
+
+    public TMDBSearchResponseDTO searchNowPlaying() {
+        return restClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/now_playing")
+                        .build())
+                .header("Authorization", "Bearer " + apiReadAccessToken)
+                .retrieve()
+                .body(TMDBSearchResponseDTO.class);
+    }
+
+    public TMDBSearchResponseDTO searchRecommended(String externalId, MediaTypeEnum mediaType) {
+        String pathStart = mediaType == MediaTypeEnum.MOVIE ? "/movie/" : "/tv/";
+
+        return restClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(pathStart + externalId + "/recommendations")
                         .build())
                 .header("Authorization", "Bearer " + apiReadAccessToken)
                 .retrieve()
