@@ -1,88 +1,82 @@
+import { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import MediaCarousel from "./MediaCarousel.jsx";
-import { getGenreImage } from "../../utils/genreUtils.js";
-
-const personalPages = [
-    {
-        id: "highest-rated",
-        label: "Highest Rated",
-        description: "Your personally highest-rated movies",
-        items: [
-            {
-                id: 1,
-                title: "Good Will Hunting",
-                image: "https://image.tmdb.org/t/p/w500/z2FnLKpFi1HPO7BEJxdkv6hpJSU.jpg",
-                stat: "★ 8.7",
-            },
-            {
-                id: 2,
-                title: "Interstellar",
-                image: "https://image.tmdb.org/t/p/w342/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-                stat: "★ 8.6",
-            },
-            {
-                id: 3,
-                title: "The Batman",
-                image: "https://image.tmdb.org/t/p/w342/74xTEgt7R36Fpooo50r9T25onhq.jpg",
-                stat: "★ 8.5",
-            },
-        ],
-    },
-
-    {
-        id: "most-viewed",
-        label: "Most Viewed",
-        description: "Your most watched movies",
-        items: [
-            {
-                id: 4,
-                title: "Oppenheimer",
-                image: "https://image.tmdb.org/t/p/w342/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
-                stat: "42 views",
-            },
-            {
-                id: 5,
-                title: "Blade Runner 2049",
-                image: "https://image.tmdb.org/t/p/w342/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg",
-                stat: "37 views",
-            },
-            {
-                id: 6,
-                title: "Arrival",
-                image: "https://image.tmdb.org/t/p/w342/x2FJsf1ElAgr63Y3PNPtJrcmpoe.jpg",
-                stat: "34 views",
-            },
-        ],
-    },
-
-    {
-        id: "favorite-genre",
-        label: "Top Genre",
-        description: "Based on your rating history",
-        items: [
-            {
-                id: 7,
-                title: "Science Fiction",
-                image: getGenreImage("SCIENCE_FICTION"),
-                stat: "★ 8.4",
-            },
-            {
-                id: 8,
-                title: "Horror",
-                image: getGenreImage("HORROR"),
-                stat: "★ 8.1",
-            },
-            {
-                id: 9,
-                title: "Action",
-                image: getGenreImage("ACTION"),
-                stat: "★ 7.9",
-            },
-        ],
-    },
-];
+import { formatGenre, getGenreImage } from "../../utils/genreUtils.js";
+import { getDashboardPersonalData } from "../../services/mediaService.js";
 
 function DashboardPersonal() {
+
+    const [personalPages, setPersonalPages] = useState([]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function loadPersonalData() {
+            try {
+                const response = await getDashboardPersonalData();
+
+                if (cancelled) {return;}
+
+                let mediaPages = response.data.mediaPages;
+                for (let page of mediaPages) {
+                    setItemInfo(page);
+                }
+
+                let genresPage = response.data.genresPage;
+                setItemInfo(genresPage);
+
+                const updatedMediaPages = [
+                    ...mediaPages,
+                    ...(genresPage ? [genresPage] : [])
+                ];
+
+                setPersonalPages(updatedMediaPages);
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Failed to fetch personal media carousel data: " + error);
+                }
+            }
+        }
+
+        loadPersonalData();
+
+        return () => {
+            cancelled = true;
+        }
+    }, []);
+
+    const setItemInfo = (page) => {
+        function truncateOneDecimal(number) {
+            return Math.trunc(number * 100) / 100;
+        }
+        
+        switch (page.id) {
+            case "highest-rated":
+                for (const item of page.items) {
+                    item.stat = item.personalRating ? "★ " + truncateOneDecimal(item.personalRating).toFixed(1) : "";
+                }
+
+                break;
+            case "most-viewed":
+                for (const item of page.items) {
+                    item.stat = item.consumptionCount ? item.consumptionCount + " views" : "";
+                }
+
+                break;
+            case "top-genres":
+                for (const item of page.items) {
+                    item.stat = item.ratingTotal ? "★ " + truncateOneDecimal(item.ratingTotal).toFixed(1) : "";
+                    item.stat += item.viewsTotal ? ` (${item.viewsTotal} views)` : "";
+
+                    item.id = item.genre;
+                    item.title = formatGenre(item.genre);
+                    item.coverImgUrl = getGenreImage(item.genre);
+                }
+
+                break;
+        }
+    }
+
     return (
         <Box
             sx={{
