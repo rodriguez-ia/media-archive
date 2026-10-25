@@ -91,7 +91,7 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
         AND um.personalRating >= :ratingThreshold
         AND bm.mediaType IN ('MOVIE', 'TV_SHOW')
     """)
-    List<UserMediaEntity> findAllTMDBExternalIdsByPersonalRating(UUID userId, BigDecimal ratingThreshold);
+    List<UserMediaEntity> findAllTMDBMediaByPersonalRating(UUID userId, BigDecimal ratingThreshold);
 
     @Query("""
         SELECT DISTINCT um

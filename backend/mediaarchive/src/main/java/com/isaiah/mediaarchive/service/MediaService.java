@@ -25,11 +25,14 @@ import com.isaiah.mediaarchive.repository.UserMediaRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -51,6 +54,8 @@ public class MediaService {
     private final GoogleBooksClient googleBooksClient;
     private final GoogleBooksMapper googleBooksMapper;
 
+    private final Executor communityDashboardExecutor;
+
     private static final Logger log = LoggerFactory.getLogger(MediaService.class);
 
     public MediaService(DailySpotlightRepository dailySpotlightRepository,
@@ -62,7 +67,9 @@ public class MediaService {
                         DeezerClient deezerClient,
                         DeezerMapper deezerMapper,
                         GoogleBooksClient googleBooksClient,
-                        GoogleBooksMapper googleBooksMapper) {
+                        GoogleBooksMapper googleBooksMapper,
+                        @Qualifier("communityDashboardExecutor")
+                        Executor communityDashboardExecutor) {
         this.dailySpotlightRepository = dailySpotlightRepository;
         this.userMediaRepository = userMediaRepository;
         this.baseMediaRepository = baseMediaRepository;
@@ -73,6 +80,7 @@ public class MediaService {
         this.deezerMapper = deezerMapper;
         this.googleBooksClient = googleBooksClient;
         this.googleBooksMapper = googleBooksMapper;
+        this.communityDashboardExecutor = communityDashboardExecutor;
     }
 
     public BaseMediaResponseDTO getSpotlightTopTrending(UserEntity user) {
@@ -257,12 +265,69 @@ public class MediaService {
 
         log.info("Retrieving dashboard community section data");
 
+        // 'Trending' fetch
+        CompletableFuture<TMDBSearchResponseDTO> trendingFuture =
+                CompletableFuture.supplyAsync(
+                        () -> fetchCommunityResponse(
+                                "Trending",
+                                tmdbClient::searchTrending
+                        ),
+                        communityDashboardExecutor
+                );
+
+        // 'Now Playing' fetch
+        CompletableFuture<TMDBSearchResponseDTO> nowPlayingFuture =
+                CompletableFuture.supplyAsync(
+                        () -> fetchCommunityResponse(
+                                "Now Playing",
+                                tmdbClient::searchNowPlaying
+                        ),
+                        communityDashboardExecutor
+                );
+
+        // Declare 'Recommended' fetch
+        CompletableFuture<TMDBSearchResponseDTO> recommendedFuture =
+                CompletableFuture.completedFuture(null);
+
+        // Retrieve the user's highest rated Movies & TV Shows
+        List<UserMediaEntity> highestRatedUserTMDBList = userMediaRepository.findAllTMDBMediaByPersonalRating(user.getId(), BigDecimal.valueOf(8));
+
+        if (highestRatedUserTMDBList != null && !highestRatedUserTMDBList.isEmpty()) {
+            int randomIndex = (int) (Math.random() * highestRatedUserTMDBList.size());
+            UserMediaEntity randomHighestRated = highestRatedUserTMDBList.get(randomIndex);
+
+            // Get a reference externalId & mediaType for 'Recommended' fetch
+            MediaTypeEnum referenceMediaType = randomHighestRated.getMediaItem().getMediaType();
+            String referenceExternalId = randomHighestRated.getMediaItem().getExternalId();
+
+            log.debug("Random user media for recommendation: title='{}', mediaType='{}', externalId='{}'",
+                    randomHighestRated.getMediaItem().getTitle(),
+                    referenceMediaType,
+                    referenceExternalId
+            );
+
+            // 'Recommended' fetch
+            recommendedFuture =
+                    CompletableFuture.supplyAsync(
+                            () -> fetchCommunityResponse(
+                                    "Recommended",
+                                    () -> tmdbClient.searchRecommended(
+                                            referenceExternalId,
+                                            referenceMediaType
+                                    )
+                        ),
+                        communityDashboardExecutor
+                    );
+        }
+
+        TMDBSearchResponseDTO tmdbTrendingResponse = trendingFuture.join();
+        TMDBSearchResponseDTO tmdbNowPlayingResponse = nowPlayingFuture.join();
+        TMDBSearchResponseDTO tmdbRecommendedResponse = recommendedFuture.join();
+
         List<MediaPageDataResponseDTO<BaseMediaResponseDTO>> result = new ArrayList<>();
 
         try {
             // Trending
-            TMDBSearchResponseDTO tmdbTrendingResponse = tmdbClient.searchTrending();
-
             MediaPageDataResponseDTO<BaseMediaResponseDTO> trendingPage = buildCommunityMediaPage(
                     "trending",
                     "Trending",
@@ -274,13 +339,11 @@ public class MediaService {
                 result.add(trendingPage);
             }
         } catch (Exception e) {
-            log.info("TMDB 'Trending' data NOT found");
+            log.info("Failed to build 'Trending' page for Community carousel", e);
         }
 
         try {
             // Now Playing
-            TMDBSearchResponseDTO tmdbNowPlayingResponse = tmdbClient.searchNowPlaying();
-
             tmdbMapper.setMediaTypeForAllResponseItems("movie", tmdbNowPlayingResponse);
 
             MediaPageDataResponseDTO<BaseMediaResponseDTO> nowPlayingPage = buildCommunityMediaPage(
@@ -294,44 +357,38 @@ public class MediaService {
                 result.add(nowPlayingPage);
             }
         } catch (Exception e) {
-            log.info("TMDB 'Now Playing' data NOT found");
+            log.info("Failed to build 'Now Playing' page for Community carousel", e);
         }
 
         try {
             // Recommended
-            List<UserMediaEntity> highestRatedUserTMDBList = userMediaRepository.findAllTMDBExternalIdsByPersonalRating(user.getId(), BigDecimal.valueOf(8));
+            MediaPageDataResponseDTO<BaseMediaResponseDTO> recommendedPage = buildCommunityMediaPage(
+                    "recommended",
+                    "Recommended",
+                    "Media picked for you",
+                    tmdbRecommendedResponse
+            );
 
-            if (highestRatedUserTMDBList != null && !highestRatedUserTMDBList.isEmpty()) {
-                int randomIndex = (int) (Math.random() * highestRatedUserTMDBList.size());
-                UserMediaEntity randomHighestRated = highestRatedUserTMDBList.get(randomIndex);
-
-                MediaTypeEnum referenceMediaType = randomHighestRated.getMediaItem().getMediaType();
-                String referenceExternalId = randomHighestRated.getMediaItem().getExternalId();
-
-                log.debug("Random user media for recommendation: title='{}', mediaType='{}', externalId='{}'",
-                        randomHighestRated.getMediaItem().getTitle(),
-                        referenceMediaType,
-                        referenceExternalId
-                );
-
-                TMDBSearchResponseDTO tmdbRecommendedResponse = tmdbClient.searchRecommended(referenceExternalId, referenceMediaType);
-
-                MediaPageDataResponseDTO<BaseMediaResponseDTO> recommendedPage = buildCommunityMediaPage(
-                        "recommended",
-                        "Recommended",
-                        "Media picked for you",
-                        tmdbRecommendedResponse
-                );
-
-                if (recommendedPage != null) {
-                    result.add(recommendedPage);
-                }
+            if (recommendedPage != null) {
+                result.add(recommendedPage);
             }
         } catch (Exception e) {
-            log.info("TMDB 'Recommended' data NOT found");
+            log.info("Failed to build 'Recommended' page for Community carousel", e);
         }
 
         return result;
+    }
+
+    private TMDBSearchResponseDTO fetchCommunityResponse(
+            String pageName,
+            Supplier<TMDBSearchResponseDTO> fetcher
+    ) {
+        try {
+            return fetcher.get();
+        } catch (Exception e) {
+            log.warn("TMDB '{}' data could not be retrieved", pageName, e);
+            return null;
+        }
     }
 
     private MediaPageDataResponseDTO<BaseMediaResponseDTO> buildCommunityMediaPage(
