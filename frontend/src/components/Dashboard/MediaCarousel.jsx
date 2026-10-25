@@ -40,7 +40,7 @@ function MediaCarouselItem({ item }) {
             >
                 <Box
                     component="img"
-                    src={item.image}
+                    src={item.coverImgUrl}
                     alt={item.title}
                     loading="lazy"
                     sx={{

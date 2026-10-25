@@ -55,6 +55,10 @@ export async function getDashboardMediaSummary() {
     return apiFetch("/dashboard/summary");
 }
 
+export async function getDashboardCommunityData() {
+    return apiFetch("/dashboard/community");
+}
+
 export async function getUserLibrary() {
     return apiFetch("/library");
 }
