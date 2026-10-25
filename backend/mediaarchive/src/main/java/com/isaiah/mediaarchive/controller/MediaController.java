@@ -102,6 +102,19 @@ public class MediaController {
         );
     }
 
+    @GetMapping("/dashboard/personal")
+    public ResponseEntity<ApiResponse<DashboardPersonalResponseDTO>> getDashboardPersonalPages(@AuthenticationPrincipal UserEntity user) {
+        DashboardPersonalResponseDTO mediaPageDataList = mediaService.getDashboardPersonalPages(user);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        mediaPageDataList,
+                        "MediaController.getDashboardPersonalPages",
+                        "Retrieved dashboard personal pages successfully"
+                )
+        );
+    }
+
     @GetMapping("/dashboard/community")
     public ResponseEntity<ApiResponse<List<MediaPageDataResponseDTO<BaseMediaResponseDTO>>>> getDashboardCommunityPages(@AuthenticationPrincipal UserEntity user) {
         List<MediaPageDataResponseDTO<BaseMediaResponseDTO>> mediaPageDataList = mediaService.getDashboardCommunityPages(user);

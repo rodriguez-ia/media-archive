@@ -13,8 +13,15 @@ public class GenreRatingTotalDTO {
 
     private BigDecimal ratingTotal;
 
-    public GenreRatingTotalDTO(GenreEnum genre, BigDecimal ratingTotal) {
+    private Long viewsTotal;
+
+    public GenreRatingTotalDTO(
+            GenreEnum genre,
+            BigDecimal ratingTotal,
+            Long viewsTotal
+    ) {
         this.genre = genre.name();
         this.ratingTotal = ratingTotal;
+        this.viewsTotal = viewsTotal;
     }
 }

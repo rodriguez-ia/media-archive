@@ -41,7 +41,8 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
     @Query("""
     SELECT new com.isaiah.mediaarchive.model.dto.GenreRatingTotalDTO(
         g,
-        SUM(um.personalRating)
+        SUM(um.personalRating),
+        SUM(um.consumptionCount)
         )
     FROM UserMediaEntity um
     JOIN um.mediaItem bm
@@ -90,8 +91,19 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
     WHERE um.user.id = :userId
         AND um.personalRating >= :ratingThreshold
         AND bm.mediaType IN ('MOVIE', 'TV_SHOW')
+    ORDER BY um.personalRating DESC
     """)
     List<UserMediaEntity> findAllTMDBMediaByPersonalRating(UUID userId, BigDecimal ratingThreshold);
+
+    @Query("""
+    SELECT DISTINCT um
+    FROM UserMediaEntity um
+    JOIN FETCH um.mediaItem bm
+    WHERE um.user.id = :userId
+        AND bm.mediaType IN ('MOVIE', 'TV_SHOW')
+    ORDER BY um.consumptionCount DESC
+    """)
+    List<UserMediaEntity> findAllTMDBMediaOrderedByConsumptionCount(UUID userId);
 
     @Query("""
         SELECT DISTINCT um

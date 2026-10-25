@@ -261,6 +261,79 @@ public class MediaService {
         return result;
     }
 
+    public DashboardPersonalResponseDTO getDashboardPersonalPages(UserEntity user) {
+
+        log.info("Retrieving dashboard personal section data");
+
+        List<MediaPageDataResponseDTO<UserMediaResponseDTO>> mediaPages = new ArrayList<>();
+        MediaPageDataResponseDTO<GenreRatingTotalDTO> topGenresPage = null;
+
+        try {
+            // Highest Rated
+            List<UserMediaEntity> highestRatedTMDBMedia = userMediaRepository.findAllTMDBMediaByPersonalRating(user.getId(), BigDecimal.valueOf(8));
+            List<UserMediaResponseDTO> highestRatedDTOList =
+                    highestRatedTMDBMedia.stream()
+                            .limit(5)
+                            .map(mediaMapper::userMediaEntityToUserMediaResponse)
+                            .toList();
+
+            if (!highestRatedDTOList.isEmpty()) {
+                mediaPages.add(new MediaPageDataResponseDTO<>(
+                        "highest-rated",
+                        "Highest Rated",
+                        "Your personally highest-rated movies & TV shows",
+                        highestRatedDTOList
+                ));
+            }
+        } catch (Exception e) {
+            log.info("Failed to build 'Highest Rated' page for Personal carousel", e);
+        }
+
+        try {
+            // Most Viewed
+            List<UserMediaEntity> mostViewedTMDBMedia = userMediaRepository.findAllTMDBMediaOrderedByConsumptionCount(user.getId());
+            List<UserMediaResponseDTO> mostViewedDTOList =
+                    mostViewedTMDBMedia.stream()
+                            .limit(5)
+                            .map(mediaMapper::userMediaEntityToUserMediaResponse)
+                            .toList();
+
+            if (!mostViewedDTOList.isEmpty()) {
+                mediaPages.add(new MediaPageDataResponseDTO<>(
+                        "most-viewed",
+                        "Most Viewed",
+                        "Your most-viewed media",
+                        mostViewedDTOList
+                ));
+            }
+        } catch (Exception e) {
+            log.info("Failed to build 'Most Viewed' page for Personal carousel", e);
+        }
+
+        try {
+            // Top Genres
+            List<GenreRatingTotalDTO> topGenresTMDBMedia = userMediaRepository.findGenreRatingTotals(user.getId());
+
+            if (topGenresTMDBMedia != null && !topGenresTMDBMedia.isEmpty()) {
+                int endIndex = Math.min(topGenresTMDBMedia.size(), 5);
+
+                topGenresPage = new MediaPageDataResponseDTO<>(
+                        "top-genres",
+                        "Top Genres",
+                        "Based on your rating history",
+                        topGenresTMDBMedia.subList(0,endIndex)
+                );
+            }
+        } catch (Exception e) {
+            log.info("Failed to build 'Most Viewed' page for Personal carousel", e);
+        }
+
+        return new DashboardPersonalResponseDTO(
+                mediaPages,
+                topGenresPage
+        );
+    }
+
     public List<MediaPageDataResponseDTO<BaseMediaResponseDTO>> getDashboardCommunityPages(UserEntity user) {
 
         log.info("Retrieving dashboard community section data");
