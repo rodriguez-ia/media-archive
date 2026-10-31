@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import PersonIcon from "@mui/icons-material/Person"
 import {
   AppBar,
   Toolbar,
@@ -69,20 +70,32 @@ function Header() {
         <Box sx={{ flexGrow: 1 }} />
 
         <Box>
-          <Typography
+          <Box
             onClick={handleUsernameClick}
             sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
               color: "white",
               cursor: "pointer",
               fontSize: "0.9rem",
               fontWeight: 500,
               "&:hover": {
                 color: "#bbb",
-              },
-            }}
+              }
+              }}
           >
-            {username}
-          </Typography>
+            <PersonIcon fontSize="small" />
+
+            <Typography
+              sx={{
+                fontSize: "0.9rem",
+                fontWeight: 500,
+              }}
+            >
+              {username}
+            </Typography>
+          </Box>
 
           <Menu
             anchorEl={userMenuAnchor}
