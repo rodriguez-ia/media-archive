@@ -1,7 +1,42 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AppBar, Toolbar, Box, Button, Typography } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Typography,
+  Menu,
+  MenuItem
+} from "@mui/material";
 
 function Header() {
+  const [userMenuAnchor, setUserMenuAnchor] = useState(null);
+  const userMenuOpen = Boolean(userMenuAnchor);
+
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUsername(decodedToken.sub);
+    }
+  }, []);
+
+  const handleUsernameClick = (event) => {
+    setUserMenuAnchor(event.currentTarget);
+  }
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchor(null);
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+  }
+
   return (
     <AppBar
       position="static"
@@ -33,15 +68,51 @@ function Header() {
         {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
 
-        <Button
-          component={Link}
-          to="/profile"
-          sx={{
-            color: "white",
-          }}
-        >
-          Profile
-        </Button>
+        <Box>
+          <Typography
+            onClick={handleUsernameClick}
+            sx={{
+              color: "white",
+              cursor: "pointer",
+              fontSize: "0.9rem",
+              fontWeight: 500,
+              "&:hover": {
+                color: "#bbb",
+              },
+            }}
+          >
+            {username}
+          </Typography>
+
+          <Menu
+            anchorEl={userMenuAnchor}
+            open={userMenuOpen}
+            onClose={handleUserMenuClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+          >
+            <MenuItem
+              component={Link}
+              to="/login"
+              onClick={() => {
+                handleLogout();
+                handleUserMenuClose();
+              }}
+              sx={{
+                fontSize: "0.875rem",
+                color: "error.main",
+              }}
+            >
+              Log out
+            </MenuItem>
+          </Menu>
+        </Box>
       </Toolbar>
     </AppBar>
   );
