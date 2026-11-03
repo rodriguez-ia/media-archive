@@ -80,24 +80,60 @@ function Header() {
           }}
         />
 
-        {/* Logo */}
         <Box
-          component="img"
-          src={logo}
-          alt="Media Archive"
+          component={Link}
+          to="/dashboard"
           sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
             position: "relative",
-            height: {
-              xs: "45px",
-              sm: "50px",
-              md: "55px",
-              lg: "65px",
-              xl: "75px",
-            },
-            width: "auto",
             zIndex: 1,
+            textDecoration: "none",
           }}
-        />
+        >
+          {/* Logo */}
+          <Box
+            component="img"
+            src={logo}
+            alt="Media Archive logo"
+            sx={{
+              height: {
+                xs: "45px",
+                sm: "50px",
+                md: "55px",
+                lg: "65px",
+                xl: "75px",
+              },
+              width: "auto",
+            }}
+          />
+
+          {/* App name */}
+          <Typography
+            sx={{
+              fontFamily: '"Pacifico", serif',
+              fontSize: {
+                xs: "1.1rem",
+                sm: "1.3rem",
+                md: "1.5rem",
+                lg: "1.7rem",
+              },
+              color: "#fef7ff",
+              letterSpacing: "1px",
+              textShadow: `
+                0 0 2px #fff,
+                0 0 5px #DCCBFF,
+                0 0 10px #DCCBFF,
+                0 0 20px #e3d6ff,
+                0 0 35px #e3d6ff
+              `,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Media Archive
+          </Typography>
+        </Box>
 
         {/* Spacer */}
         <Box sx={{ flexGrow: 1, zIndex: 1 }} />
@@ -114,21 +150,33 @@ function Header() {
               display: "flex",
               alignItems: "center",
               gap: 1,
-              color: "white",
+              whiteSpace: "nowrap",
               cursor: "pointer",
-              fontSize: "0.9rem",
-              fontWeight: 500,
+              color: "#fef7ff",
               "&:hover": {
                 color: "#bbb",
               }
-              }}
+            }}
           >
-            <PersonIcon fontSize="small" />
+            <PersonIcon />
 
             <Typography
               sx={{
-                fontSize: "0.9rem",
-                fontWeight: 500,
+                color: "inherit",
+                letterSpacing: "2px",
+                textShadow: `
+                  0 0 2px #fff,
+                  0 0 5px #d0b8ff,
+                  0 0 10px #d0b8ff,
+                  0 0 20px #d3befd,
+                  0 0 35px #d3befd
+                `,
+                fontFamily: '"Pacifico", cursive',
+                fontSize: {
+                  xs: "0.9rem",
+                  sm: "1.0rem",
+                  md: "1.1rem",
+                },
               }}
             >
               {username}
