@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import logo from "../../assets/app-logo.svg";
+import headerBackground from "../../assets/header-background.webp";
 import PersonIcon from "@mui/icons-material/Person"
 import {
   AppBar,
@@ -43,7 +45,7 @@ function Header() {
       position="static"
       elevation={0}
       sx={{
-        backgroundColor: "#111",
+        backgroundColor: "#050915",
         borderBottom: "1px solid #333",
       }}
     >
@@ -51,25 +53,61 @@ function Header() {
         sx={{
           minHeight: "62px",
           px: 3,
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <Typography
-          component={Link}
-          to="/dashboard"
-          variant="h6"
+        {/* Background image */}
+        <Box
+          component="img"
+          src={headerBackground}
+          alt=""
           sx={{
-            color: "white",
-            textDecoration: "none",
-            fontWeight: 600,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            height: "100%",
+            width: {
+              xs: "400px",
+              md: "500px",
+              lg: "550px",
+              xl: "650px",
+            },
+            objectFit: "cover",
+            objectPosition: "left center",
+            zIndex: 0,
+            pointerEvents: "none",
           }}
-        >
-          Media Archive
-        </Typography>
+        />
+
+        {/* Logo */}
+        <Box
+          component="img"
+          src={logo}
+          alt="Media Archive"
+          sx={{
+            position: "relative",
+            height: {
+              xs: "45px",
+              sm: "50px",
+              md: "55px",
+              lg: "65px",
+              xl: "75px",
+            },
+            width: "auto",
+            zIndex: 1,
+          }}
+        />
 
         {/* Spacer */}
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ flexGrow: 1, zIndex: 1 }} />
 
-        <Box>
+        <Box
+        sx={{
+          position: "relative",
+          zIndex: 1
+        }}
+        >
           <Box
             onClick={handleUsernameClick}
             sx={{
