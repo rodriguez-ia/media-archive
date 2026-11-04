@@ -170,9 +170,17 @@ function LibraryPage() {
         );
     }, [pageCount]);
 
+    // If user changes page or page size, scroll to top of window
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }, [page, pageSize]);
+
     const handlePageSizeChange = (event) => {
         setPageSize(Number(event.target.value));
-        setPage(1);
+        setPage(1); // Reset page if not already on page 1
     };
 
     const handleFilterChange = (filterType, values) => {
