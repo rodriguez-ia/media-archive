@@ -2,6 +2,7 @@ import { Link, useNavigate, Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import SideNavBar from "./SideNavBar.jsx";
 import Header from "./Header.jsx";
+import Footer from "./Footer.jsx";
 
 function AppLayout() {
     return (
@@ -24,6 +25,8 @@ function AppLayout() {
                     <Outlet />
                 </Box>
             </Box>
+
+            <Footer />
         </Box>
     );
 }

@@ -4,6 +4,7 @@ import MovieOutlinedIcon from '@mui/icons-material/MovieOutlined';
 import MusicNoteOutlinedIcon from '@mui/icons-material/MusicNoteOutlined';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import CheckIcon from '@mui/icons-material/Check';
+import PoweredByGoogleIcon from "../../assets/api-credits/google-poweredby.svg";
 import { searchExternalMedia } from '../../services/mediaService';
 import {
   Box,
@@ -168,86 +169,126 @@ export default function DiscoverSearchBar({ stagedMedia, onToggleMedia }) {
         mx: 'auto'
       }}
     >
-      {/* Search bar */}
-      <Paper
-        elevation={0}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          minHeight: 56,
-          px: 1.5,
-          border: '1px solid',
-          borderColor: focused
-            ? 'primary.main'
-            : 'divider',
-          borderRadius: 2,
-          transition: 'border-color 120ms ease, box-shadow 120ms ease',
-          boxShadow: focused
-            ? '0 0 0 1px rgba(25, 118, 210, 0.15)'
-            : 'none',
-          bgcolor: 'background.paper',
-        }}
+      {/* Search bar and Google attribution */}
+      <Box
+          sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: "center",
+              gap: { xs: 1, sm: 2 },
+              width: "100%"
+          }}
       >
-        <SearchIcon
-          sx={{
-            color: focused
-              ? 'primary.main'
-              : 'text.secondary',
-            mr: 1.25,
-            transition: 'color 120ms ease',
-          }}
-        />
-
-        <InputBase
-          fullWidth
-          value={searchKeyword}
-          onChange={(event) => setSearchKeyword(event.target.value)}
-          onFocus={() => setFocused(true)}
-          placeholder="Search movies/TV, music, books..."
-          sx={{
-            flex: 1,
-            fontSize: '1rem',
-            minWidth: 0,
-          }}
-          inputProps={{
-            'aria-label': 'Search media',
-          }}
-        />
-
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 0.25,
-            ml: 1,
-            flexShrink: 0,
-          }}
-        >
-          <MediaTypeButton
-            active={mediaTypes.moviesAndTV}
-            label="Movies & TV"
-            onClick={() => toggleMediaType('moviesAndTV')}
+          {/* Search bar */}
+          <Paper
+              elevation={0}
+              sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  minHeight: 56,
+                  width: "100%",
+                  boxSizing: "border-box",
+                  px: 1.5,
+                  border: "1px solid",
+                  borderColor: focused
+                      ? "primary.main"
+                      : "divider",
+                  borderRadius: 2,
+                  transition: "border-color 120ms ease, box-shadow 120ms ease",
+                  boxShadow: focused
+                      ? "0 0 0 1px rgba(25, 118, 210, 0.15)"
+                      : "none",
+                  bgcolor: "background.paper"
+              }}
           >
-            <MovieOutlinedIcon fontSize="small" />
-          </MediaTypeButton>
+            <SearchIcon
+              sx={{
+                color: focused
+                  ? 'primary.main'
+                  : 'text.secondary',
+                mr: 1.25,
+                transition: 'color 120ms ease',
+              }}
+            />
 
-          <MediaTypeButton
-            active={mediaTypes.music}
-            label="Music"
-            onClick={() => toggleMediaType('music')}
-          >
-            <MusicNoteOutlinedIcon fontSize="small" />
-          </MediaTypeButton>
+            <InputBase
+              fullWidth
+              value={searchKeyword}
+              onChange={(event) => setSearchKeyword(event.target.value)}
+              onFocus={() => setFocused(true)}
+              placeholder="Search"
+              sx={{
+                flex: 1,
+                fontSize: '1rem',
+                minWidth: 0,
+              }}
+              inputProps={{
+                'aria-label': 'Search media',
+              }}
+            />
 
-          <MediaTypeButton
-            active={mediaTypes.books}
-            label="Books"
-            onClick={() => toggleMediaType('books')}
-          >
-            <MenuBookOutlinedIcon fontSize="small" />
-          </MediaTypeButton>
-        </Box>
-      </Paper>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.25,
+                ml: 1,
+                flexShrink: 0,
+              }}
+            >
+              <MediaTypeButton
+                active={mediaTypes.moviesAndTV}
+                label="Movies & TV"
+                onClick={() => toggleMediaType('moviesAndTV')}
+              >
+                <MovieOutlinedIcon fontSize="small" />
+              </MediaTypeButton>
+
+              <MediaTypeButton
+                active={mediaTypes.music}
+                label="Music"
+                onClick={() => toggleMediaType('music')}
+              >
+                <MusicNoteOutlinedIcon fontSize="small" />
+              </MediaTypeButton>
+
+              <MediaTypeButton
+                active={mediaTypes.books}
+                label="Books"
+                onClick={() => toggleMediaType('books')}
+              >
+                <MenuBookOutlinedIcon fontSize="small" />
+              </MediaTypeButton>
+            </Box>
+          </Paper>
+
+          {/* Google attribution */}
+          {mediaTypes.books && (
+              <Box
+                  sx={{
+                      display: "flex",
+                      justifyContent: { xs: "flex-end", sm: "center" },
+                      alignItems: "center",
+                      width: { xs: "100%", sm: "auto" },
+                      flexShrink: 0
+                  }}
+              >
+                  <Box
+                      component="img"
+                      src={PoweredByGoogleIcon}
+                      alt="Powered by Google"
+                      sx={{
+                          display: "block",
+                          width: "auto",
+                          height: 25,
+                          maxWidth: 120,
+                          objectFit: "contain"
+                      }}
+                  />
+              </Box>
+          )}
+      </Box>
+
 
       {/* Dropdown */}
       {showDropdown && (
