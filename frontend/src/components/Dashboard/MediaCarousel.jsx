@@ -38,7 +38,7 @@ function MediaCarouselItem({
                 outlineOffset: 3,
 
                 "&:hover img": {
-                    transform: isInteractive ? "scale(1.035)" : "none",
+                    transform: isInteractive ? "scale(1.035)" : "scale(0.99)",
                 },
             }}
         >
