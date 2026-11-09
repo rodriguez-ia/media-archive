@@ -11,6 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import LibraryMediaSubItemsSection from "./LibraryMediaSubItemsSection.jsx";
+import GoogleBooksViewer from "../App/GoogleBooksViewer.jsx";
 import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
 import {
     CardMedia,
@@ -1048,6 +1049,16 @@ function LibraryMediaContentModal({
                                     onUpdate={onUpdate}
                                 />
                             </Box>
+                        )}
+
+                        {/* ================================================== */}
+                        {/* GOOGLE BOOKS PREVIEW                               */}
+                        {/* ================================================== */}
+                        {mediaItem.mediaType === "BOOK" && (
+                            <GoogleBooksViewer
+                                key={mediaItem.externalId}
+                                identifier={mediaItem.externalId}
+                            />
                         )}
                     </Box>
                 </Box>

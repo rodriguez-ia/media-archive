@@ -4,10 +4,29 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">    <div id="root"></div>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <script src="https://www.google.com/books/jsapi.js"></script>
+
+    <script>
+      google.books.load();
+
+      window.googleBooksReady = new Promise((resolve) => {
+        google.books.setOnLoadCallback(() => {
+          // Google Books API ready
+          resolve(google.books);
+        });
+      });
+    </script>
+
     <title>Media Archive</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
