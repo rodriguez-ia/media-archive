@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import StarIcon from "@mui/icons-material/Star";
@@ -48,6 +48,49 @@ function LibraryMediaContentModal({
         condition: "",
         notes: "",
     });
+
+    const descriptionRef = useRef(null);
+
+    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+    const [descriptionIsTruncated, setDescriptionIsTruncated] = useState(false);
+
+    useEffect(() => {
+        setDescriptionExpanded(false);
+
+        if (!open || !mediaItem?.description) {
+            setDescriptionIsTruncated(false);
+            return;
+        }
+
+        let checkTruncation;
+
+        // Wait until the browser has had an opportunity to render the
+        // modal and apply its layout before measuring the description.
+        // This ensures scrollHeight and clientHeight reflect its actual size.
+        const animationFrame = requestAnimationFrame(() => {
+            const element = descriptionRef.current;
+
+            if (!element) return;
+
+            checkTruncation = () => {
+                setDescriptionIsTruncated(
+                    element.scrollHeight > element.clientHeight + 1
+                );
+            };
+
+            checkTruncation();
+
+            window.addEventListener("resize", checkTruncation);
+        });
+
+        return () => {
+            cancelAnimationFrame(animationFrame);
+
+            if (checkTruncation) {
+                window.removeEventListener("resize", checkTruncation);
+            }
+        };
+    }, [mediaItem?.externalId, mediaItem?.description, open]);
 
     useEffect(() => {
         if (mediaItem) {
@@ -511,15 +554,50 @@ function LibraryMediaContentModal({
                                         }}
                                     >
                                         <Typography
+                                            ref={descriptionRef}
                                             sx={{
                                                 lineHeight: 1.40,
                                                 fontSize: 17,
-                                                color:
-                                                    "rgba(255,255,255,0.72)",
+                                                color: "rgba(255,255,255,0.72)",
+                                                ...(descriptionExpanded
+                                                    ? {}
+                                                    : {
+                                                        display: "-webkit-box",
+                                                        WebkitLineClamp: 6,
+                                                        WebkitBoxOrient: "vertical",
+                                                        overflow: "hidden"
+                                                    })
                                             }}
                                         >
                                             {mediaItem.description}
                                         </Typography>
+
+                                        {descriptionIsTruncated && (
+                                            <Typography
+                                                component="button"
+                                                type="button"
+                                                onClick={() =>
+                                                    setDescriptionExpanded((current) => !current)
+                                                }
+                                                sx={{
+                                                    display: "block",
+                                                    mt: 0.25,
+                                                    p: 0,
+                                                    border: 0,
+                                                    background: "none",
+                                                    color: "lightblue",
+                                                    font: "inherit",
+                                                    fontSize: "0.875rem",
+                                                    cursor: "pointer",
+                                                    textAlign: "left",
+                                                    "&:hover": {
+                                                        textDecoration: "underline"
+                                                    }
+                                                }}
+                                            >
+                                                {descriptionExpanded ? "Show less" : "Show more"}
+                                            </Typography>
+                                        )}
                                     </Box>
                                 )}
 
