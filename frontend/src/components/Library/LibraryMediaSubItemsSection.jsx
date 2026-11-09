@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import StarIcon from "@mui/icons-material/Star";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
+import StopIcon from "@mui/icons-material/Stop";
 import { fetchSubItemMedia, getMusicTrackDetails, } from "../../services/mediaService.js";
 import {
     Accordion,
@@ -679,7 +679,7 @@ function TrackRow({
     const [isLoadingPreview, setIsLoadingPreview] = useState(false);
     const [previewError, setPreviewError] = useState(null);
 
-    const handlePlayPause = async () => {
+    const handlePlayStop = async () => {
         if (isPlaying) {
             audioRef.current.pause();
             onStop(audioRef.current);
@@ -756,17 +756,17 @@ function TrackRow({
                 }}
             >
                 <IconButton
-                    onClick={handlePlayPause}
+                    onClick={handlePlayStop}
                     disabled={isLoadingPreview}
                     size="small"
                     aria-label={
                         isPlaying
-                            ? `Pause ${track.title}`
+                            ? `Stop ${track.title}`
                             : `Play ${track.title} preview`
                     }
                 >
                     {isPlaying ? (
-                        <PauseIcon />
+                        <StopIcon />
                     ) : (
                         <PlayArrowIcon />
                     )}
