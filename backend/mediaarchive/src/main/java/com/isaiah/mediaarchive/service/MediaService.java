@@ -3,10 +3,7 @@ package com.isaiah.mediaarchive.service;
 import com.isaiah.mediaarchive.client.DeezerClient;
 import com.isaiah.mediaarchive.client.GoogleBooksClient;
 import com.isaiah.mediaarchive.client.TMDBClient;
-import com.isaiah.mediaarchive.exception.IncorrectSpotlightTypeException;
-import com.isaiah.mediaarchive.exception.MediaNotFoundException;
-import com.isaiah.mediaarchive.exception.MissingKeywordException;
-import com.isaiah.mediaarchive.exception.UserMediaDeletionException;
+import com.isaiah.mediaarchive.exception.*;
 import com.isaiah.mediaarchive.mapper.DeezerMapper;
 import com.isaiah.mediaarchive.mapper.GoogleBooksMapper;
 import com.isaiah.mediaarchive.mapper.MediaMapper;
@@ -790,6 +787,23 @@ public class MediaService {
         }
 
         return responseList;
+    }
+
+    public List<BaseMediaResponseDTO> getRecommendedTMDBMedia(String externalId, MediaTypeEnum mediaType) {
+
+        log.info("Retrieving recommended TMDB media items using externalId: externalId='{}'", externalId);
+
+        if (mediaType != MediaTypeEnum.MOVIE && mediaType != MediaTypeEnum.TV_SHOW) {
+            throw new InvalidMediaTypeException(String.format("Unsupported media type '%s'", mediaType.toString()));
+        }
+
+        TMDBSearchResponseDTO tmdbResponse = tmdbClient.searchRecommended(externalId, mediaType);
+
+        if (tmdbResponse == null) {
+            throw new MediaNotFoundException("Unable to get recommended TMDB media items.");
+        }
+
+        return tmdbMapper.tmdbResponseToBaseMediaResponseDTOList(tmdbResponse);
     }
 
     public List<BaseMediaResponseDTO> getFromCatalog(UserEntity user) {

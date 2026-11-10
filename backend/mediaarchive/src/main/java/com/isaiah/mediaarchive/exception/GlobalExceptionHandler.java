@@ -75,6 +75,21 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidMediaTypeException.class)
+    public ResponseEntity<ApiResponse<?>> handleInvalidMediaType(InvalidMediaTypeException ex) {
+
+        log.warn("Invalid media type error: message='{}'", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ApiResponseFactory.failure(
+                        null,
+                        400,
+                        "InvalidMediaTypeException",
+                        ex.getMessage()
+                )
+        );
+    }
+
     @ExceptionHandler(MediaNotFoundException.class)
     public ResponseEntity<ApiResponse<?>> handleMediaNotFound(MediaNotFoundException ex) {
 

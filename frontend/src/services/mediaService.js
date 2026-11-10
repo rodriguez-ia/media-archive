@@ -101,6 +101,14 @@ export async function updateUserMediaItems(mediaItemDetailsObj) {
     });
 }
 
+export async function getRecommendedTMDBMedia(externalId, mediaType) {
+    const params = new URLSearchParams({
+        mediaType
+    });
+
+    return apiFetch(`/library/recommended/${externalId}?${params}`);
+}
+
 export async function searchExternalMedia(
     keyword,
     page,

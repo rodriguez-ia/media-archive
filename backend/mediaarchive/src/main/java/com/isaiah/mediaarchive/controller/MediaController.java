@@ -2,6 +2,7 @@ package com.isaiah.mediaarchive.controller;
 
 import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.model.entity.UserEntity;
+import com.isaiah.mediaarchive.model.enums.MediaTypeEnum;
 import com.isaiah.mediaarchive.service.MediaService;
 import com.isaiah.mediaarchive.util.ApiResponse;
 import com.isaiah.mediaarchive.util.ApiResponseFactory;
@@ -193,6 +194,21 @@ public class MediaController {
                         userMediaResponseDTOList,
                         "MediaController.getMediaItemDetails",
                         "Retrieved media item details successfully: user=" + user.getUsername() + ", externalId=" + externalId
+                )
+        );
+    }
+
+    @GetMapping("/library/recommended/{externalId}")
+    public ResponseEntity<ApiResponse<List<BaseMediaResponseDTO>>> getRecommendedTMDBMedia(@PathVariable String externalId,
+                                                                                           @RequestParam MediaTypeEnum mediaType) {
+
+        List<BaseMediaResponseDTO> baseMediaResponseDTOList = mediaService.getRecommendedTMDBMedia(externalId, mediaType);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        baseMediaResponseDTOList,
+                        "MediaController.getRecommendedTMDBMedia",
+                        "Found recommended media items successfully"
                 )
         );
     }

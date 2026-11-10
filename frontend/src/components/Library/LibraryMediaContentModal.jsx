@@ -11,6 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import LibraryMediaSubItemsSection from "./LibraryMediaSubItemsSection.jsx";
+import LibraryMediaRecommendedSection from "./LibraryMediaRecommendedSection.jsx";
 import GoogleBooksViewer from "../App/GoogleBooksViewer.jsx";
 import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
 import {
@@ -1097,7 +1098,7 @@ function LibraryMediaContentModal({
                         </Box>
 
                         {/* ================================================== */}
-                        {/* RELATED MEDIA                                      */}
+                        {/* MEDIA SUBITEM DROPDOWN                             */}
                         {/* ================================================== */}
                         {(mediaItem.mediaType === "TV_SHOW" ||
                             mediaItem.mediaType === "MUSIC_ALBUM") && (
@@ -1125,6 +1126,25 @@ function LibraryMediaContentModal({
                                             : "No tracks found."
                                     }
                                     onUpdate={onUpdate}
+                                />
+                            </Box>
+                        )}
+
+                        {/* ================================================== */}
+                        {/* RECOMMENDED MEDIA                                  */}
+                        {/* ================================================== */}
+                        {(mediaItem.mediaType === "MOVIE" ||
+                            mediaItem.mediaType === "TV_SHOW") && (
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    flexShrink: 0,
+                                }}
+                            >
+                                <LibraryMediaRecommendedSection 
+                                    externalId={mediaItem.externalId}
+                                    mediaType={mediaItem.mediaType}
+                                    title={mediaItem.title}
                                 />
                             </Box>
                         )}
