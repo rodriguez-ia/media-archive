@@ -3,7 +3,12 @@ import MediaCarousel from "../Dashboard/MediaCarousel";
 import { addToUserLibrary, getRecommendedTMDBMedia } from "../../services/mediaService.js";
 
 
-function LibraryMediaRecommendedSection({ externalId, mediaType, title }) {
+function LibraryMediaRecommendedSection({
+    externalId,
+    mediaType,
+    title,
+    onRefreshMedia,
+}) {
 
     const PAGE_SIZE = 5;
 
@@ -94,6 +99,8 @@ function LibraryMediaRecommendedSection({ externalId, mediaType, title }) {
 
         try {
             await addToUserLibrary([item]);
+            await onRefreshMedia();
+
             return true;
         } catch (error) {
             console.error("Failed to add media to wishlist:", error);

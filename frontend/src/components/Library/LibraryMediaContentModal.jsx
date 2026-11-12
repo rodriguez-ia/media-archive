@@ -34,6 +34,7 @@ function LibraryMediaContentModal({
     onClose,
     mediaItem,
     onUpdate,
+    onRefreshMedia,
 }) {
 
     const [isEditing, setIsEditing] = useState(false);
@@ -1145,6 +1146,7 @@ function LibraryMediaContentModal({
                                     externalId={mediaItem.externalId}
                                     mediaType={mediaItem.mediaType}
                                     title={mediaItem.title}
+                                    onRefreshMedia={onRefreshMedia}
                                 />
                             </Box>
                         )}

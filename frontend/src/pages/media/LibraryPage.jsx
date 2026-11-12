@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useMemo } from "react";
 import { getUserLibrary, updateUserMediaItems, deleteUserMediaItems } from "../../services/mediaService.js";
 import LibraryMediaGrid from "../../components/Library/LibraryMediaGrid.jsx";
 import LibraryPagination from "../../components/Library/LibraryPagination.jsx";
@@ -35,10 +35,13 @@ function LibraryPage() {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(25);
 
-    useEffect(() => {
-        async function loadLibrary() {
+    const scrollPositionRef = useRef(null);
+
+    async function loadLibrary() {
             try {
                 setLoading(true);
+
+                scrollPositionRef.current = window.scrollY;
 
                 const response = await getUserLibrary();
 
@@ -60,8 +63,21 @@ function LibraryPage() {
             }
         }
 
+    useEffect(() => {
         loadLibrary();
     }, []);
+
+    useLayoutEffect(() => {
+        if (scrollPositionRef.current === null) return;
+
+        // Restore original scroll position when mediaItems is updated and the library re-renders
+        window.scrollTo({
+            top: scrollPositionRef.current,
+            behavior: "instant"
+        });
+
+        scrollPositionRef.current = null;
+    }, [mediaItems]);
 
     const searchedMediaItems = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -385,6 +401,7 @@ function LibraryPage() {
                 onClose={handleCloseModal}
                 mediaItem={openedMediaItem}
                 onUpdate={handleUpdateMediaItems}
+                onRefreshMedia={loadLibrary}
             />
 
             <LibraryMediaDeletionModal
