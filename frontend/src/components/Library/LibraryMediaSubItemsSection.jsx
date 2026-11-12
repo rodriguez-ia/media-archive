@@ -755,22 +755,39 @@ function TrackRow({
                     py: 1,
                 }}
             >
-                <IconButton
-                    onClick={handlePlayStop}
-                    disabled={isLoadingPreview}
-                    size="small"
-                    aria-label={
-                        isPlaying
-                            ? `Stop ${track.title}`
-                            : `Play ${track.title} preview`
-                    }
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column"
+                    }}
                 >
-                    {isPlaying ? (
-                        <StopIcon />
-                    ) : (
-                        <PlayArrowIcon />
-                    )}
-                </IconButton>
+                    <IconButton
+                        onClick={handlePlayStop}
+                        disabled={isLoadingPreview}
+                        size="small"
+                        aria-label={
+                            isPlaying
+                                ? `Stop ${track.title}`
+                                : `Play ${track.title} preview`
+                        }
+                    >
+                        {isPlaying ? (
+                            <StopIcon />
+                        ) : (
+                            <PlayArrowIcon />
+                        )}
+                    </IconButton>
+
+                    <Typography
+                        sx={{
+                            fontSize: "0.60rem",
+                            lineHeight: 1,
+                            color: "text.secondary",
+                        }}
+                    >
+                        Preview
+                    </Typography>
+                </Box>
 
                 <Typography
                     color="text.secondary"
