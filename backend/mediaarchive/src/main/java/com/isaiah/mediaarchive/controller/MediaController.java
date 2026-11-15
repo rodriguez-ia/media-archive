@@ -231,6 +231,7 @@ public class MediaController {
                                                                                                 @RequestParam(defaultValue = "1") int page,
                                                                                                 @RequestParam boolean shouldSearchMoviesAndTV,
                                                                                                 @RequestParam boolean shouldSearchMusic,
+                                                                                                @RequestParam boolean shouldSearchVideoGames,
                                                                                                 @RequestParam boolean shouldSearchBooks) {
         List<BaseMediaResponseDTO> baseMediaResponseDTOList =
                 mediaService.searchExternalMediaByKeyword(
@@ -238,6 +239,7 @@ public class MediaController {
                         page,
                         shouldSearchMoviesAndTV,
                         shouldSearchMusic,
+                        shouldSearchVideoGames,
                         shouldSearchBooks
                 );
 

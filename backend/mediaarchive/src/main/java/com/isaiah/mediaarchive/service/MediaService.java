@@ -2,12 +2,10 @@ package com.isaiah.mediaarchive.service;
 
 import com.isaiah.mediaarchive.client.DeezerClient;
 import com.isaiah.mediaarchive.client.GoogleBooksClient;
+import com.isaiah.mediaarchive.client.IGDBClient;
 import com.isaiah.mediaarchive.client.TMDBClient;
 import com.isaiah.mediaarchive.exception.*;
-import com.isaiah.mediaarchive.mapper.DeezerMapper;
-import com.isaiah.mediaarchive.mapper.GoogleBooksMapper;
-import com.isaiah.mediaarchive.mapper.MediaMapper;
-import com.isaiah.mediaarchive.mapper.TMDBMapper;
+import com.isaiah.mediaarchive.mapper.*;
 import com.isaiah.mediaarchive.model.dto.*;
 import com.isaiah.mediaarchive.model.entity.BaseMediaEntity;
 import com.isaiah.mediaarchive.model.entity.DailySpotlightEntity;
@@ -48,6 +46,10 @@ public class MediaService {
     private final DeezerClient deezerClient;
     private final DeezerMapper deezerMapper;
 
+    private final IGDBTokenService igdbTokenService;
+    private final IGDBClient igdbClient;
+    private final IGDBMapper igdbMapper;
+
     private final GoogleBooksClient googleBooksClient;
     private final GoogleBooksMapper googleBooksMapper;
 
@@ -63,6 +65,9 @@ public class MediaService {
                         TMDBMapper tmdbMapper,
                         DeezerClient deezerClient,
                         DeezerMapper deezerMapper,
+                        IGDBTokenService igdbTokenService,
+                        IGDBClient igdbClient,
+                        IGDBMapper igdbMapper,
                         GoogleBooksClient googleBooksClient,
                         GoogleBooksMapper googleBooksMapper,
                         @Qualifier("communityDashboardExecutor")
@@ -75,6 +80,9 @@ public class MediaService {
         this.tmdbMapper = tmdbMapper;
         this.deezerClient = deezerClient;
         this.deezerMapper = deezerMapper;
+        this.igdbTokenService = igdbTokenService;
+        this.igdbClient = igdbClient;
+        this.igdbMapper = igdbMapper;
         this.googleBooksClient = googleBooksClient;
         this.googleBooksMapper = googleBooksMapper;
         this.communityDashboardExecutor = communityDashboardExecutor;
@@ -836,6 +844,7 @@ public class MediaService {
                                                                    int page,
                                                                    boolean shouldSearchMoviesAndTV,
                                                                    boolean shouldSearchMusic,
+                                                                   boolean shouldSearchVideoGames,
                                                                    boolean shouldSearchBooks) {
         if (keyword == null || keyword.isEmpty()) {
             throw new MissingKeywordException("The provided search keyword is null or empty.");
@@ -858,6 +867,15 @@ public class MediaService {
 
             DeezerSearchResponseDTO deezerResponse = deezerClient.searchAlbumByKeyword(keyword, page);
             List<BaseMediaResponseDTO> formattedResponseList = deezerMapper.deezerResponseToBaseMediaResponseDTOList(deezerResponse);
+            searchResultsList.addAll(formattedResponseList);
+        }
+
+        if (shouldSearchVideoGames) {
+            log.debug("Searching IGDB database for video games...");
+
+            String igdbAccessToken = igdbTokenService.getAccessToken();
+            List<IGDBResponseItemDTO> igdbResponse = igdbClient.searchGameByKeyword(igdbAccessToken, keyword);
+            List<BaseMediaResponseDTO> formattedResponseList = igdbMapper.igdbResponseToBaseMediaResponseDTOList(igdbResponse);
             searchResultsList.addAll(formattedResponseList);
         }
 

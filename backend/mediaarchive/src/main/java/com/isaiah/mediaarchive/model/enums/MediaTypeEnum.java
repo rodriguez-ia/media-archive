@@ -7,5 +7,6 @@ public enum MediaTypeEnum {
     TV_EPISODE,
     MUSIC_ALBUM,
     MUSIC_TRACK,
+    VIDEO_GAME,
     BOOK
 }
