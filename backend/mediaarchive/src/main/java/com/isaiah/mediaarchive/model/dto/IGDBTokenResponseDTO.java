@@ -7,9 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class IGDBTokenResponseDTO {
 
-    private String accessToken;
+    private String access_token;
 
-    private long expiresIn;
+    private long expires_in;
 
-    private String tokenType;
+    private String token_type;
 }

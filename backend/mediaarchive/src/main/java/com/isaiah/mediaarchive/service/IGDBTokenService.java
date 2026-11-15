@@ -24,8 +24,8 @@ public class IGDBTokenService {
     private static final Logger log = LoggerFactory.getLogger(IGDBTokenService.class);
 
     public IGDBTokenService(
-            @Value("external.igdb.client-id") String clientId,
-            @Value("external.igdb.client-secret") String clientSecret,
+            @Value("${external.igdb.client-id}") String clientId,
+            @Value("${external.igdb.client-secret}") String clientSecret,
             RestClient.Builder builder
     ) {
         this.clientId = clientId;
@@ -58,7 +58,7 @@ public class IGDBTokenService {
     private void acquireToken() {
         IGDBTokenResponseDTO response =
                 restClient
-                .get()
+                .post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/oauth2/token")
                         .queryParam("client_id", clientId)
@@ -73,7 +73,7 @@ public class IGDBTokenService {
             return;
         }
 
-        accessToken = response.getAccessToken();
-        expiresAt = LocalDateTime.now().plusSeconds(response.getExpiresIn());
+        accessToken = response.getAccess_token();
+        expiresAt = LocalDateTime.now().plusSeconds(response.getExpires_in());
     }
 }
