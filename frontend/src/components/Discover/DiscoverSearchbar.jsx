@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import MovieOutlinedIcon from '@mui/icons-material/MovieOutlined';
 import MusicNoteOutlinedIcon from '@mui/icons-material/MusicNoteOutlined';
+import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import CheckIcon from '@mui/icons-material/Check';
 import PoweredByGoogleIcon from "../../assets/api-credits/google-poweredby.svg";
@@ -23,6 +24,7 @@ import {
 const DEFAULT_MEDIA_TYPES = {
   moviesAndTV: true,
   music: false,
+  videoGames: false,
   books: false,
 };
 
@@ -30,6 +32,7 @@ const DEFAULT_MEDIA_TYPES = {
     MOVIE: "Movie",
     TV_SHOW: "TV Show",
     MUSIC_ALBUM: "Music Album",
+    VIDEO_GAME: "Video Game",
     BOOK: "Book",
 };
 
@@ -94,6 +97,7 @@ export default function DiscoverSearchBar({ stagedMedia, onToggleMedia }) {
           1,
           mediaTypes['moviesAndTV'],
           mediaTypes['music'],
+          mediaTypes['videoGames'],
           mediaTypes['books']
         );
 
@@ -250,6 +254,14 @@ export default function DiscoverSearchBar({ stagedMedia, onToggleMedia }) {
                 onClick={() => toggleMediaType('music')}
               >
                 <MusicNoteOutlinedIcon fontSize="small" />
+              </MediaTypeButton>
+
+              <MediaTypeButton
+                active={mediaTypes.videoGames}
+                label="Video Games"
+                onClick={() => toggleMediaType('videoGames')}
+              >
+                <VideogameAssetIcon fontSize="small" />
               </MediaTypeButton>
 
               <MediaTypeButton

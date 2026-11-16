@@ -2,6 +2,7 @@ export const mediaTypeOptions = [
     { value: "MOVIE", label: "Movie" },
     { value: "TV_SHOW", label: "TV Show" },
     { value: "MUSIC_ALBUM", label: "Music Album" },
+    { value: "VIDEO_GAME", label: "Video Game" },
     { value: "BOOK", label: "Book" },
 ];
 
@@ -16,6 +17,7 @@ export const formatOptions = [
     "Paperback",
     "Mass Market Paperback",
     "Digital",
+    "Physical"
 ];
 
 export const genreOptions = [
@@ -107,6 +109,11 @@ export const mediaTypeFormatOptions = {
         "Digital",
     ],
 
+    VIDEO_GAME: [
+        "Digital",
+        "Physical"
+    ],
+
     BOOK: [
         "Hardcover",
         "Paperback",
@@ -191,6 +198,23 @@ export const mediaTypeGenreOptions = {
         "ROCK",
         "SALSA",
         "SOUL_FUNK",
+    ],
+
+    VIDEO_GAME: [
+        "ACTION",
+        "FANTASY",
+        "SCIENCE_FICTION",
+        "HORROR",
+        "THRILLER",
+        "HISTORY",
+        "COMEDY",
+        "BUSINESS",
+        "ROMANCE",
+        "DRAMA",
+        "EDUCATIONAL",
+        "KIDS",
+        "WAR",
+        "MYSTERY"
     ],
 
     BOOK: [

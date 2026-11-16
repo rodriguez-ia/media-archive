@@ -7,6 +7,7 @@ const MEDIA_COLORS = {
     movies: "#7DB9F2",
     tvShows: "#8FD3A8",
     musicAlbums: "#F28FA8",
+    videoGames: "#FFFFFF",
     books: "#F5CF65",
 }
 
@@ -56,7 +57,8 @@ function MediaSummary({ title, mediaCounts }) {
                                 { id: 0, label: "Movies", value: mediaCounts.movies ?? 0, color: MEDIA_COLORS.movies },
                                 { id: 1, label: "TV Shows", value: mediaCounts.tvShows ?? 0, color: MEDIA_COLORS.tvShows },
                                 { id: 2, label: "Music Albums", value: mediaCounts.musicAlbums ?? 0, color: MEDIA_COLORS.musicAlbums },
-                                { id: 3, label: "Books", value: mediaCounts.books ?? 0, color: MEDIA_COLORS.books },
+                                { id: 3, label: "Video Games", value: mediaCounts.videoGames ?? 0, color: MEDIA_COLORS.videoGames },
+                                { id: 4, label: "Books", value: mediaCounts.books ?? 0, color: MEDIA_COLORS.books },
                             ],
                             startAngle: -90,
                             endAngle: 90,
@@ -151,6 +153,7 @@ function DashboardSummary() {
                     movies : response.data.ownedMoviesCount,
                     tvShows : response.data.ownedTVShowsCount,
                     musicAlbums : response.data.ownedMusicAlbumsCount,
+                    videoGames : response.data.ownedVideoGamesCount,
                     books : response.data.ownedBooksCount
                 });
 
@@ -159,6 +162,7 @@ function DashboardSummary() {
                     movies : response.data.wishlistedMoviesCount,
                     tvShows : response.data.wishlistedTVShowsCount,
                     musicAlbums : response.data.wishlistedMusicAlbumsCount,
+                    videoGames : response.data.wishlistedVideoGamesCount,
                     books : response.data.wishlistedBooksCount
                 });
             } catch (error) {

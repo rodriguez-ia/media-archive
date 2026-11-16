@@ -13,6 +13,8 @@ public class MediaSummaryResponseDTO {
 
     private int ownedMusicAlbumsCount;
 
+    private int ownedVideoGamesCount;
+
     private int ownedBooksCount;
 
     private int wishlistedTotal;
@@ -23,6 +25,8 @@ public class MediaSummaryResponseDTO {
 
     private int wishlistedMusicAlbumsCount;
 
+    private int wishlistedVideoGamesCount;
+
     private int wishlistedBooksCount;
 
     public MediaSummaryResponseDTO(
@@ -30,22 +34,26 @@ public class MediaSummaryResponseDTO {
             Long ownedMoviesCount,
             Long ownedTVShowsCount,
             Long ownedMusicAlbumsCount,
+            Long ownedVideoGamesCount,
             Long ownedBooksCount,
             Long wishlistedTotal,
             Long wishlistedMoviesCount,
             Long wishlistedTVShowsCount,
             Long wishlistedMusicAlbumsCount,
+            Long wishlistedVideoGamesCount,
             Long wishlistedBooksCount
     ) {
         this.ownedTotal = ownedTotal.intValue();
         this.ownedMoviesCount = ownedMoviesCount.intValue();
         this.ownedTVShowsCount = ownedTVShowsCount.intValue();
         this.ownedMusicAlbumsCount = ownedMusicAlbumsCount.intValue();
+        this.ownedVideoGamesCount = ownedVideoGamesCount.intValue();
         this.ownedBooksCount = ownedBooksCount.intValue();
         this.wishlistedTotal = wishlistedTotal.intValue();
         this.wishlistedMoviesCount = wishlistedMoviesCount.intValue();
         this.wishlistedTVShowsCount = wishlistedTVShowsCount.intValue();
         this.wishlistedMusicAlbumsCount = wishlistedMusicAlbumsCount.intValue();
+        this.wishlistedVideoGamesCount = wishlistedVideoGamesCount.intValue();
         this.wishlistedBooksCount = wishlistedBooksCount.intValue();
     }
 }

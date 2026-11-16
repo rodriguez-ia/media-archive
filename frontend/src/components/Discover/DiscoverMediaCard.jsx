@@ -27,6 +27,7 @@ function DiscoverMediaCard({
         MOVIE: "Movie",
         TV_SHOW: "TV Show",
         MUSIC_ALBUM: "Music Album",
+        VIDEO_GAME: "Video Game",
         BOOK: "Book",
     };
 
@@ -34,6 +35,7 @@ function DiscoverMediaCard({
         MOVIE: ["VHS", "DVD", "Blu-ray", "Digital"],
         TV_SHOW: ["VHS", "DVD", "Blu-ray", "Digital"],
         MUSIC_ALBUM: ["Vinyl", "CD", "Cassette", "Digital"],
+        VIDEO_GAME: ["Physical", "Digital"],
         BOOK: ["Hardcover", "Paperback", "Mass Market Paperback", "Digital"],
     };
 

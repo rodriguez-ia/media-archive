@@ -114,6 +114,7 @@ export async function searchExternalMedia(
     page,
     shouldSearchMoviesAndTV,
     shouldSearchMusic,
+    shouldSearchVideoGames,
     shouldSearchBooks
 ) {
     const params = new URLSearchParams({
@@ -121,6 +122,7 @@ export async function searchExternalMedia(
         page,
         shouldSearchMoviesAndTV,
         shouldSearchMusic,
+        shouldSearchVideoGames,
         shouldSearchBooks
     });
 

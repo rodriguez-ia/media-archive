@@ -3,6 +3,7 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import TheatersIcon from "@mui/icons-material/Theaters";
 import AlbumIcon from "@mui/icons-material/Album";
+import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
@@ -26,6 +27,7 @@ function LibraryMediaCard({
         MOVIE: "Movie",
         TV_SHOW: "TV Show",
         MUSIC_ALBUM: "Music Album",
+        VIDEO_GAME: "Video Game",
         BOOK: "Book",
     };
 
@@ -55,6 +57,7 @@ function LibraryMediaCard({
 
     const isMovieOrTV = mediaItem.mediaType === "MOVIE" || mediaItem.mediaType === "TV_SHOW";
     const isMusic = mediaItem.mediaType === "MUSIC_ALBUM";
+    const isVideoGame = mediaItem.mediaType === "VIDEO_GAME";
     const isBook = mediaItem.mediaType === "BOOK";
 
     const truncateDescription = (description) => {
@@ -551,6 +554,14 @@ function LibraryMediaCard({
                                         sx={{
                                             fontSize: 18,
                                             opacity: 0.7,
+                                        }}
+                                    />
+                                )}
+                                {isVideoGame && (
+                                    <VideogameAssetIcon 
+                                        sx={{
+                                            fontSize: 18,
+                                            opacity: 0.7
                                         }}
                                     />
                                 )}

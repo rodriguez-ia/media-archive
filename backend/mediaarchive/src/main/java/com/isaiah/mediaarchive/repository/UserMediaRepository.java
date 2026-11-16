@@ -22,7 +22,7 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
         JOIN FETCH um.mediaItem bm
         LEFT JOIN FETCH bm.genres
         WHERE um.user.id = :userId
-            AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'BOOK')
+            AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'VIDEO_GAME', 'BOOK')
             AND MONTH(bm.releaseDate) = :month
             AND DAY(bm.releaseDate) = :day
     """)
@@ -66,15 +66,17 @@ public interface UserMediaRepository extends JpaRepository<UserMediaEntity, UUID
 
     @Query("""
         SELECT new com.isaiah.mediaarchive.model.dto.MediaSummaryResponseDTO(
-            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'BOOK') THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'VIDEO_GAME', 'BOOK') THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'MOVIE' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'TV_SHOW' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'MUSIC_ALBUM' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'VIDEO_GAME' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'OWNED' AND bm.mediaType = 'BOOK' THEN 1 ELSE 0 END),
-            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'BOOK') THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType IN ('MOVIE', 'TV_SHOW', 'MUSIC_ALBUM', 'VIDEO_GAME', 'BOOK') THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'MOVIE' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'TV_SHOW' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'MUSIC_ALBUM' THEN 1 ELSE 0 END),
+            SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'VIDEO_GAME' THEN 1 ELSE 0 END),
             SUM(CASE WHEN um.status = 'WISHLISTED' AND bm.mediaType = 'BOOK' THEN 1 ELSE 0 END)
             )
         FROM UserMediaEntity um
