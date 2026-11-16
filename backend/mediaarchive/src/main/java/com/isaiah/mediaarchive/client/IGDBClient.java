@@ -28,7 +28,8 @@ public class IGDBClient {
     public List<IGDBResponseItemDTO> searchGameByKeyword(String accessToken, String keyword) {
         String queryGameByKeyword =
                 "search \"%s\";" +
-                "fields name, summary, storyline, themes, first_release_date, rating, cover.image_id;";
+                "fields name, summary, storyline, themes, first_release_date, rating, cover.image_id;" +
+                "where game_type = (0, 8, 9);";
 
         System.out.println("token: "+accessToken);
         System.out.println("id: "+clientId);
