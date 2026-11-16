@@ -26,7 +26,7 @@ public class IGDBMapper {
 
     private static final Logger log = LoggerFactory.getLogger(IGDBMapper.class);
 
-    private static final String COVER_IMG_BASE_URL = "https://images.igdb.com/igdb/image/upload/t_cover_big/";
+    private static final String COVER_IMG_BASE_URL = "https://images.igdb.com/igdb/image/upload/t_720p/";
     private static final String IMG_FILE_EXTENSION = ".jpg";
 
     private static final Map<Integer, GenreEnum> GENRE_BY_IGDB_ID = Map.ofEntries(
