@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -71,7 +73,7 @@ public class IGDBMapper {
                     MediaTypeEnum.VIDEO_GAME,
                     mapIGDBGenres(igdbResponseItem.getThemes()),
                     convertUnixTimestampToLocalDate(igdbResponseItem.getFirst_release_date()),
-                    igdbResponseItem.getRating(),
+                    scaleRatingDownByTen(igdbResponseItem.getRating()),
                     buildCoverImgUrl(igdbResponseItem.getCover())
             ));
         }
@@ -101,6 +103,10 @@ public class IGDBMapper {
         );
 
         return ldt.toLocalDate();
+    }
+
+    private BigDecimal scaleRatingDownByTen(BigDecimal fullRating) {
+        return fullRating == null ? null : fullRating.movePointLeft(1);
     }
 
     private String buildCoverImgUrl(IGDBVideoGameCoverDTO coverDTO) {
