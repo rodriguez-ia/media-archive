@@ -1,6 +1,7 @@
 
 import TMDBLogo from "../../assets/api-credits/tmdb-logo.svg";
 import DeezerLogo from "../../assets/api-credits/deezer-logo.svg";
+import IGDBLogo from "../../assets/api-credits/igdb-logo.svg";
 import GoogleLogo from "../../assets/api-credits/google-logo.svg";
 import { Box, Typography, Link } from "@mui/material";
 
@@ -16,6 +17,12 @@ const resources = [
         logo: DeezerLogo,
         url: "https://www.deezer.com/",
         alt: "Deezer"
+    },
+    {
+        name: "IGDB API",
+        logo: IGDBLogo,
+        url: "https://www.igdb.com/",
+        alt: "IGDB"
     },
     {
         name: "Google Books API Family",
