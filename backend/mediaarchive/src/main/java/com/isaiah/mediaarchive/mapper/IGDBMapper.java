@@ -69,7 +69,7 @@ public class IGDBMapper {
             results.add(new BaseMediaResponseDTO(
                     igdbResponseItem.getId(),
                     igdbResponseItem.getName(),
-                    igdbResponseItem.getSummary(),
+                    buildIGDBDescription(igdbResponseItem.getStoryline(), igdbResponseItem.getSummary()),
                     MediaTypeEnum.VIDEO_GAME,
                     mapIGDBGenres(igdbResponseItem.getThemes()),
                     convertUnixTimestampToLocalDate(igdbResponseItem.getFirst_release_date()),
@@ -79,6 +79,21 @@ public class IGDBMapper {
         }
 
         return results;
+    }
+
+    private String buildIGDBDescription(String storyline, String summary) {
+        boolean hasStoryline = storyline != null && !storyline.isBlank();
+        boolean hasSummary = summary != null && !summary.isBlank();
+
+        if (!hasStoryline && !hasSummary) {
+            return null;
+        }
+
+        if (hasStoryline && hasSummary) {
+            return storyline + "\n\n" + summary;
+        }
+
+        return hasStoryline ? storyline : summary;
     }
 
     private Set<GenreEnum> mapIGDBGenres(List<Integer> genreIds) {

@@ -14,6 +14,8 @@ public class IGDBResponseItemDTO {
 
     private String name;
 
+    private String storyline;
+
     private String summary;
 
     private List<Integer> themes;
