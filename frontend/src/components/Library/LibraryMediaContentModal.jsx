@@ -564,6 +564,7 @@ function LibraryMediaContentModal({
                                                 lineHeight: 1.40,
                                                 fontSize: 17,
                                                 color: "rgba(255,255,255,0.72)",
+                                                whiteSpace: "pre-line", // Used to preserve paragraph breaks (\n\n)
                                                 ...(descriptionExpanded
                                                     ? {}
                                                     : {
