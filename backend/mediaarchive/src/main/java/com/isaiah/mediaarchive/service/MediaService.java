@@ -143,12 +143,20 @@ public class MediaService {
             throw new MediaNotFoundException("Unable to find genre rating totals for user.");
         }
 
+        for (GenreRatingTotalDTO rating : genreRatingTotals) {
+            log.debug("{}: {}", rating.getGenre(), rating.getRatingTotal());
+        }
+
         BigDecimal highestTotal = genreRatingTotals.getFirst().getRatingTotal();
 
         List<String> highestRatedGenres = genreRatingTotals.stream()
                 .filter(total -> !total.getGenre().equals("OTHER") && Objects.equals(total.getRatingTotal(), highestTotal))
                 .map(GenreRatingTotalDTO::getGenre)
                 .toList();
+
+        for (String rating : highestRatedGenres) {
+            log.debug("{}", rating);
+        }
 
         UserMediaResponseDTO responseDTO = getOrCreateDailySpotlight(
                 user,
@@ -901,5 +909,19 @@ public class MediaService {
         }
 
         return trackDetails;
+    }
+
+    public List<IGDBVideoGameVideoDTO> getGameVideos(String externalId) {
+
+        log.info("Searching IGDB database for videos for the game with externalId '{}'", externalId);
+
+        String token = igdbTokenService.getAccessToken();
+        List<IGDBVideoGameVideoDTO> gameVideoDTOList = igdbClient.getGameVideosByGameId(token, externalId);
+
+        if (gameVideoDTOList == null || gameVideoDTOList.isEmpty()) {
+            throw new MediaNotFoundException("Unable to get game videos for externalId '" + externalId + "'");
+        }
+
+        return gameVideoDTOList;
     }
 }

@@ -133,3 +133,7 @@ export async function getMusicTrackDetails(externalId) {
     return apiFetch(`/externalMedia/music/track/${encodeURIComponent(externalId)}`);
 }
 
+export async function getGameVideos(externalId) {
+    return apiFetch(`/externalMedia/games/game-videos/${encodeURIComponent(externalId)}`);
+}
+

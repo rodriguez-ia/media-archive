@@ -1159,7 +1159,7 @@ function LibraryMediaContentModal({
                         {/* VIDEO GAME CLIPS                                   */}
                         {/* ================================================== */}
                         {mediaItem.mediaType === "VIDEO_GAME" && (
-                            <LibraryVideoCarousel />
+                            <LibraryVideoCarousel externalId={mediaItem.externalId}/>
                         )}
 
                         {/* ================================================== */}

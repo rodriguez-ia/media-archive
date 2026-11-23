@@ -264,4 +264,17 @@ public class MediaController {
                 )
         );
     }
+
+    @GetMapping("/externalMedia/games/game-videos/{externalId}")
+    public ResponseEntity<ApiResponse<List<IGDBVideoGameVideoDTO>>> getGameVideos(@PathVariable String externalId) {
+        List<IGDBVideoGameVideoDTO> gameVideoDTOList = mediaService.getGameVideos(externalId);
+
+        return ResponseEntity.status(200).body(
+                ApiResponseFactory.success(
+                        gameVideoDTOList,
+                        "MediaController.getGameVideos",
+                        "Retrieved game videos successfully"
+                )
+        );
+    }
 }

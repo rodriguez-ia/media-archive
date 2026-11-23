@@ -1,6 +1,7 @@
 package com.isaiah.mediaarchive.client;
 
 import com.isaiah.mediaarchive.model.dto.IGDBResponseItemDTO;
+import com.isaiah.mediaarchive.model.dto.IGDBVideoGameVideoDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -31,9 +32,6 @@ public class IGDBClient {
                 "fields name, summary, storyline, themes, first_release_date, rating, cover.image_id;" +
                 "where game_type = (0, 8, 9);";
 
-        System.out.println("token: "+accessToken);
-        System.out.println("id: "+clientId);
-
         return restClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -46,5 +44,24 @@ public class IGDBClient {
                 .body(String.format(queryGameByKeyword, keyword))
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<IGDBResponseItemDTO>>() {});
+    }
+
+    public List<IGDBVideoGameVideoDTO> getGameVideosByGameId(String accessToken, String gameId) {
+        String queryGameVideoByGameId =
+                "fields name, video_id;" +
+                "where game = '%s';";
+
+        return restClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/game_videos")
+                        .build()
+                )
+                .header("Authorization", "Bearer " + accessToken)
+                .header("Client-ID", clientId)
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(String.format(queryGameVideoByGameId, gameId))
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<IGDBVideoGameVideoDTO>>() {});
     }
 }
