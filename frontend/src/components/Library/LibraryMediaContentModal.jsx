@@ -12,6 +12,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import LibraryMediaSubItemsSection from "./LibraryMediaSubItemsSection.jsx";
 import LibraryMediaRecommendedSection from "./LibraryMediaRecommendedSection.jsx";
+import LibraryVideoCarousel from "./LibraryVideoCarousel.jsx";
 import GoogleBooksViewer from "../App/GoogleBooksViewer.jsx";
 import { formatGenre, getGenreSx } from "../../utils/genreUtils.js";
 import {
@@ -1134,7 +1135,7 @@ function LibraryMediaContentModal({
                         )}
 
                         {/* ================================================== */}
-                        {/* RECOMMENDED MEDIA                                  */}
+                        {/* TMDB RECOMMENDED MEDIA                             */}
                         {/* ================================================== */}
                         {(mediaItem.mediaType === "MOVIE" ||
                             mediaItem.mediaType === "TV_SHOW") && (
@@ -1151,6 +1152,13 @@ function LibraryMediaContentModal({
                                     onRefreshMedia={onRefreshMedia}
                                 />
                             </Box>
+                        )}
+
+                        {/* ================================================== */}
+                        {/* VIDEO GAME CLIPS                                   */}
+                        {/* ================================================== */}
+                        {mediaItem.mediaType === "VIDEO_GAME" && (
+                            <LibraryVideoCarousel />
                         )}
 
                         {/* ================================================== */}
